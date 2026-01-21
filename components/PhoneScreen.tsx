@@ -144,18 +144,6 @@ const PhoneScreen: React.FC = () => {
               {MENU_ITEMS.map((item, idx) => (
                 <MenuItem key={idx} {...item} />
               ))}
-              <div
-                onClick={() => setShowSettings(true)}
-                className="flex items-center justify-between py-4 cursor-pointer group hover:bg-black/5 dark:hover:bg-white/10 rounded-lg px-2 -mx-2 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-neutral-200/80 dark:bg-neutral-800 rounded-xl flex items-center justify-center text-neutral-700 dark:text-neutral-300">
-                    <Settings size={20} strokeWidth={2} />
-                  </div>
-                  <span className="text-neutral-900 dark:text-neutral-100 font-medium text-[15px]">Settings</span>
-                </div>
-                <ChevronLeft size={20} className="text-neutral-400 rotate-180" />
-              </div>
             </div>
           </div>
         </div>

@@ -1,14 +1,9 @@
-import { 
-  RotateCw, 
-  Star, 
-  Zap, 
-  Globe, 
-  Settings, 
-  Bell, 
-  Pencil, 
-  BookOpen, 
-  HelpCircle, 
-  CreditCard,
+import {
+  RotateCw,
+  Star,
+  Zap,
+  Globe,
+  Pencil,
   Layout,
   Search,
   Heart,
@@ -32,8 +27,6 @@ export const STATS = [
 
 export const MENU_ITEMS = [
   { icon: Pencil, label: "Edit profile" },
-  { icon: BookOpen, label: "Tutorial" },
-  { icon: HelpCircle, label: "Help / Contact Us" },
 ];
 
 export const NAV_ITEMS = [
