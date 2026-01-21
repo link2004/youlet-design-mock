@@ -9,8 +9,8 @@ const BottomNav: React.FC = () => {
           <div key={index} className="cursor-pointer">
             <item.icon
               size={24}
-              className={item.active ? "text-black dark:text-white fill-current" : "text-gray-400 dark:text-gray-500"}
-              strokeWidth={item.active ? 0 : 1.5}
+              className={`fill-current ${item.active ? "text-black dark:text-white" : "text-gray-400 dark:text-gray-500"}`}
+              strokeWidth={0}
             />
           </div>
         ))}
