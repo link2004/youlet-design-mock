@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { USER_DATA } from '../constants';
 import BottomNav from './BottomNav';
 import { PageType } from '../App';
+
+const DIALOGUE_LINES = [
+  "Hey! So happy to see you!",
+  "How's your day going?",
+  "I was just thinking about you...",
+  "Want to hear something funny?",
+  "You're looking great today!",
+  "I missed you so much!",
+  "Let's do something fun together!",
+  "Did anything exciting happen?",
+  "You always brighten my day!",
+  "I'm so glad we can talk like this.",
+];
 
 interface HeartScreenProps {
   currentPage: PageType;
@@ -9,6 +22,35 @@ interface HeartScreenProps {
 }
 
 const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) => {
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+
+  useEffect(() => {
+    const currentLine = DIALOGUE_LINES[currentLineIndex];
+
+    if (isTyping) {
+      if (displayedText.length < currentLine.length) {
+        const timeout = setTimeout(() => {
+          setDisplayedText(currentLine.slice(0, displayedText.length + 1));
+        }, 50);
+        return () => clearTimeout(timeout);
+      } else {
+        const pauseTimeout = setTimeout(() => {
+          setIsTyping(false);
+        }, 2000);
+        return () => clearTimeout(pauseTimeout);
+      }
+    } else {
+      const nextTimeout = setTimeout(() => {
+        setCurrentLineIndex((prev) => (prev + 1) % DIALOGUE_LINES.length);
+        setDisplayedText('');
+        setIsTyping(true);
+      }, 500);
+      return () => clearTimeout(nextTimeout);
+    }
+  }, [displayedText, isTyping, currentLineIndex]);
+
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       {/* Status Bar */}
@@ -39,9 +81,12 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
         <div className="relative flex flex-col items-center">
           {/* Speech Bubble */}
           <div className="relative mb-4">
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl px-5 py-3 shadow-lg border border-neutral-200 dark:border-neutral-700">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl px-5 py-3 shadow-lg border border-neutral-200 dark:border-neutral-700 min-w-[180px] min-h-[44px]">
               <p className="text-sm text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
-                今日も会えて嬉しいな！
+                {displayedText}
+                {isTyping && (
+                  <span className="inline-block w-[2px] h-4 bg-neutral-500 ml-0.5 animate-pulse align-middle" />
+                )}
               </p>
             </div>
             {/* Bubble tail */}
