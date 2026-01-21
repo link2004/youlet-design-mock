@@ -78,13 +78,12 @@ const PhoneScreen: React.FC = () => {
                 </div>
                 {/* Foot shadow */}
                 <div
-                  className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-white/35 blur-lg"
+                  className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-black/20 dark:bg-white/35 blur-md"
                 />
               </div>
 
-              <div className="flex items-center gap-2 mb-1">
+              <div className="mb-1">
                 <span className="text-2xl font-bold text-gray-900 dark:text-white">{USER_DATA.name}</span>
-                <ChevronLeft size={20} className="text-black dark:text-white rotate-180" strokeWidth={3} />
               </div>
               <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                 {USER_DATA.age} years old • {USER_DATA.location}
@@ -112,7 +111,7 @@ const PhoneScreen: React.FC = () => {
                   <Star size={40} fill="currentColor" />
                 </div>
                 <span className="relative z-10 text-white font-bold text-base tracking-wide text-center leading-relaxed">
-                  あなたの物語を読む
+                  Read Your Story
                 </span>
               </button>
               <button
@@ -135,7 +134,7 @@ const PhoneScreen: React.FC = () => {
                   <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px] bottom-3 right-16" />
                 </div>
                 <span className="relative z-10 text-white font-bold text-base tracking-wide text-center leading-relaxed">
-                  あなたを構成する要素
+                  Your Elements
                 </span>
               </button>
             </div>

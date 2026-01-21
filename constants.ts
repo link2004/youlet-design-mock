@@ -17,9 +17,9 @@ import {
 } from 'lucide-react';
 
 export const USER_DATA = {
-  name: "りく",
+  name: "Riku",
   age: 21,
-  location: "東京都",
+  location: "Tokyo",
   avatar: "https://ftrfpbrgnjkqgzaggkdz.supabase.co/storage/v1/object/public/profile-avatar/generated-avatars/310d8ad9-e71a-4552-acf5-860332e691d5/20260121_043652.png"
 };
 
