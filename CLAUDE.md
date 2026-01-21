@@ -35,3 +35,4 @@ npm run preview  # ビルド結果プレビュー
 ## Claude Code 設定
 
 - agent-browser: headless モードで使用する
+- 作業完了後は毎回必ずコミットする（細かい修正でも必ず）
