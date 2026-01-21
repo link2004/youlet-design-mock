@@ -70,12 +70,16 @@ const PhoneScreen: React.FC = () => {
                   <img
                     src={USER_DATA.avatar}
                     alt="Profile"
-                    className="w-full h-full object-contain drop-shadow-xl"
+                    className="w-full h-full object-contain"
                     onError={(e) => {
                       e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_15.png";
                     }}
                   />
                 </div>
+                {/* Foot shadow */}
+                <div
+                  className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-white/35 blur-lg"
+                />
               </div>
 
               <div className="flex items-center gap-2 mb-1">
@@ -87,17 +91,51 @@ const PhoneScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* Promo Button */}
-            <div className="px-4 mb-8">
-              <button className="w-full bg-gradient-to-r from-blue-500 to-red-500 h-14 rounded-xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center">
+            {/* Promo Cards - Horizontal Scroll with Snap */}
+            <div
+              className="mb-8 flex gap-3 overflow-x-auto no-scrollbar"
+              style={{
+                scrollSnapType: 'x mandatory',
+                scrollBehavior: 'auto',
+                paddingLeft: 'calc(50% - 144px)',
+                paddingRight: 'calc(50% - 144px)'
+              }}
+            >
+              <button
+                className="w-72 bg-gradient-to-r from-blue-500 to-red-500 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
+                style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
+              >
                 <div className="absolute -right-4 -top-4 text-white/10 transform rotate-12">
                   <Star size={80} fill="currentColor" />
                 </div>
                 <div className="absolute left-10 bottom-0 text-white/10 transform -rotate-12">
                   <Star size={40} fill="currentColor" />
                 </div>
-                <span className="relative z-10 text-white font-bold text-lg tracking-wide">
-                  あなたを一言で表すなら...
+                <span className="relative z-10 text-white font-bold text-base tracking-wide text-center leading-relaxed">
+                  あなたの物語を読む
+                </span>
+              </button>
+              <button
+                className="w-72 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
+                style={{
+                  scrollSnapAlign: 'center',
+                  scrollSnapStop: 'always',
+                  background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)'
+                }}
+              >
+                {/* Stars */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute w-1 h-1 bg-white/80 rounded-full blur-[1px] top-3 left-8" />
+                  <div className="absolute w-1.5 h-1.5 bg-white/60 rounded-full blur-[2px] top-6 right-12" />
+                  <div className="absolute w-1 h-1 bg-white/70 rounded-full blur-[1px] top-10 left-16" />
+                  <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full blur-[1px] top-4 right-6" />
+                  <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[2px] bottom-4 left-10" />
+                  <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full blur-[1px] bottom-6 right-8" />
+                  <div className="absolute w-1.5 h-1.5 bg-white/50 rounded-full blur-[2px] top-8 left-6" />
+                  <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px] bottom-3 right-16" />
+                </div>
+                <span className="relative z-10 text-white font-bold text-base tracking-wide text-center leading-relaxed">
+                  あなたを構成する要素
                 </span>
               </button>
             </div>
