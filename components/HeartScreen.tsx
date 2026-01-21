@@ -84,18 +84,11 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
             <div className="bg-white dark:bg-neutral-800 rounded-2xl px-5 py-3 shadow-lg border border-neutral-200 dark:border-neutral-700 min-w-[180px] min-h-[44px]">
               <p className="text-sm text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
                 {displayedText}
-                {isTyping && (
-                  <span className="inline-block w-[2px] h-4 bg-neutral-500 ml-0.5 animate-pulse align-middle" />
-                )}
               </p>
             </div>
             {/* Bubble tail */}
             <div className="absolute left-1/2 -translate-x-1/2 -bottom-2">
               <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-white dark:border-t-neutral-800" />
-            </div>
-            {/* Tail border overlay */}
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[11px]">
-              <div className="w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[11px] border-t-neutral-200 dark:border-t-neutral-700 -z-10" />
             </div>
           </div>
 
