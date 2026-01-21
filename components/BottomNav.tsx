@@ -4,7 +4,10 @@ import { NAV_ITEMS } from '../constants';
 const BottomNav: React.FC = () => {
   return (
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex items-center gap-6 px-6 py-3 bg-white/30 dark:bg-black/30 backdrop-blur-2xl rounded-full shadow-lg">
+      <div
+        className="flex items-center gap-6 px-6 py-3 bg-neutral-200/50 dark:bg-neutral-800/50 rounded-full shadow-lg"
+        style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+      >
         {NAV_ITEMS.map((item, index) => (
           <div key={index} className="cursor-pointer">
             <item.icon
