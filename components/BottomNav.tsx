@@ -5,8 +5,8 @@ const BottomNav: React.FC = () => {
   return (
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div
-        className="flex items-center gap-6 px-6 py-3 bg-neutral-200/50 dark:bg-neutral-800/50 rounded-full shadow-lg"
-        style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+        className="flex items-center gap-6 px-6 py-3 bg-neutral-200/30 dark:bg-neutral-800/30 rounded-full shadow-lg"
+        style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       >
         {NAV_ITEMS.map((item, index) => (
           <div key={index} className="cursor-pointer">
