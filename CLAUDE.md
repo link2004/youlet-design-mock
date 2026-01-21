@@ -1,0 +1,33 @@
+# Youlet Design Mock
+
+Youlet アプリのデザインモックアップ。iPhone モックアップ内にアプリ画面を表示する。
+
+## 技術スタック
+
+- React 19
+- TypeScript
+- Vite
+- lucide-react (アイコン)
+
+## ディレクトリ構成
+
+```
+/
+├── components/       # React コンポーネント
+│   ├── IPhoneMockup.tsx  # iPhone フレーム
+│   ├── PhoneScreen.tsx   # 画面コンテンツ
+│   ├── BottomNav.tsx     # 下部ナビゲーション
+│   ├── MenuItem.tsx      # メニュー項目
+│   └── StatCard.tsx      # 統計カード
+├── constants.ts      # 定数・データ定義
+├── App.tsx          # ルートコンポーネント
+└── index.tsx        # エントリーポイント
+```
+
+## コマンド
+
+```bash
+npm run dev      # 開発サーバー起動
+npm run build    # ビルド
+npm run preview  # ビルド結果プレビュー
+```
