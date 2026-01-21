@@ -11,7 +11,7 @@ interface PhoneScreenProps {
 }
 
 const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) => {
-  const [darkMode, setDarkMode] = React.useState(true);
+  const [darkMode, setDarkMode] = React.useState(false);
   const [showSettings, setShowSettings] = React.useState(false);
 
   React.useEffect(() => {
