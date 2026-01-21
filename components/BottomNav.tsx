@@ -3,18 +3,15 @@ import { NAV_ITEMS } from '../constants';
 
 const BottomNav: React.FC = () => {
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-100 dark:border-gray-800 px-4 pb-8 pt-2 z-50 transition-colors duration-300">
-      <div className="flex justify-between items-center">
+    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div className="flex items-center gap-6 px-6 py-3 bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-full shadow-lg border border-gray-200/50 dark:border-gray-700/50">
         {NAV_ITEMS.map((item, index) => (
-          <div key={index} className="flex flex-col items-center gap-1 cursor-pointer w-1/5">
+          <div key={index} className="cursor-pointer">
             <item.icon
-              size={26}
-              className={item.active ? "text-coral dark:text-white fill-current" : "text-gray-400 dark:text-gray-600"}
-              strokeWidth={item.active ? 0 : 2}
+              size={24}
+              className={item.active ? "text-black dark:text-white fill-current" : "text-gray-400 dark:text-gray-500"}
+              strokeWidth={item.active ? 0 : 1.5}
             />
-            <span className={`text-[10px] font-medium ${item.active ? "text-coral dark:text-white" : "text-gray-400 dark:text-gray-600"}`}>
-              {item.label}
-            </span>
           </div>
         ))}
       </div>

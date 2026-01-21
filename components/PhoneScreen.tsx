@@ -59,7 +59,7 @@ const PhoneScreen: React.FC = () => {
                 onClick={() => setShowSettings(true)}
                 className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               >
-                <Settings size={22} className="text-coral dark:text-gray-400" />
+                <Settings size={22} className="text-gray-700 dark:text-gray-400" />
               </button>
             </div>
 
@@ -171,7 +171,7 @@ const PhoneScreen: React.FC = () => {
             <div className="relative flex items-center px-4 py-2 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
               <button
                 onClick={() => setShowSettings(false)}
-                className="flex items-center gap-1 text-coral dark:text-gray-400"
+                className="flex items-center gap-1 text-gray-700 dark:text-gray-400"
               >
                 <ChevronLeft size={24} strokeWidth={2} />
                 <span className="text-base font-medium">Back</span>
