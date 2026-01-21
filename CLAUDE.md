@@ -1,6 +1,6 @@
-# Youlet Design Mock
+# YouLet Design Mock
 
-Youlet アプリのデザインモックアップ。iPhone モックアップ内にアプリ画面を表示する。
+YouLet アプリのデザインモックアップ。iPhone モックアップ内にアプリ画面を表示する。
 
 ## 技術スタック
 

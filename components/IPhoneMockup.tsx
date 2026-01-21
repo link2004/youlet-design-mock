@@ -22,7 +22,7 @@ const IPhoneMockup: React.FC<IPhoneMockupProps> = ({ children }) => {
               }}
             >
               {/* Dynamic Island */}
-              <div className="absolute top-0 left-0 right-0 z-50 flex justify-center pt-3 pointer-events-none">
+              <div className="absolute top-0 left-0 right-0 z-[100] flex justify-center pt-3 pointer-events-none">
                 <div className="bg-black w-[126px] h-[37px] rounded-full flex items-center justify-between px-4">
                   {/* Front camera */}
                   <div className="w-[10px] h-[10px] rounded-full bg-[#1a1a2e] ring-1 ring-neutral-800 flex items-center justify-center">
@@ -41,7 +41,7 @@ const IPhoneMockup: React.FC<IPhoneMockupProps> = ({ children }) => {
               </div>
 
               {/* Home indicator */}
-              <div className="absolute bottom-2 left-0 right-0 flex justify-center pointer-events-none z-50">
+              <div className="absolute bottom-2 left-0 right-0 flex justify-center pointer-events-none z-[100]">
                 <div className="w-32 h-1 bg-white/30 rounded-full" />
               </div>
             </div>
