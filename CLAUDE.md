@@ -31,3 +31,7 @@ npm run dev      # 開発サーバー起動
 npm run build    # ビルド
 npm run preview  # ビルド結果プレビュー
 ```
+
+## Claude Code 設定
+
+- agent-browser: headless モードで使用する
