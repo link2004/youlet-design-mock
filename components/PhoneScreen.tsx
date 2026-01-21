@@ -3,8 +3,14 @@ import { Settings, ChevronLeft, Star, Moon, Sun } from 'lucide-react';
 import { USER_DATA, MENU_ITEMS } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
+import { PageType } from '../App';
 
-const PhoneScreen: React.FC = () => {
+interface PhoneScreenProps {
+  currentPage: PageType;
+  onNavigate: (page: PageType) => void;
+}
+
+const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) => {
   const [darkMode, setDarkMode] = React.useState(true);
   const [showSettings, setShowSettings] = React.useState(false);
 
@@ -209,7 +215,7 @@ const PhoneScreen: React.FC = () => {
         </div>
       </div>
 
-      <BottomNav />
+      <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
     </div>
   );
 };

@@ -1,7 +1,21 @@
 import React from 'react';
-import { NAV_ITEMS } from '../constants';
+import { Layout, Search, Heart, MessageCircle, User } from 'lucide-react';
+import { PageType } from '../App';
 
-const BottomNav: React.FC = () => {
+interface BottomNavProps {
+  currentPage: PageType;
+  onNavigate: (page: PageType) => void;
+}
+
+const NAV_ITEMS: { icon: typeof Layout; label: string; page: PageType }[] = [
+  { icon: Layout, label: "Feed", page: 'feed' },
+  { icon: Search, label: "Explorer", page: 'explorer' },
+  { icon: Heart, label: "Likes", page: 'heart' },
+  { icon: MessageCircle, label: "Chat", page: 'chat' },
+  { icon: User, label: "Account", page: 'account' },
+];
+
+const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate }) => {
   return (
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div
@@ -9,10 +23,14 @@ const BottomNav: React.FC = () => {
         style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       >
         {NAV_ITEMS.map((item, index) => (
-          <div key={index} className="cursor-pointer">
+          <div
+            key={index}
+            className="cursor-pointer"
+            onClick={() => onNavigate(item.page)}
+          >
             <item.icon
               size={24}
-              className={`fill-current ${item.active ? "text-black dark:text-white" : "text-neutral-400 dark:text-neutral-500"}`}
+              className={`fill-current ${currentPage === item.page ? "text-black dark:text-white" : "text-neutral-400 dark:text-neutral-500"}`}
               strokeWidth={0}
             />
           </div>
