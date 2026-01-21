@@ -59,7 +59,7 @@ const PhoneScreen: React.FC = () => {
                 onClick={() => setShowSettings(true)}
                 className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               >
-                <Settings size={22} className="text-gray-700 dark:text-gray-400" />
+                <Settings size={22} className="text-neutral-700 dark:text-neutral-400" />
               </button>
             </div>
 
@@ -83,9 +83,9 @@ const PhoneScreen: React.FC = () => {
               </div>
 
               <div className="mb-1">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">{USER_DATA.name}</span>
+                <span className="text-2xl font-bold text-neutral-900 dark:text-white">{USER_DATA.name}</span>
               </div>
-              <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+              <div className="text-neutral-500 dark:text-neutral-400 text-sm font-medium">
                 {USER_DATA.age} years old • {USER_DATA.location}
               </div>
             </div>
@@ -149,12 +149,12 @@ const PhoneScreen: React.FC = () => {
                 className="flex items-center justify-between py-4 cursor-pointer group hover:bg-black/5 dark:hover:bg-white/10 rounded-lg px-2 -mx-2 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-gray-200/80 dark:bg-gray-800 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300">
+                  <div className="w-10 h-10 bg-neutral-200/80 dark:bg-neutral-800 rounded-xl flex items-center justify-center text-neutral-700 dark:text-neutral-300">
                     <Settings size={20} strokeWidth={2} />
                   </div>
-                  <span className="text-gray-900 dark:text-gray-100 font-medium text-[15px]">Settings</span>
+                  <span className="text-neutral-900 dark:text-neutral-100 font-medium text-[15px]">Settings</span>
                 </div>
-                <ChevronLeft size={20} className="text-gray-400 rotate-180" />
+                <ChevronLeft size={20} className="text-neutral-400 rotate-180" />
               </div>
             </div>
           </div>
@@ -171,7 +171,7 @@ const PhoneScreen: React.FC = () => {
             <div className="relative flex items-center px-4 py-2 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
               <button
                 onClick={() => setShowSettings(false)}
-                className="flex items-center gap-1 text-gray-700 dark:text-gray-400"
+                className="flex items-center gap-1 text-neutral-700 dark:text-neutral-400"
               >
                 <ChevronLeft size={24} strokeWidth={2} />
                 <span className="text-base font-medium">Back</span>
@@ -186,25 +186,25 @@ const PhoneScreen: React.FC = () => {
             <div className="px-6 mt-6">
               {/* Appearance Section */}
               <div className="mb-6">
-                <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                <h2 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">
                   Appearance
                 </h2>
-                <div className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden">
+                <div className="bg-white dark:bg-neutral-900 rounded-xl overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-4">
                     <div className="flex items-center gap-3">
                       {darkMode ? (
-                        <Moon size={20} className="text-gray-600 dark:text-gray-400" />
+                        <Moon size={20} className="text-neutral-600 dark:text-neutral-400" />
                       ) : (
-                        <Sun size={20} className="text-gray-600 dark:text-gray-400" />
+                        <Sun size={20} className="text-neutral-600 dark:text-neutral-400" />
                       )}
-                      <span className="text-gray-900 dark:text-gray-100 font-medium">
+                      <span className="text-neutral-900 dark:text-neutral-100 font-medium">
                         Dark Mode
                       </span>
                     </div>
                     <button
                       onClick={() => setDarkMode(!darkMode)}
                       className={`relative w-12 h-7 rounded-full transition-colors duration-300 ${
-                        darkMode ? 'bg-white' : 'bg-gray-300'
+                        darkMode ? 'bg-white' : 'bg-neutral-300'
                       }`}
                     >
                       <div
