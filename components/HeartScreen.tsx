@@ -36,21 +36,40 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
 
       {/* Main Content - Character centered */}
       <div className="flex-1 flex items-center justify-center">
-        <div className="relative">
-          <div className="w-56 h-56 flex items-center justify-center">
-            <img
-              src={USER_DATA.avatar}
-              alt="Character"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_15.png";
-              }}
+        <div className="relative flex flex-col items-center">
+          {/* Speech Bubble */}
+          <div className="relative mb-4">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl px-5 py-3 shadow-lg border border-neutral-200 dark:border-neutral-700">
+              <p className="text-sm text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
+                今日も会えて嬉しいな！
+              </p>
+            </div>
+            {/* Bubble tail */}
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-2">
+              <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-white dark:border-t-neutral-800" />
+            </div>
+            {/* Tail border overlay */}
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[11px]">
+              <div className="w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[11px] border-t-neutral-200 dark:border-t-neutral-700 -z-10" />
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="w-56 h-56 flex items-center justify-center">
+              <img
+                src={USER_DATA.avatar}
+                alt="Character"
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_15.png";
+                }}
+              />
+            </div>
+            {/* Foot shadow */}
+            <div
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-black/20 dark:bg-white/35 blur-md"
             />
           </div>
-          {/* Foot shadow */}
-          <div
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-black/20 dark:bg-white/35 blur-md"
-          />
         </div>
       </div>
 
