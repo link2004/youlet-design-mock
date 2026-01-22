@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:host": "vite --host 0.0.0.0",
+    "tunnel": "lt --port 3000",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -18,6 +20,7 @@
     "@types/matter-js": "^0.20.2",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "localtunnel": "^2.0.2",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
