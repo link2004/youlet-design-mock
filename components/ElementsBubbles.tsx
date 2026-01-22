@@ -220,6 +220,11 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
           const element = USER_ELEMENTS[index];
           const isPersonality = element.type === 'personality';
           const size = isPersonality ? 76 : 64;
+          // Auto-size font based on text length and bubble size
+          const textLength = element.label.length;
+          const maxWidth = size * 0.75;
+          const baseFontSize = 12;
+          const fontSize = Math.min(baseFontSize, Math.max(8, maxWidth / (textLength * 0.55)));
 
           return (
             <div
@@ -239,8 +244,13 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
               onPointerDown={(e) => handlePointerDown(e, index)}
             >
               <span
-                className="text-white text-xs font-semibold text-center px-1"
-                style={{ transform: `rotate(${-pos.angle}rad)` }}
+                className="text-white font-semibold text-center leading-tight"
+                style={{
+                  transform: `rotate(${-pos.angle}rad)`,
+                  fontSize: `${fontSize}px`,
+                  maxWidth: `${size * 0.8}px`,
+                  wordBreak: 'break-word',
+                }}
               >
                 {element.label}
               </span>
