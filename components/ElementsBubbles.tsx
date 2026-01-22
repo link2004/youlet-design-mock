@@ -171,7 +171,28 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="absolute inset-0 bg-slate-900 z-50 animate-fade-in">
+    <div className="absolute inset-0 bg-[#0a0a1a] z-50 animate-fade-in">
+      {/* Space background with blurred stars/nebula */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Nebula-like blurred circles */}
+        <div className="absolute w-40 h-40 bg-purple-500/10 rounded-full blur-3xl" style={{ left: '10%', top: '20%' }} />
+        <div className="absolute w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" style={{ left: '60%', top: '10%' }} />
+        <div className="absolute w-48 h-48 bg-indigo-500/8 rounded-full blur-3xl" style={{ left: '70%', top: '60%' }} />
+        <div className="absolute w-36 h-36 bg-violet-500/10 rounded-full blur-3xl" style={{ left: '5%', top: '70%' }} />
+
+        {/* Stars */}
+        <div className="absolute w-1 h-1 bg-white/70 rounded-full blur-[1px]" style={{ left: '15%', top: '12%' }} />
+        <div className="absolute w-1.5 h-1.5 bg-white/50 rounded-full blur-[2px]" style={{ left: '30%', top: '8%' }} />
+        <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px]" style={{ left: '50%', top: '15%' }} />
+        <div className="absolute w-0.5 h-0.5 bg-white/80 rounded-full" style={{ left: '75%', top: '6%' }} />
+        <div className="absolute w-1 h-1 bg-white/50 rounded-full blur-[1px]" style={{ left: '88%', top: '20%' }} />
+        <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px]" style={{ left: '8%', top: '45%' }} />
+        <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full" style={{ left: '92%', top: '50%' }} />
+        <div className="absolute w-1.5 h-1.5 bg-white/40 rounded-full blur-[2px]" style={{ left: '20%', top: '85%' }} />
+        <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px]" style={{ left: '45%', top: '90%' }} />
+        <div className="absolute w-0.5 h-0.5 bg-white/80 rounded-full" style={{ left: '65%', top: '88%' }} />
+        <div className="absolute w-1 h-1 bg-white/50 rounded-full blur-[1px]" style={{ left: '82%', top: '85%' }} />
+      </div>
 
       {/* Close button */}
       <button
