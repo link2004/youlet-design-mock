@@ -86,7 +86,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                     }}
                   />
                 </div>
-                <div className="px-4 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
+                <div className="shrink-0 px-4 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
                   <div className="text-center">
                     <span className="text-xl font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
                   </div>
