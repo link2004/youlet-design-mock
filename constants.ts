@@ -87,18 +87,14 @@ export const AI_CONVERSATION: Array<{
 
 // 友達一覧（交換済みカード）
 export const FRIENDS_LIST = [
-  { id: 1, name: "Yuki", image: "/images/characters/char-beanie-girl.png" },
-  { id: 2, name: "Haru", image: "/images/characters/char-beanie.png" },
-  { id: 3, name: "Sota", image: "/images/characters/char-male1.png" },
-  { id: 4, name: "Ren", image: "/images/characters/char_male_knit.png" },
-  { id: 5, name: "Mei", image: "/images/characters/cheerleader-char1.png" },
-  { id: 6, name: "Aoi", image: "/images/characters/cheerleader-char2.png" },
-  { id: 7, name: "Saki", image: "/images/characters/cheerleader-char3.png" },
-  { id: 8, name: "Mio", image: "/images/characters/cheerleader-char4.png" },
-  { id: 9, name: "Nana", image: "/images/characters/cheerleader-char5.png" },
-  { id: 10, name: "Kana", image: "/images/characters/cheerleader-char6.png" },
-  { id: 11, name: "Rina", image: "/images/characters/cheerleader-char7.png" },
-  { id: 12, name: "Yuna", image: "/images/characters/cheerleader-char8.png" },
-  { id: 13, name: "Taka", image: "/images/characters/char_male_knit_v2.png" },
-  { id: 14, name: "Kira", image: "/images/characters/new-char1.png" },
+  { id: 1, name: "Momo", image: "/images/characters/char16.png" },
+  { id: 2, name: "Kento", image: "/images/characters/char17.png" },
+  { id: 3, name: "Nina", image: "/images/characters/char18.png" },
+  { id: 4, name: "Ryo", image: "/images/characters/char19.png" },
+  { id: 5, name: "Sora", image: "/images/characters/char20.png" },
+  { id: 6, name: "Leon", image: "/images/characters/char21.png" },
+  { id: 7, name: "Akane", image: "/images/characters/char22.png" },
+  { id: 8, name: "Kai", image: "/images/characters/char23.png" },
+  { id: 9, name: "Miku", image: "/images/characters/char24.png" },
+  { id: 10, name: "Yuto", image: "/images/characters/char25.png" },
 ];
