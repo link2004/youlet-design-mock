@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import IPhoneMockup from './components/IPhoneMockup';
 import PhoneScreen from './components/PhoneScreen';
 import HeartScreen from './components/HeartScreen';
+import FeedScreen from './components/FeedScreen';
 
 export type PageType = 'feed' | 'explorer' | 'heart' | 'chat' | 'account';
 
@@ -10,6 +11,8 @@ const App: React.FC = () => {
 
   const renderScreen = () => {
     switch (currentPage) {
+      case 'feed':
+        return <FeedScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
       case 'heart':
         return <HeartScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
       case 'account':

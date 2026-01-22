@@ -84,3 +84,21 @@ export const AI_CONVERSATION: Array<{
   { sender: 'user', message: "Nice choice! I've been wanting to try Fujifilm." },
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
+
+// 友達一覧（交換済みカード）
+export const FRIENDS_LIST = [
+  { id: 1, name: "Yuki", image: "/images/characters/char-beanie-girl.png" },
+  { id: 2, name: "Haru", image: "/images/characters/char-beanie.png" },
+  { id: 3, name: "Sota", image: "/images/characters/char-male1.png" },
+  { id: 4, name: "Ren", image: "/images/characters/char_male_knit.png" },
+  { id: 5, name: "Mei", image: "/images/characters/cheerleader-char1.png" },
+  { id: 6, name: "Aoi", image: "/images/characters/cheerleader-char2.png" },
+  { id: 7, name: "Saki", image: "/images/characters/cheerleader-char3.png" },
+  { id: 8, name: "Mio", image: "/images/characters/cheerleader-char4.png" },
+  { id: 9, name: "Nana", image: "/images/characters/cheerleader-char5.png" },
+  { id: 10, name: "Kana", image: "/images/characters/cheerleader-char6.png" },
+  { id: 11, name: "Rina", image: "/images/characters/cheerleader-char7.png" },
+  { id: 12, name: "Yuna", image: "/images/characters/cheerleader-char8.png" },
+  { id: 13, name: "Taka", image: "/images/characters/char_male_knit_v2.png" },
+  { id: 14, name: "Kira", image: "/images/characters/new-char1.png" },
+];
