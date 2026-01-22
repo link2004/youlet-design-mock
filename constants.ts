@@ -18,6 +18,19 @@ export const USER_DATA = {
   avatar: "https://ftrfpbrgnjkqgzaggkdz.supabase.co/storage/v1/object/public/profile-avatar/generated-avatars/310d8ad9-e71a-4552-acf5-860332e691d5/20260121_043652.png"
 };
 
+// ユーザーの趣味・性格（Elements）
+export const USER_ELEMENTS = [
+  { label: "Photography", type: "hobby" },
+  { label: "Coffee", type: "hobby" },
+  { label: "Reading", type: "hobby" },
+  { label: "Gaming", type: "hobby" },
+  { label: "Music", type: "hobby" },
+  { label: "Introvert", type: "personality" },
+  { label: "Creative", type: "personality" },
+  { label: "Curious", type: "personality" },
+  { label: "Calm", type: "personality" },
+];
+
 export const STATS = [
   { icon: RotateCw, count: 3, color: "text-green-500", label: "Refresh" },
   { icon: Star, count: 2, color: "text-blue-500", label: "Stars" },
