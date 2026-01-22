@@ -172,20 +172,6 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
 
   return (
     <div className="absolute inset-0 bg-slate-900 z-50 animate-fade-in">
-      {/* Stars background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-1 h-1 bg-white/60 rounded-full" style={{ left: '10%', top: '15%' }} />
-        <div className="absolute w-1.5 h-1.5 bg-white/50 rounded-full" style={{ left: '25%', top: '8%' }} />
-        <div className="absolute w-1 h-1 bg-white/70 rounded-full" style={{ left: '45%', top: '12%' }} />
-        <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full" style={{ left: '70%', top: '5%' }} />
-        <div className="absolute w-1 h-1 bg-white/60 rounded-full" style={{ left: '85%', top: '18%' }} />
-        <div className="absolute w-1.5 h-1.5 bg-white/40 rounded-full" style={{ left: '15%', top: '85%' }} />
-        <div className="absolute w-1 h-1 bg-white/60 rounded-full" style={{ left: '35%', top: '90%' }} />
-        <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full" style={{ left: '60%', top: '88%' }} />
-        <div className="absolute w-1 h-1 bg-white/50 rounded-full" style={{ left: '80%', top: '92%' }} />
-        <div className="absolute w-1 h-1 bg-white/60 rounded-full" style={{ left: '5%', top: '50%' }} />
-        <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full" style={{ left: '92%', top: '45%' }} />
-      </div>
 
       {/* Close button */}
       <button

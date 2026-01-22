@@ -168,7 +168,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
             <div className="relative flex items-center px-4 py-2 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
               <button
                 onClick={() => setShowSettings(false)}
-                className="flex items-center gap-1 text-orange-400"
+                className="flex items-center gap-1 text-neutral-700 dark:text-neutral-400"
               >
                 <ChevronLeft size={24} strokeWidth={2} />
                 <span className="text-base font-medium">Back</span>
