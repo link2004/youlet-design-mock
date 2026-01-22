@@ -32,6 +32,10 @@ npm run build    # ビルド
 npm run preview  # ビルド結果プレビュー
 ```
 
+## デザイン
+
+- アクセントカラー: オレンジ (`text-orange-400`, `bg-orange-400`)
+
 ## Claude Code 設定
 
 - agent-browser: headless モードで使用する
