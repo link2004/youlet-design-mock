@@ -18,27 +18,157 @@ export const USER_DATA = {
   avatar: "https://ftrfpbrgnjkqgzaggkdz.supabase.co/storage/v1/object/public/profile-avatar/generated-avatars/310d8ad9-e71a-4552-acf5-860332e691d5/20260121_043652.png"
 };
 
+// ストーリーの型定義
+export interface Story {
+  id: number;
+  content: string;
+  source?: string;
+}
+
+export interface UserElement {
+  label: string;
+  type: "hobby" | "personality";
+  stories: Story[];
+}
+
 // ユーザーの趣味・性格（Elements）
-export const USER_ELEMENTS = [
-  { label: "Photography", type: "hobby" },
-  { label: "Coffee", type: "hobby" },
-  { label: "Reading", type: "hobby" },
-  { label: "Gaming", type: "hobby" },
-  { label: "Music", type: "hobby" },
-  { label: "Cooking", type: "hobby" },
-  { label: "Travel", type: "hobby" },
-  { label: "Anime", type: "hobby" },
-  { label: "Hiking", type: "hobby" },
-  { label: "Art", type: "hobby" },
-  { label: "Movies", type: "hobby" },
-  { label: "Yoga", type: "hobby" },
-  { label: "Introvert", type: "personality" },
-  { label: "Creative", type: "personality" },
-  { label: "Curious", type: "personality" },
-  { label: "Calm", type: "personality" },
-  { label: "Kind", type: "personality" },
-  { label: "Honest", type: "personality" },
-  { label: "Optimist", type: "personality" },
+export const USER_ELEMENTS: UserElement[] = [
+  {
+    label: "Photography",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "高校時代から一眼レフを始めた", source: "photo_001.jpg" },
+      { id: 2, content: "渋谷の街並みを撮るのが好き", source: "photo_002.jpg" },
+    ]
+  },
+  {
+    label: "Coffee",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "毎朝ハンドドリップで淹れる" },
+      { id: 2, content: "お気に入りは深煎りのエチオピア" },
+    ]
+  },
+  {
+    label: "Reading",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "村上春樹の作品が好き" },
+    ]
+  },
+  {
+    label: "Gaming",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "RPGとシミュレーションが得意" },
+    ]
+  },
+  {
+    label: "Music",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "ジャズとシティポップをよく聴く" },
+    ]
+  },
+  {
+    label: "Cooking",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "イタリアンが得意" },
+    ]
+  },
+  {
+    label: "Travel",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "年に2回は国内旅行に行く" },
+    ]
+  },
+  {
+    label: "Anime",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "最近はSF系にハマっている" },
+    ]
+  },
+  {
+    label: "Hiking",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "高尾山は何度も登った" },
+    ]
+  },
+  {
+    label: "Art",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "美術館巡りが好き" },
+    ]
+  },
+  {
+    label: "Movies",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "ミニシアター系の映画が好き" },
+    ]
+  },
+  {
+    label: "Yoga",
+    type: "hobby",
+    stories: [
+      { id: 1, content: "朝のルーティンとして続けている" },
+    ]
+  },
+  {
+    label: "Introvert",
+    type: "personality",
+    stories: [
+      { id: 1, content: "一人の時間が必要なタイプ" },
+      { id: 2, content: "少人数の深い会話が好き" },
+    ]
+  },
+  {
+    label: "Creative",
+    type: "personality",
+    stories: [
+      { id: 1, content: "アイデアを考えるのが好き" },
+    ]
+  },
+  {
+    label: "Curious",
+    type: "personality",
+    stories: [
+      { id: 1, content: "新しいことを学ぶのが楽しい" },
+    ]
+  },
+  {
+    label: "Calm",
+    type: "personality",
+    stories: [
+      { id: 1, content: "慌てずに物事を考えるタイプ" },
+    ]
+  },
+  {
+    label: "Kind",
+    type: "personality",
+    stories: [
+      { id: 1, content: "困っている人は放っておけない" },
+    ]
+  },
+  {
+    label: "Honest",
+    type: "personality",
+    stories: [
+      { id: 1, content: "嘘がつけない性格" },
+    ]
+  },
+  {
+    label: "Optimist",
+    type: "personality",
+    stories: [
+      { id: 1, content: "なんとかなると思って生きている" },
+    ]
+  },
 ];
 
 export const STATS = [

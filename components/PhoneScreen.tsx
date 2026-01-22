@@ -5,6 +5,7 @@ import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
+import CardEditMode from './CardEditMode';
 import { PageType } from '../App';
 
 interface PhoneScreenProps {
@@ -17,6 +18,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   const [showSettings, setShowSettings] = React.useState(false);
   const [showElements, setShowElements] = React.useState(false);
   const [showStory, setShowStory] = React.useState(false);
+  const [showCardEdit, setShowCardEdit] = React.useState(false);
 
   React.useEffect(() => {
     if (darkMode) {
@@ -75,7 +77,10 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
 
             {/* Profile Card */}
             <div className="flex flex-col items-center mt-4 mb-6 px-6">
-              <div className="w-64 aspect-[2/3] rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden flex flex-col">
+              <button
+                onClick={() => setShowCardEdit(true)}
+                className="w-64 aspect-[2/3] rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden flex flex-col active:scale-[0.98] transition-transform"
+              >
                 <div className="flex-1 min-h-0 flex items-center justify-center p-4 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
                   <img
                     src={USER_DATA.avatar}
@@ -91,7 +96,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                     <span className="text-xl font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
                   </div>
                 </div>
-              </div>
+              </button>
             </div>
 
             {/* Promo Cards - Horizontal Scroll with Snap */}
@@ -225,6 +230,11 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
       {/* Story View Modal */}
       {showStory && (
         <StoryView onClose={() => setShowStory(false)} />
+      )}
+
+      {/* Card Edit Mode */}
+      {showCardEdit && (
+        <CardEditMode onClose={() => setShowCardEdit(false)} />
       )}
     </div>
   );
