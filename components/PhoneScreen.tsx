@@ -4,6 +4,7 @@ import { USER_DATA, MENU_ITEMS } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import ElementsBubbles from './ElementsBubbles';
+import StoryView from './StoryView';
 import { PageType } from '../App';
 
 interface PhoneScreenProps {
@@ -15,6 +16,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   const [darkMode, setDarkMode] = React.useState(false);
   const [showSettings, setShowSettings] = React.useState(false);
   const [showElements, setShowElements] = React.useState(false);
+  const [showStory, setShowStory] = React.useState(false);
 
   React.useEffect(() => {
     if (darkMode) {
@@ -109,6 +111,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               }}
             >
               <button
+                onClick={() => setShowStory(true)}
                 className="w-72 bg-gradient-to-r from-blue-500 to-red-500 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
                 style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
               >
@@ -223,6 +226,11 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
       {/* Elements Bubbles Modal */}
       {showElements && (
         <ElementsBubbles onClose={() => setShowElements(false)} />
+      )}
+
+      {/* Story View Modal */}
+      {showStory && (
+        <StoryView onClose={() => setShowStory(false)} />
       )}
     </div>
   );
