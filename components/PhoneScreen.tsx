@@ -75,8 +75,8 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
 
             {/* Profile Card */}
             <div className="flex flex-col items-center mt-4 mb-6 px-6">
-              <div className="w-48 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden">
-                <div className="aspect-[4/5] flex items-center justify-center p-3 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
+              <div className="w-64 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden">
+                <div className="aspect-[4/5] flex items-center justify-center p-4 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
                   <img
                     src={USER_DATA.avatar}
                     alt="Profile"
@@ -86,12 +86,9 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                     }}
                   />
                 </div>
-                <div className="px-3 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
+                <div className="px-4 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
                   <div className="text-center">
-                    <span className="text-lg font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
-                    <span className="text-neutral-500 dark:text-neutral-400 text-xs font-medium">
-                      {USER_DATA.age} years old • {USER_DATA.location}
-                    </span>
+                    <span className="text-xl font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
                   </div>
                 </div>
               </div>
