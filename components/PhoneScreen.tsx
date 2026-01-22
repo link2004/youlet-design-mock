@@ -65,7 +65,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 onClick={() => setShowSettings(true)}
                 className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               >
-                <Settings size={22} className="text-neutral-700 dark:text-neutral-400" />
+                <Settings size={22} className="text-orange-400" />
               </button>
             </div>
 

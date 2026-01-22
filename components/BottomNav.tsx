@@ -30,7 +30,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate }) => {
           >
             <item.icon
               size={24}
-              className={`fill-current ${currentPage === item.page ? "text-black dark:text-white" : "text-neutral-400 dark:text-neutral-500"}`}
+              className={`fill-current ${currentPage === item.page ? "text-orange-400" : "text-neutral-400 dark:text-neutral-500"}`}
               strokeWidth={0}
             />
           </div>
