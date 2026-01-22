@@ -76,15 +76,17 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
             {/* Profile Card */}
             <div className="flex flex-col items-center mt-4 mb-6 px-6">
               <div className="w-48 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden">
-                <div className="aspect-[4/5] flex items-center justify-center p-3 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
+                <div className="aspect-[4/5] flex items-center justify-center p-3 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800 relative">
                   <img
                     src={USER_DATA.avatar}
                     alt="Profile"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain relative z-10"
                     onError={(e) => {
                       e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_15.png";
                     }}
                   />
+                  {/* Foot shadow */}
+                  <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-24 h-4 rounded-[50%] bg-black/20 dark:bg-white/30 blur-md z-0" />
                 </div>
                 <div className="px-3 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
                   <div className="text-center">

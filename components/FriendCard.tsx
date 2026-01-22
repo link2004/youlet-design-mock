@@ -13,12 +13,14 @@ const FriendCard: React.FC<FriendCardProps> = ({ name, image, onClick }) => {
       className="flex flex-col group"
     >
       <div className="w-full rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden transition-transform group-active:scale-95">
-        <div className="aspect-[4/5] flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
+        <div className="aspect-[4/5] flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800 relative">
           <img
             src={image}
             alt={name}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain relative z-10"
           />
+          {/* Foot shadow */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-3/5 h-2 rounded-[50%] bg-black/20 dark:bg-white/30 blur-sm z-0" />
         </div>
         <div className="px-2 py-2 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
           <span className="text-[11px] text-neutral-700 dark:text-neutral-300 font-semibold block text-center truncate">
