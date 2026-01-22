@@ -197,13 +197,13 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-14 right-4 z-50 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+        className="absolute top-14 left-4 z-50 w-11 h-11 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/30 transition-colors"
       >
-        <X className="w-5 h-5 text-white" />
+        <X className="w-5 h-5 text-white/80" />
       </button>
 
       {/* Title */}
-      <div className="absolute top-14 left-0 right-0 text-center">
+      <div className="absolute top-14 left-0 right-0 text-center pointer-events-none">
         <h2 className="text-white text-xl font-bold">Your Elements</h2>
         <p className="text-white/60 text-sm mt-1">Drag and play with your traits</p>
       </div>
