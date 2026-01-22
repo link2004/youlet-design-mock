@@ -233,7 +233,7 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
                 isPersonality
                   ? 'bg-purple-400'
                   : 'bg-orange-400'
-              } rounded-full flex items-center justify-center shadow-lg`}
+              } rounded-full flex items-center justify-center`}
               style={{
                 width: size,
                 height: size,
