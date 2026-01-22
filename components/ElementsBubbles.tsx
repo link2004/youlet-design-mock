@@ -133,12 +133,12 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
 
     Matter.Body.setPosition(mouseBody, { x, y });
 
-    // Create constraint between mouse and bubble
+    // Create constraint between mouse and bubble (soft follow)
     const constraint = Matter.Constraint.create({
       bodyA: mouseBody,
       bodyB: body,
-      stiffness: 0.2,
-      damping: 0.3,
+      stiffness: 0.02,
+      damping: 0.5,
       length: 0,
     });
 
