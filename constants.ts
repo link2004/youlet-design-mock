@@ -25,10 +25,20 @@ export const USER_ELEMENTS = [
   { label: "Reading", type: "hobby" },
   { label: "Gaming", type: "hobby" },
   { label: "Music", type: "hobby" },
+  { label: "Cooking", type: "hobby" },
+  { label: "Travel", type: "hobby" },
+  { label: "Anime", type: "hobby" },
+  { label: "Hiking", type: "hobby" },
+  { label: "Art", type: "hobby" },
+  { label: "Movies", type: "hobby" },
+  { label: "Yoga", type: "hobby" },
   { label: "Introvert", type: "personality" },
   { label: "Creative", type: "personality" },
   { label: "Curious", type: "personality" },
   { label: "Calm", type: "personality" },
+  { label: "Kind", type: "personality" },
+  { label: "Honest", type: "personality" },
+  { label: "Optimist", type: "personality" },
 ];
 
 export const STATS = [
