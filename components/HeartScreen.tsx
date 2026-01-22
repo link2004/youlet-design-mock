@@ -162,11 +162,11 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
               onClick={handleNotificationTap}
               className="relative mb-4 animate-bounce"
             >
-              <div className="bg-gradient-to-br from-pink-400 to-rose-500 rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+              <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                 <span className="text-white text-2xl font-bold">!</span>
               </div>
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-                <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-rose-500" />
+                <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-orange-500" />
               </div>
             </button>
           )}
@@ -175,7 +175,7 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
           {(matchingState === 'idle' || matchingState === 'proposing' || matchingState === 'showingCard') && (
             <div className="relative mb-4">
               <div className={`bg-white dark:bg-neutral-800 rounded-2xl px-5 py-3 shadow-lg border border-neutral-200 dark:border-neutral-700 min-w-[180px] min-h-[44px] max-w-[260px] transition-all ${
-                matchingState === 'proposing' || matchingState === 'showingCard' ? 'ring-2 ring-pink-300 dark:ring-pink-500/50' : ''
+                matchingState === 'proposing' || matchingState === 'showingCard' ? 'ring-2 ring-orange-300 dark:ring-orange-500/50' : ''
               }`}>
                 <p className="text-sm text-neutral-800 dark:text-neutral-200">
                   {displayedText}
@@ -209,7 +209,7 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
           {matchingState === 'proposing' && !isTyping && (
             <button
               onClick={handleProposalTap}
-              className="mt-6 px-8 py-3 bg-gradient-to-r from-pink-400 to-rose-500 text-white font-semibold rounded-full shadow-lg hover:from-pink-500 hover:to-rose-600 active:scale-[0.98] transition-all animate-pulse"
+              className="mt-6 px-8 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white font-semibold rounded-full shadow-lg hover:from-orange-500 hover:to-orange-600 active:scale-[0.98] transition-all animate-pulse"
             >
               See Profile ✨
             </button>

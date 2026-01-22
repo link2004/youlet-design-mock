@@ -87,7 +87,7 @@ const AIChatModal: React.FC<AIChatModalProps> = ({ onClose }) => {
             <div
               className={`max-w-[70%] px-4 py-2 rounded-2xl ${
                 msg.sender === 'user'
-                  ? 'bg-gradient-to-br from-pink-400 to-rose-500 text-white rounded-br-sm'
+                  ? 'bg-gradient-to-br from-orange-400 to-orange-500 text-white rounded-br-sm'
                   : 'bg-white dark:bg-neutral-700 text-neutral-800 dark:text-white rounded-bl-sm shadow-sm'
               }`}
             >

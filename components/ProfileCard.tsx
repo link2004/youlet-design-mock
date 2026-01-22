@@ -21,7 +21,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
 
         {/* Avatar */}
         <div className="flex justify-center mb-4">
-          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-pink-200 dark:border-pink-400/30 shadow-lg">
+          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-orange-200 dark:border-orange-400/30 shadow-lg">
             <img
               src={MATCH_CANDIDATE.avatar}
               alt={MATCH_CANDIDATE.name}
@@ -54,7 +54,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
                   key={interest}
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
                     isShared
-                      ? 'bg-pink-100 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 ring-2 ring-pink-300 dark:ring-pink-400/50'
+                      ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-300 ring-2 ring-orange-300 dark:ring-orange-400/50'
                       : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300'
                   }`}
                 >
@@ -64,7 +64,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
               );
             })}
           </div>
-          <p className="text-xs text-pink-500 dark:text-pink-400 text-center mt-2">
+          <p className="text-xs text-orange-500 dark:text-orange-400 text-center mt-2">
             {SHARED_INTERESTS.length} shared interests!
           </p>
         </div>
@@ -72,7 +72,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
         {/* Button */}
         <button
           onClick={onAccept}
-          className="w-full py-3 bg-gradient-to-r from-pink-400 to-rose-500 text-white font-semibold rounded-full shadow-lg hover:from-pink-500 hover:to-rose-600 active:scale-[0.98] transition-all"
+          className="w-full py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white font-semibold rounded-full shadow-lg hover:from-orange-500 hover:to-orange-600 active:scale-[0.98] transition-all"
         >
           View AI-Chat History 💬
         </button>
