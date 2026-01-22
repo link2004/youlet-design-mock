@@ -88,7 +88,7 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance > 5) {
-          const force = 0.00003 * distance;
+          const force = 0.000008 * distance;
           Matter.Body.applyForce(bubble, bubble.position, {
             x: dx * force / distance,
             y: dy * force / distance,
