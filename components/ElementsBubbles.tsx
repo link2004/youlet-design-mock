@@ -175,10 +175,10 @@ const ElementsBubbles: React.FC<ElementsBubblesProps> = ({ onClose }) => {
       {/* Space background with blurred stars/nebula */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Nebula-like blurred circles */}
-        <div className="absolute w-40 h-40 bg-purple-500/10 rounded-full blur-3xl" style={{ left: '10%', top: '20%' }} />
-        <div className="absolute w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" style={{ left: '60%', top: '10%' }} />
-        <div className="absolute w-48 h-48 bg-indigo-500/8 rounded-full blur-3xl" style={{ left: '70%', top: '60%' }} />
-        <div className="absolute w-36 h-36 bg-violet-500/10 rounded-full blur-3xl" style={{ left: '5%', top: '70%' }} />
+        <div className="absolute w-80 h-80 bg-purple-500/15 rounded-full blur-3xl" style={{ left: '-5%', top: '10%' }} />
+        <div className="absolute w-72 h-72 bg-blue-500/12 rounded-full blur-3xl" style={{ left: '50%', top: '-5%' }} />
+        <div className="absolute w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" style={{ left: '40%', top: '50%' }} />
+        <div className="absolute w-64 h-64 bg-violet-500/15 rounded-full blur-3xl" style={{ left: '-10%', top: '60%' }} />
 
         {/* Stars */}
         <div className="absolute w-1 h-1 bg-white/70 rounded-full blur-[1px]" style={{ left: '15%', top: '12%' }} />
