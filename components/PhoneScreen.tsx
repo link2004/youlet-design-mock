@@ -73,10 +73,10 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               </button>
             </div>
 
-            {/* Profile Section */}
-            <div className="flex flex-col items-center mt-6 mb-6">
-              <div className="relative mb-2">
-                <div className="w-56 h-56 flex items-center justify-center">
+            {/* Profile Card */}
+            <div className="flex flex-col items-center mt-4 mb-6 px-6">
+              <div className="w-48 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden">
+                <div className="aspect-[4/5] flex items-center justify-center p-3 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
                   <img
                     src={USER_DATA.avatar}
                     alt="Profile"
@@ -86,17 +86,14 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                     }}
                   />
                 </div>
-                {/* Foot shadow */}
-                <div
-                  className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-black/20 dark:bg-white/35 blur-md"
-                />
-              </div>
-
-              <div className="mb-1">
-                <span className="text-2xl font-bold text-neutral-900 dark:text-white">{USER_DATA.name}</span>
-              </div>
-              <div className="text-neutral-500 dark:text-neutral-400 text-sm font-medium">
-                {USER_DATA.age} years old • {USER_DATA.location}
+                <div className="px-3 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
+                  <div className="text-center">
+                    <span className="text-lg font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
+                    <span className="text-neutral-500 dark:text-neutral-400 text-xs font-medium">
+                      {USER_DATA.age} years old • {USER_DATA.location}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
