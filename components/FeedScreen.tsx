@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Trophy } from 'lucide-react';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
 import BottomNav from './BottomNav';
 import FriendCard from './FriendCard';
@@ -51,10 +51,17 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
       </div>
 
       {/* Header with YouLet logo */}
-      <div className="relative flex items-center justify-center px-4 py-2 bg-cream dark:bg-black shrink-0 z-40 transition-colors duration-300">
+      <div className="relative flex items-center justify-between px-4 py-2 bg-cream dark:bg-black shrink-0 z-40 transition-colors duration-300">
+        <div className="w-8" />
         <h1 className="font-serif italic font-black text-2xl tracking-tight text-black dark:text-white">
           YouLet
         </h1>
+        <button
+          onClick={() => onNavigate('ranking')}
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+        >
+          <Trophy size={20} className="text-orange-400" />
+        </button>
       </div>
 
       {/* Search Bar */}
