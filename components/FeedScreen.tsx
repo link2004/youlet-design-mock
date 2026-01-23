@@ -4,6 +4,7 @@ import { FRIENDS_LIST, FriendProfile } from '../constants';
 import BottomNav from './BottomNav';
 import FriendCard from './FriendCard';
 import FriendsOfFriendsList from './FriendsOfFriendsList';
+import FriendCardPreview from './FriendCardPreview';
 import { PageType } from '../App';
 
 interface FeedScreenProps {
@@ -15,11 +16,14 @@ interface FeedScreenProps {
 const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [previewFriend, setPreviewFriend] = useState<FriendProfile | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleBlur = () => {
     // Delay to allow click on search results
     setTimeout(() => {
+      // Don't close search if preview modal is open
+      if (previewFriend) return;
       setIsSearchFocused(false);
       setSearchQuery('');
     }, 150);
@@ -84,7 +88,10 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         {isSearchFocused ? (
-          <FriendsOfFriendsList searchQuery={searchQuery} />
+          <FriendsOfFriendsList
+            searchQuery={searchQuery}
+            onSelectFriend={(friend) => setPreviewFriend(friend)}
+          />
         ) : (
           <div className="grid grid-cols-3 gap-3">
             {FRIENDS_LIST.map((friend) => (
@@ -100,6 +107,23 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
       </div>
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
+
+      {/* Friend Card Preview Modal */}
+      <FriendCardPreview
+        friend={previewFriend}
+        isOpen={previewFriend !== null}
+        onClose={() => {
+          setPreviewFriend(null);
+          setIsSearchFocused(false);
+          setSearchQuery('');
+        }}
+        onExchange={() => {
+          // Future: implement exchange logic
+          setPreviewFriend(null);
+          setIsSearchFocused(false);
+          setSearchQuery('');
+        }}
+      />
     </div>
   );
 };
