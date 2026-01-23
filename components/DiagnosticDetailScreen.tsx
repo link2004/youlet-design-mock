@@ -226,7 +226,7 @@ const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagno
           onClick={onClose}
           className="p-2 active:scale-95"
         >
-          <ChevronLeft className="w-8 h-8 text-white" />
+          <X className="w-7 h-7 text-white" />
         </button>
       </div>
 
@@ -358,109 +358,115 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col items-center px-4 py-6 overflow-y-auto">
-      {/* 2枚のカード + ハート */}
-      <div className="flex items-center justify-center gap-3 mb-4">
-        <MiniCard person={myProfile} />
-        <Heart className="w-6 h-6 text-white fill-white" />
-        <MiniCard person={friend} />
-      </div>
-
-      {/* パーセンテージ */}
-      <div className="text-center mb-1">
-        <span className="text-5xl font-black text-white drop-shadow-lg">
-          <CountUpNumber target={result.percentage} />%
-        </span>
-      </div>
-      <p className="text-white/90 font-semibold text-base mb-4">
-        {diagnosticTitle}
-      </p>
-
-      {/* 詳細分析カード群 */}
-      <div
-        className={`
-          w-full max-w-xs space-y-3
-          transition-all duration-500
-          ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-        `}
-      >
-        {/* デートシナリオカード */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">🎬</span>
-            <span className="font-bold text-gray-800 text-sm">もし二人がデートしたら...</span>
-          </div>
-          <p className="text-gray-500 text-xs mb-3">{result.dateScenario.title}</p>
-          <div className="space-y-2">
-            {result.dateScenario.scenes.map((scene, index) => (
-              <p key={index} className="text-gray-700 text-sm whitespace-pre-line leading-relaxed">
-                {scene}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        {/* うまくいくポイントカード */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-4 h-4 text-pink-500" />
-            <span className="font-bold text-gray-800 text-sm">うまくいくポイント</span>
-          </div>
-          <ul className="space-y-2">
-            {result.strengths.map((strength, index) => (
-              <li key={index} className="flex items-start gap-2">
-                <span className="text-pink-500 mt-0.5">•</span>
-                <div>
-                  <span className="text-gray-800 text-sm font-medium">{strength.point}</span>
-                  <p className="text-gray-500 text-xs">{strength.reason}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* 注意ポイントカード */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-          <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
-            <span className="font-bold text-gray-800 text-sm">注意ポイント</span>
-          </div>
-          <ul className="space-y-2">
-            {result.warnings.map((warning, index) => (
-              <li key={index} className="flex items-start gap-2">
-                <span className="text-amber-500 mt-0.5">•</span>
-                <div>
-                  <span className="text-gray-800 text-sm font-medium">{warning.point}</span>
-                  <p className="text-gray-500 text-xs">💡 {warning.tip}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* ボタン */}
-      <div
-        className={`
-          flex items-center justify-center gap-4 mt-6 pb-4
-          transition-all duration-500 delay-300
-          ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-        `}
-      >
+    <div className="flex-1 flex flex-col overflow-y-auto">
+      {/* Header with back button */}
+      <div className="flex items-center px-4 py-2 shrink-0">
         <button
           onClick={onClose}
-          className="flex items-center gap-2 px-6 py-2.5 bg-white/20 backdrop-blur-sm rounded-full text-white font-semibold transition-colors hover:bg-white/30 active:scale-95"
+          className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
         >
-          <X className="w-4 h-4" />
-          Close
+          <ChevronLeft className="w-6 h-6 text-white" />
         </button>
-        <button
-          onClick={() => setShowShareCard(true)}
-          className="flex items-center gap-2 px-6 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col items-center px-4 pb-6">
+        {/* 2枚のカード + ハート */}
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <MiniCard person={myProfile} />
+          <Heart className="w-6 h-6 text-white fill-white" />
+          <MiniCard person={friend} />
+        </div>
+
+        {/* パーセンテージ */}
+        <div className="text-center mb-1">
+          <span className="text-5xl font-black text-white drop-shadow-lg">
+            <CountUpNumber target={result.percentage} />%
+          </span>
+        </div>
+        <p className="text-white/90 font-semibold text-base mb-4">
+          {diagnosticTitle}
+        </p>
+
+        {/* 詳細分析カード群 */}
+        <div
+          className={`
+            w-full max-w-xs space-y-3
+            transition-all duration-500
+            ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+          `}
         >
-          <Share2 className="w-4 h-4" />
-          Share
-        </button>
+          {/* デートシナリオカード */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-lg">🎬</span>
+              <span className="font-bold text-gray-800 text-sm">もし二人がデートしたら...</span>
+            </div>
+            <p className="text-gray-500 text-xs mb-3">{result.dateScenario.title}</p>
+            <div className="space-y-2">
+              {result.dateScenario.scenes.map((scene, index) => (
+                <p key={index} className="text-gray-700 text-sm whitespace-pre-line leading-relaxed">
+                  {scene}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* うまくいくポイントカード */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-pink-500" />
+              <span className="font-bold text-gray-800 text-sm">うまくいくポイント</span>
+            </div>
+            <ul className="space-y-2">
+              {result.strengths.map((strength, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-pink-500 mt-0.5">•</span>
+                  <div>
+                    <span className="text-gray-800 text-sm font-medium">{strength.point}</span>
+                    <p className="text-gray-500 text-xs">{strength.reason}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 注意ポイントカード */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="w-4 h-4 text-amber-500" />
+              <span className="font-bold text-gray-800 text-sm">注意ポイント</span>
+            </div>
+            <ul className="space-y-2">
+              {result.warnings.map((warning, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-amber-500 mt-0.5">•</span>
+                  <div>
+                    <span className="text-gray-800 text-sm font-medium">{warning.point}</span>
+                    <p className="text-gray-500 text-xs">💡 {warning.tip}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* ボタン */}
+        <div
+          className={`
+            flex items-center justify-center gap-4 mt-6 pb-4
+            transition-all duration-500 delay-300
+            ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+          `}
+        >
+          <button
+            onClick={() => setShowShareCard(true)}
+            className="flex items-center gap-2 px-6 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
+          >
+            <Share2 className="w-4 h-4" />
+            Share
+          </button>
+        </div>
       </div>
 
       {/* Share Card Modal */}
