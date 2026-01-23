@@ -1,12 +1,14 @@
-import React from 'react';
-import { FRIENDS_OF_FRIENDS_LIST } from '../constants';
+import React, { useState } from 'react';
+import { FRIENDS_OF_FRIENDS_LIST, FriendProfile } from '../constants';
 import FriendAvatar from './FriendAvatar';
+import FriendCardPreview from './FriendCardPreview';
 
 interface FriendsOfFriendsListProps {
   searchQuery: string;
 }
 
 const FriendsOfFriendsList: React.FC<FriendsOfFriendsListProps> = ({ searchQuery }) => {
+  const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
   const filteredFriends = FRIENDS_OF_FRIENDS_LIST.filter(
     friend => friend.userId.toLowerCase().includes(searchQuery.toLowerCase()) ||
               friend.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -25,6 +27,7 @@ const FriendsOfFriendsList: React.FC<FriendsOfFriendsListProps> = ({ searchQuery
         filteredFriends.map(friend => (
           <div
             key={friend.id}
+            onClick={() => setSelectedFriend(friend)}
             className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-neutral-900 active:bg-neutral-100 dark:active:bg-neutral-800 transition-colors cursor-pointer"
           >
             <FriendAvatar src={friend.image} alt={friend.name} />
@@ -39,6 +42,17 @@ const FriendsOfFriendsList: React.FC<FriendsOfFriendsListProps> = ({ searchQuery
           </div>
         ))
       )}
+
+      {/* Card Preview Modal */}
+      <FriendCardPreview
+        friend={selectedFriend}
+        isOpen={selectedFriend !== null}
+        onClose={() => setSelectedFriend(null)}
+        onExchange={() => {
+          // Future: implement exchange logic
+          setSelectedFriend(null);
+        }}
+      />
     </div>
   );
 };
