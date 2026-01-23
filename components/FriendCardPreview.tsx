@@ -36,7 +36,7 @@ const FriendCardPreview: React.FC<FriendCardPreviewProps> = ({
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col">
         {/* Header with close button */}
-        <div className="flex items-center px-4 py-3">
+        <div className="flex items-center px-4 pt-14 pb-3">
           <button
             onClick={onClose}
             className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
