@@ -50,6 +50,8 @@ const generateLoveResult = (friendName: string): DiagnosticResult => ({
 interface DiagnosticDetailScreenProps {
   diagnostic: DiagnosticType;
   onBack: () => void;
+  selectedFriend: FriendProfile | null;
+  onSelectFriend: (friend: FriendProfile | null) => void;
 }
 
 interface FriendSelectSheetProps {
@@ -616,14 +618,13 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
   );
 };
 
-const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnostic, onBack }) => {
-  const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
+const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnostic, onBack, selectedFriend, onSelectFriend }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [phase, setPhase] = useState<DiagnosticPhase>('select');
   const [resultData, setResultData] = useState<DiagnosticResult | null>(null);
 
   const handleFriendSelect = (friend: FriendProfile) => {
-    setSelectedFriend(friend);
+    onSelectFriend(friend);
     setIsSheetOpen(false);
   };
 

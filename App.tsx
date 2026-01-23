@@ -4,13 +4,14 @@ import PhoneScreen from './components/PhoneScreen';
 import FeedScreen from './components/FeedScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
-import { DiagnosticType } from './constants';
+import { DiagnosticType, FriendProfile } from './constants';
 
 export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
   const [selectedDiagnostic, setSelectedDiagnostic] = useState<DiagnosticType | null>(null);
+  const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
 
   const handleSelectDiagnostic = (diagnostic: DiagnosticType) => {
     setSelectedDiagnostic(diagnostic);
@@ -40,6 +41,8 @@ const App: React.FC = () => {
             <DiagnosticDetailScreen
               diagnostic={selectedDiagnostic}
               onBack={handleBackFromDiagnosticDetail}
+              selectedFriend={selectedFriend}
+              onSelectFriend={setSelectedFriend}
             />
           );
         }
