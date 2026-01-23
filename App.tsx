@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import IPhoneMockup from './components/IPhoneMockup';
 import PhoneScreen from './components/PhoneScreen';
 import FeedScreen from './components/FeedScreen';
+import RankingScreen from './components/RankingScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
 import FriendDetailScreen from './components/FriendDetailScreen';
 import { DiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'friend-detail';
+export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'friend-detail' | 'ranking';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
@@ -15,6 +16,7 @@ const App: React.FC = () => {
   const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
   const [shouldOpenSheet, setShouldOpenSheet] = useState(false);
   const [diagnosticEntryPoint, setDiagnosticEntryPoint] = useState<'diagnostic' | 'friend-detail' | null>(null);
+  const [friendDetailEntryPoint, setFriendDetailEntryPoint] = useState<'cards' | 'ranking' | null>(null);
 
   const handleSelectDiagnostic = (diagnostic: DiagnosticType) => {
     setDiagnosticEntryPoint('diagnostic');
@@ -34,15 +36,25 @@ const App: React.FC = () => {
   };
 
   const handleSelectFriendFromFeed = (friend: FriendProfile) => {
+    setFriendDetailEntryPoint('cards');
+    setSelectedFriend(friend);
+    setShouldOpenSheet(false);
+    setCurrentPage('friend-detail');
+  };
+
+  const handleSelectFriendFromRanking = (friend: FriendProfile) => {
+    setFriendDetailEntryPoint('ranking');
     setSelectedFriend(friend);
     setShouldOpenSheet(false);
     setCurrentPage('friend-detail');
   };
 
   const handleBackFromFriendDetail = () => {
+    const returnPage = friendDetailEntryPoint || 'cards';
     setSelectedFriend(null);
     setShouldOpenSheet(false);
-    setCurrentPage('cards');
+    setFriendDetailEntryPoint(null);
+    setCurrentPage(returnPage);
   };
 
   const handleSelectDiagnosticFromFriendDetail = (diagnostic: DiagnosticType) => {
@@ -74,6 +86,14 @@ const App: React.FC = () => {
           );
         }
         return <FeedScreen currentPage="cards" onNavigate={setCurrentPage} onSelectFriend={handleSelectFriendFromFeed} />;
+      case 'ranking':
+        return (
+          <RankingScreen
+            currentPage={currentPage}
+            onNavigate={setCurrentPage}
+            onSelectFriend={handleSelectFriendFromRanking}
+          />
+        );
       case 'diagnostic':
         return (
           <DiagnosticScreen
