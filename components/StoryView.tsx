@@ -221,7 +221,7 @@ const StoryView: React.FC<StoryViewProps> = ({ onClose }) => {
                   )}
 
                   {/* Heading */}
-                  <h2 className="text-2xl font-bold text-white text-center mb-6">
+                  <h2 className="text-2xl font-serif italic font-bold text-white text-center mb-6">
                     {section.heading}
                   </h2>
 

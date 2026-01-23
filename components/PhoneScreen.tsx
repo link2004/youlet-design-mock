@@ -93,7 +93,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 </div>
                 <div className="shrink-0 px-4 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
                   <div className="text-center">
-                    <span className="text-xl font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
+                    <span className="text-xl font-serif italic font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
                   </div>
                 </div>
               </button>
@@ -120,7 +120,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 <div className="absolute left-10 bottom-0 text-white/10 transform -rotate-12">
                   <Star size={40} fill="currentColor" />
                 </div>
-                <span className="relative z-10 text-white font-bold text-base tracking-wide text-center leading-relaxed">
+                <span className="relative z-10 text-white font-serif italic font-bold text-base tracking-wide text-center leading-relaxed">
                   Read Your Story
                 </span>
               </button>
@@ -144,7 +144,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                   <div className="absolute w-1.5 h-1.5 bg-white/50 rounded-full blur-[2px] top-8 left-6" />
                   <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px] bottom-3 right-16" />
                 </div>
-                <span className="relative z-10 text-white font-bold text-base tracking-wide text-center leading-relaxed">
+                <span className="relative z-10 text-white font-serif italic font-bold text-base tracking-wide text-center leading-relaxed">
                   Your Elements
                 </span>
               </button>
@@ -175,7 +175,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 <ChevronLeft size={24} strokeWidth={2} />
                 <span className="text-base font-medium">Back</span>
               </button>
-              <h1 className="absolute left-1/2 -translate-x-1/2 font-bold text-lg text-black dark:text-white">
+              <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-bold text-lg text-black dark:text-white">
                 Settings
               </h1>
               <div className="flex-1" />

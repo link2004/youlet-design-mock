@@ -85,7 +85,7 @@ const ElementDetailSheet: React.FC<ElementDetailSheetProps> = ({ element, onClos
                 {element.label.charAt(0)}
               </span>
             </div>
-            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
+            <h2 className="text-xl font-serif italic font-bold text-neutral-900 dark:text-white">
               {element.label}
             </h2>
           </div>

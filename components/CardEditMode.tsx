@@ -220,7 +220,7 @@ const CardEditMode: React.FC<CardEditModeProps> = ({ onClose }) => {
             />
           </div>
           <div className="h-[20%] px-2 py-1 bg-white/5 border-t border-white/10">
-            <span className="text-sm font-bold text-white/60 block text-center">{USER_DATA.name}</span>
+            <span className="text-sm font-serif italic font-bold text-white/60 block text-center">{USER_DATA.name}</span>
           </div>
         </div>
       </div>

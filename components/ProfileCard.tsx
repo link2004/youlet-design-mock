@@ -32,7 +32,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
 
         {/* Name & Location */}
         <div className="text-center mb-4">
-          <h3 className="text-xl font-bold text-neutral-800 dark:text-white">
+          <h3 className="text-xl font-serif italic font-bold text-neutral-800 dark:text-white">
             {MATCH_CANDIDATE.name}, {MATCH_CANDIDATE.age}
           </h3>
           <div className="flex items-center justify-center gap-1 text-neutral-500 dark:text-neutral-400 mt-1">

@@ -273,7 +273,7 @@ const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagno
             <div>
               <div className="flex items-center gap-1 mb-1">
                 <span className="text-xs">🎬</span>
-                <span className="font-bold text-gray-800 text-[9px]">もし二人がデートしたら...</span>
+                <span className="font-serif italic font-bold text-gray-800 text-[9px]">もし二人がデートしたら...</span>
               </div>
               <p className="text-gray-600 text-[8px] leading-relaxed line-clamp-4">
                 {result.dateScenario.scenes.slice(0, 3).join(' → ')}...
@@ -287,7 +287,7 @@ const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagno
             <div>
               <div className="flex items-center gap-1 mb-1">
                 <Sparkles className="w-3 h-3 text-pink-500" />
-                <span className="font-bold text-gray-800 text-[9px]">うまくいくポイント</span>
+                <span className="font-serif italic font-bold text-gray-800 text-[9px]">うまくいくポイント</span>
               </div>
               <div className="space-y-0.5">
                 {result.strengths.map((s, i) => (
@@ -303,7 +303,7 @@ const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagno
             <div>
               <div className="flex items-center gap-1 mb-1">
                 <AlertTriangle className="w-3 h-3 text-amber-500" />
-                <span className="font-bold text-gray-800 text-[9px]">注意ポイント</span>
+                <span className="font-serif italic font-bold text-gray-800 text-[9px]">注意ポイント</span>
               </div>
               <div className="space-y-0.5">
                 {result.warnings.map((w, i) => (
@@ -400,7 +400,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-lg">🎬</span>
-              <span className="font-bold text-gray-800 text-sm">もし二人がデートしたら...</span>
+              <span className="font-serif italic font-bold text-gray-800 text-sm">もし二人がデートしたら...</span>
             </div>
             <p className="text-gray-500 text-xs mb-3">{result.dateScenario.title}</p>
             <div className="space-y-2">
@@ -416,7 +416,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4 text-pink-500" />
-              <span className="font-bold text-gray-800 text-sm">うまくいくポイント</span>
+              <span className="font-serif italic font-bold text-gray-800 text-sm">うまくいくポイント</span>
             </div>
             <ul className="space-y-2">
               {result.strengths.map((strength, index) => (
@@ -435,7 +435,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
-              <span className="font-bold text-gray-800 text-sm">注意ポイント</span>
+              <span className="font-serif italic font-bold text-gray-800 text-sm">注意ポイント</span>
             </div>
             <ul className="space-y-2">
               {result.warnings.map((warning, index) => (
