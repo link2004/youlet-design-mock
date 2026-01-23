@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronLeft } from 'lucide-react';
 import { FriendProfile } from '../constants';
@@ -16,13 +16,20 @@ const FriendCardPreview: React.FC<FriendCardPreviewProps> = ({
   onClose,
   onExchange
 }) => {
-  if (!isOpen || !friend) return null;
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const container = document.getElementById('iphone-modal-portal');
+    setPortalContainer(container);
+  }, []);
+
+  if (!isOpen || !friend || !portalContainer) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex flex-col">
+    <div className="absolute inset-0 z-50 flex flex-col pointer-events-auto">
       {/* Blurred backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-md"
+        className="absolute inset-0 bg-black/60 backdrop-blur-md"
         onClick={onClose}
       />
 
@@ -70,7 +77,7 @@ const FriendCardPreview: React.FC<FriendCardPreviewProps> = ({
         </div>
       </div>
     </div>,
-    document.body
+    portalContainer
   );
 };
 

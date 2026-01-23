@@ -40,6 +40,11 @@ const IPhoneMockup: React.FC<IPhoneMockupProps> = ({ children }) => {
                 {children}
               </div>
 
+              {/* Portal container for modals (outside of overflow-hidden content) */}
+              <div id="iphone-modal-portal" className="absolute inset-0 pointer-events-none z-[90]">
+                {/* Modals will be portaled here */}
+              </div>
+
               {/* Home indicator */}
               <div className="absolute bottom-2 left-0 right-0 flex justify-center pointer-events-none z-[100]">
                 <div className="w-32 h-1 bg-white/30 rounded-full" />
