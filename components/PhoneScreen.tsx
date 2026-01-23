@@ -105,13 +105,13 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               style={{
                 scrollSnapType: 'x mandatory',
                 scrollBehavior: 'auto',
-                paddingLeft: 'calc(50% - 144px)',
-                paddingRight: 'calc(50% - 144px)'
+                paddingLeft: 'calc(50% - 128px)',
+                paddingRight: 'calc(50% - 128px)'
               }}
             >
               <button
                 onClick={() => setShowStory(true)}
-                className="w-72 bg-gradient-to-r from-blue-500 to-red-500 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
+                className="w-64 bg-gradient-to-r from-blue-500 to-red-500 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
                 style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
               >
                 <div className="absolute -right-4 -top-4 text-white/10 transform rotate-12">
@@ -126,7 +126,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               </button>
               <button
                 onClick={() => setShowElements(true)}
-                className="w-72 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
+                className="w-64 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
                 style={{
                   scrollSnapAlign: 'center',
                   scrollSnapStop: 'always',
