@@ -34,12 +34,14 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
 
       {/* Text content */}
       <h3 className="text-white font-serif italic font-black text-sm leading-tight text-center">
-        {diagnostic.title.split(' ').map((word, i, arr) => (
-          <span key={i}>
-            {word}
-            {i < arr.length - 1 && <br />}
-          </span>
-        ))}
+        {(() => {
+          const words = diagnostic.title.split(' ');
+          if (words.length <= 2) {
+            return <>{words[0]}<br />{words[1]}</>;
+          }
+          const lastWord = words.pop();
+          return <>{words.join(' ')}<br />{lastWord}</>;
+        })()}
       </h3>
     </button>
   );
