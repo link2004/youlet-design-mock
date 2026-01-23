@@ -7,10 +7,11 @@ interface FriendDetailScreenProps {
   friend: FriendProfile;
   onBack: () => void;
   onSelectDiagnostic: (diagnostic: DiagnosticType) => void;
+  initialSheetOpen?: boolean;
 }
 
-const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic }) => {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false }) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(initialSheetOpen);
 
   const handleDiagnosticSelect = (diagnostic: DiagnosticType) => {
     setIsSheetOpen(false);
