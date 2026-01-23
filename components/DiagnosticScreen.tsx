@@ -22,7 +22,7 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
         bg-gradient-to-br ${diagnostic.gradient}
         border-2 border-white/30
         active:scale-[0.98] transition-transform duration-150
-        flex flex-col items-start justify-end p-5 gap-2
+        flex flex-col items-start justify-end p-5 gap-3
       `}
     >
       {/* Emoji image */}
