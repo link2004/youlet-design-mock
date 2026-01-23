@@ -21,20 +21,18 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
         relative w-full aspect-[4/5] rounded-2xl shadow-lg overflow-hidden
         bg-gradient-to-br ${diagnostic.gradient}
         active:scale-[0.98] transition-transform duration-150
-        flex flex-col items-start justify-between p-4
+        flex flex-col items-center justify-center gap-3 p-4
       `}
     >
-      {/* Emoji image container with semi-transparent background */}
-      <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-        <img
-          src={diagnostic.image}
-          alt={diagnostic.title}
-          className="w-10 h-10 object-contain"
-        />
-      </div>
+      {/* Emoji image */}
+      <img
+        src={diagnostic.image}
+        alt={diagnostic.title}
+        className="w-16 h-16 object-contain"
+      />
 
       {/* Text content */}
-      <div className="text-left">
+      <div className="text-center">
         <h3 className="text-white font-bold text-sm leading-tight mb-1">
           {diagnostic.title}
         </h3>
