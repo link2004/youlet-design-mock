@@ -120,8 +120,7 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
         isOpen={previewFriend !== null}
         onClose={() => {
           setPreviewFriend(null);
-          setIsSearchFocused(false);
-          setSearchQuery('');
+          // Keep search focused to show friends of friends list
         }}
         onExchange={() => {
           // Future: implement exchange logic
