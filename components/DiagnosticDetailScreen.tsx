@@ -343,10 +343,9 @@ interface ResultPhaseProps {
   diagnosticTitle: string;
   gradient: string;
   onBack: () => void;
-  onDiagnoseAnother: () => void;
 }
 
-const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onBack, onDiagnoseAnother }) => {
+const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onBack }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
 
@@ -461,7 +460,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
           `}
         >
           <button
-            onClick={onDiagnoseAnother}
+            onClick={onBack}
             className="px-5 py-2.5 bg-white/20 backdrop-blur-sm border border-white/40 rounded-full text-white font-semibold shadow-lg transition-colors hover:bg-white/30 active:scale-95"
           >
             Try Another
@@ -643,12 +642,6 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
     setResultData(null);
   };
 
-  const handleDiagnoseAnother = () => {
-    setSelectedFriend(null);
-    setPhase('select');
-    setResultData(null);
-  };
-
   const bothSelected = selectedFriend !== null;
 
   return (
@@ -703,7 +696,6 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
           diagnosticTitle={diagnostic.title}
           gradient={diagnostic.gradient}
           onBack={onBack}
-          onDiagnoseAnother={handleDiagnoseAnother}
         />
       )}
 
