@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle } from 'lucide-react';
-import { DiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
+import { DiagnosticType, GroupDiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
 
 type DiagnosticPhase = 'select' | 'loading' | 'result';
 
@@ -47,12 +47,29 @@ const generateLoveResult = (friendName: string): DiagnosticResult => ({
   ]
 });
 
-interface DiagnosticDetailScreenProps {
+// ペア診断用 props
+interface PairDiagnosticProps {
   diagnostic: DiagnosticType;
   onBack: () => void;
   selectedFriend: FriendProfile | null;
   onSelectFriend: (friend: FriendProfile | null) => void;
+  groupDiagnostic?: never;
+  selectedGroupMembers?: never;
+  onSelectGroupMembers?: never;
 }
+
+// グループ診断用 props
+interface GroupDiagnosticProps {
+  groupDiagnostic: GroupDiagnosticType;
+  onBack: () => void;
+  selectedGroupMembers: FriendProfile[];
+  onSelectGroupMembers: (members: FriendProfile[]) => void;
+  diagnostic?: never;
+  selectedFriend?: never;
+  onSelectFriend?: never;
+}
+
+type DiagnosticDetailScreenProps = PairDiagnosticProps | GroupDiagnosticProps;
 
 interface FriendSelectSheetProps {
   isOpen: boolean;
@@ -554,21 +571,26 @@ interface PersonCardProps {
   person: FriendProfile | typeof MY_PROFILE | null;
   isPlaceholder?: boolean;
   onClick?: () => void;
+  size?: 'normal' | 'small';
 }
 
-const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick }) => {
+const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick, size = 'normal' }) => {
+  const sizeClass = size === 'small' ? 'w-16' : 'w-24';
+  const plusSize = size === 'small' ? 'w-6 h-6' : 'w-8 h-8';
+  const textSize = size === 'small' ? 'text-[9px]' : 'text-[11px]';
+
   if (isPlaceholder || !person) {
     return (
       <button
         onClick={onClick}
-        className="w-24 group"
+        className={`${sizeClass} group`}
       >
         <div className="w-full aspect-[2/3] rounded-xl border-2 border-dashed border-white/50 bg-white/10 backdrop-blur-sm transition-transform group-active:scale-95 flex flex-col">
           <div className="flex-1 flex items-center justify-center min-h-0">
-            <Plus className="w-8 h-8 text-white/70" />
+            <Plus className={`${plusSize} text-white/70`} />
           </div>
           <div className="px-2 py-1.5 border-t border-dashed border-white/30 shrink-0">
-            <span className="text-[11px] text-white/70 font-semibold block text-center">
+            <span className={`${textSize} text-white/70 font-semibold block text-center`}>
               Select
             </span>
           </div>
@@ -579,7 +601,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
 
   if (onClick) {
     return (
-      <button onClick={onClick} className="w-24 group">
+      <button onClick={onClick} className={`${sizeClass} group`}>
         <div className="w-full aspect-[2/3] rounded-xl bg-white shadow-md border-2 border-neutral-200 flex flex-col transition-transform group-active:scale-95">
           <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[10px] min-h-0 overflow-hidden">
             <img
@@ -589,7 +611,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
             />
           </div>
           <div className="px-2 py-1.5 bg-white border-t border-neutral-200 rounded-b-[10px] shrink-0">
-            <span className="text-[11px] text-neutral-700 font-semibold block text-center truncate">
+            <span className={`${textSize} text-neutral-700 font-semibold block text-center truncate`}>
               {person.name}
             </span>
           </div>
@@ -599,7 +621,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
   }
 
   return (
-    <div className="w-24">
+    <div className={sizeClass}>
       <div className="w-full aspect-[2/3] rounded-xl bg-white shadow-md border-2 border-neutral-200 flex flex-col">
         <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[10px] min-h-0 overflow-hidden">
           <img
@@ -609,7 +631,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
           />
         </div>
         <div className="px-2 py-1.5 bg-white border-t border-neutral-200 rounded-b-[10px] shrink-0">
-          <span className="text-[11px] text-neutral-700 font-semibold block text-center truncate">
+          <span className={`${textSize} text-neutral-700 font-semibold block text-center truncate`}>
             {person.name}
           </span>
         </div>
@@ -618,31 +640,459 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
   );
 };
 
-const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnostic, onBack, selectedFriend, onSelectFriend }) => {
+// グループ診断用の友達選択シート
+interface GroupFriendSelectSheetProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: (friend: FriendProfile) => void;
+  selectedMembers: FriendProfile[];
+}
+
+const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen, onClose, onSelect, selectedMembers }) => {
+  if (!isOpen) return null;
+
+  const selectedIds = selectedMembers.map(m => m.id);
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/50 z-40 transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      {/* Sheet */}
+      <div
+        className={`
+          absolute bottom-0 left-0 right-0 z-50
+          bg-white dark:bg-gray-900 rounded-t-3xl
+          transform transition-transform duration-300 ease-out
+          ${isOpen ? 'translate-y-0' : 'translate-y-full'}
+        `}
+        style={{ maxHeight: '60%' }}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center py-3">
+          <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+        </div>
+
+        {/* Friend grid */}
+        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(60vh - 40px)' }}>
+          <div className="grid grid-cols-3 gap-3">
+            {FRIENDS_LIST.filter(friend => !selectedIds.includes(friend.id)).map((friend) => (
+              <button
+                key={friend.id}
+                onClick={() => onSelect(friend)}
+                className="group"
+              >
+                <div className="w-full aspect-[2/3] rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 border-neutral-200 dark:border-neutral-600 transition-transform group-active:scale-95 flex flex-col">
+                  <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800 rounded-t-[10px] min-h-0 overflow-hidden">
+                    <img
+                      src={friend.image}
+                      alt={friend.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="px-2 py-1.5 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600 rounded-b-[10px] shrink-0">
+                    <span className="text-[11px] text-neutral-700 dark:text-neutral-300 font-semibold block text-center truncate">
+                      {friend.name}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+// グループ診断結果の型
+interface GroupDiagnosticResult {
+  winnerPair: [FriendProfile, FriendProfile];
+  percentage: number;
+  reason: string;
+}
+
+// グループ診断結果を生成
+const generateGroupResult = (members: FriendProfile[], diagnosticId: string): GroupDiagnosticResult => {
+  // ランダムに2人を選ぶ
+  const shuffled = [...members].sort(() => Math.random() - 0.5);
+  const pair: [FriendProfile, FriendProfile] = [shuffled[0], shuffled[1]];
+
+  const reasons: Record<string, string[]> = {
+    dna_soulmates: [
+      'Their energy frequencies resonate perfectly!',
+      'A cosmic connection written in the stars',
+      'Twin flame energy detected at 99.7%',
+    ],
+    chaos_catalyst: [
+      'Warning: Combined chaos level exceeds safety limits',
+      'These two should never be left alone together',
+      'Expect fireworks... and maybe a few broken things',
+    ],
+    one_night_mistake: [
+      'The chemistry is there... the judgment is not',
+      'Proceed with caution (they won\'t)',
+      'A story they\'ll regret telling their grandchildren',
+    ],
+  };
+
+  const reasonList = reasons[diagnosticId] || reasons.dna_soulmates;
+  const reason = reasonList[Math.floor(Math.random() * reasonList.length)];
+
+  return {
+    winnerPair: pair,
+    percentage: Math.floor(Math.random() * 20) + 80,
+    reason,
+  };
+};
+
+// グループ診断のローディング画面
+interface GroupLoadingPhaseProps {
+  members: FriendProfile[];
+  diagnosticImage: string;
+}
+
+const GroupLoadingPhase: React.FC<GroupLoadingPhaseProps> = ({ members, diagnosticImage }) => {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center px-4">
+      {/* 脈打つ画像 */}
+      <div className="mb-8">
+        <PulsingHeart imageSrc={diagnosticImage} />
+      </div>
+
+      {/* メンバーカード（4つまで表示） */}
+      <div className="flex items-center justify-center gap-2 mb-8 flex-wrap max-w-[280px]">
+        {members.slice(0, 4).map((member) => (
+          <div key={member.id} className="w-14">
+            <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+              <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                <img src={member.image} alt={member.name} className="w-full h-full object-contain" />
+              </div>
+              <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{member.name}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+        {members.length > 4 && (
+          <div className="w-14 flex items-center justify-center">
+            <span className="text-white/80 text-sm font-semibold">+{members.length - 4}</span>
+          </div>
+        )}
+      </div>
+
+      {/* ローディングテキスト */}
+      <p className="text-white/90 font-medium text-lg animate-pulse">
+        Analyzing group dynamics...
+      </p>
+    </div>
+  );
+};
+
+// グループ診断の結果画面
+interface GroupResultPhaseProps {
+  result: GroupDiagnosticResult;
+  diagnosticTitle: string;
+  diagnosticSubtitle: string;
+  gradient: string;
+  onBack: () => void;
+}
+
+const GroupResultPhase: React.FC<GroupResultPhaseProps> = ({ result, diagnosticTitle, diagnosticSubtitle, gradient, onBack }) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowDetails(true);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flex-1 flex flex-col overflow-y-auto">
+      {/* Header with back button */}
+      <div className="flex items-center px-4 py-2 shrink-0">
+        <button
+          onClick={onBack}
+          className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+        >
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col items-center px-4 pb-6">
+        {/* Award badge */}
+        <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 mb-4">
+          <span className="text-white/90 text-sm font-semibold">🏆 {diagnosticSubtitle}</span>
+        </div>
+
+        {/* 2枚のカード + ハート */}
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <MiniCard person={result.winnerPair[0]} />
+          <Heart className="w-6 h-6 text-white fill-white" />
+          <MiniCard person={result.winnerPair[1]} />
+        </div>
+
+        {/* パーセンテージ */}
+        <div className="text-center mb-1">
+          <span className="text-5xl font-serif italic font-black text-white drop-shadow-lg">
+            <CountUpNumber target={result.percentage} />%
+          </span>
+        </div>
+        <p className="text-white/90 font-serif italic font-semibold text-base mb-4">
+          {diagnosticTitle}
+        </p>
+
+        {/* 理由カード */}
+        <div
+          className={`
+            w-full max-w-xs
+            transition-all duration-500
+            ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+          `}
+        >
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-pink-500" />
+              <span className="font-bold text-gray-800 text-sm">Why these two?</span>
+            </div>
+            <p className="text-gray-700 text-sm leading-relaxed">
+              {result.reason}
+            </p>
+          </div>
+        </div>
+
+        {/* ボタン */}
+        <div
+          className={`
+            flex items-center justify-center gap-3 mt-6 pb-4
+            transition-all duration-500 delay-300
+            ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+          `}
+        >
+          <button
+            onClick={onBack}
+            className="px-5 py-2.5 bg-white/20 backdrop-blur-sm border border-white/40 rounded-full text-white font-semibold shadow-lg transition-colors hover:bg-white/30 active:scale-95"
+          >
+            Try Another
+          </button>
+          <button
+            className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
+          >
+            <Share2 className="w-4 h-4" />
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) => {
+  const { onBack } = props;
+  const isGroupMode = 'groupDiagnostic' in props && props.groupDiagnostic !== undefined;
+
+  // ペア診断用の状態
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [phase, setPhase] = useState<DiagnosticPhase>('select');
   const [resultData, setResultData] = useState<DiagnosticResult | null>(null);
 
+  // グループ診断用の状態
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+  const [groupResultData, setGroupResultData] = useState<GroupDiagnosticResult | null>(null);
+
+  // ペア診断のハンドラー
   const handleFriendSelect = (friend: FriendProfile) => {
-    onSelectFriend(friend);
+    if (!isGroupMode && props.onSelectFriend) {
+      props.onSelectFriend(friend);
+    }
     setIsSheetOpen(false);
   };
 
   const handleDiagnose = () => {
-    if (!selectedFriend) return;
+    if (isGroupMode) return;
+    if (!props.selectedFriend) return;
     setPhase('loading');
-    // 2.5秒後に結果を表示
     setTimeout(() => {
-      setResultData(generateLoveResult(selectedFriend.name));
+      setResultData(generateLoveResult(props.selectedFriend!.name));
       setPhase('result');
     }, 2500);
   };
 
-  const handleClose = () => {
-    setPhase('select');
-    setResultData(null);
+  // グループ診断のハンドラー
+  const handleGroupMemberSelect = (friend: FriendProfile) => {
+    if (!isGroupMode || !props.onSelectGroupMembers) return;
+    props.onSelectGroupMembers([...props.selectedGroupMembers!, friend]);
+    setIsSheetOpen(false);
+    setSelectedSlot(null);
   };
 
+  const handleRemoveGroupMember = (index: number) => {
+    if (!isGroupMode || !props.onSelectGroupMembers) return;
+    const newMembers = [...props.selectedGroupMembers!];
+    newMembers.splice(index, 1);
+    props.onSelectGroupMembers(newMembers);
+  };
+
+  const handleGroupDiagnose = () => {
+    if (!isGroupMode || !props.selectedGroupMembers || props.selectedGroupMembers.length < 4) return;
+    setPhase('loading');
+    setTimeout(() => {
+      setGroupResultData(generateGroupResult(props.selectedGroupMembers!, props.groupDiagnostic!.id));
+      setPhase('result');
+    }, 2500);
+  };
+
+  // グループ診断モード
+  if (isGroupMode) {
+    const { groupDiagnostic, selectedGroupMembers } = props;
+    const canDiagnose = selectedGroupMembers!.length >= 4;
+
+    return (
+      <div className={`relative w-full h-full font-sans overflow-hidden flex flex-col bg-gradient-to-br ${groupDiagnostic!.gradient}`}>
+        {/* Status Bar */}
+        <div className="flex justify-between items-center px-6 pt-[18px] pb-2 text-white font-semibold text-sm shrink-0 z-50">
+          <span className="w-12">13:42</span>
+          <div className="flex-1" />
+          <div className="flex items-center gap-1.5 w-20 justify-end">
+            <div className="flex items-end gap-[2px] h-3">
+              <div className="w-[3px] h-[4px] bg-white rounded-[1px]" />
+              <div className="w-[3px] h-[6px] bg-white rounded-[1px]" />
+              <div className="w-[3px] h-[8px] bg-white rounded-[1px]" />
+              <div className="w-[3px] h-[11px] bg-white rounded-[1px]" />
+            </div>
+            <svg className="w-4 h-3 text-white" viewBox="0 0 16 12" fill="currentColor">
+              <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM3.5 7.5c2.5-2.5 6.5-2.5 9 0l-1 1c-1.9-1.9-5.1-1.9-7 0l-1-1zM1 5c3.9-3.9 10.1-3.9 14 0l-1 1c-3.3-3.3-8.7-3.3-12 0L1 5z"/>
+            </svg>
+            <div className="flex items-center gap-0.5">
+              <div className="w-6 h-[11px] border-[1.5px] border-white rounded-[3px] relative flex items-center p-[1.5px]">
+                <div className="h-full bg-white rounded-[1px]" style={{ width: '80%' }} />
+              </div>
+              <div className="w-[3px] h-[5px] bg-white rounded-r-[1px] -ml-[1px]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Header with back button - only show in select phase */}
+        {phase === 'select' && (
+          <div className="relative flex items-center px-4 py-2 shrink-0 z-40">
+            <button
+              onClick={onBack}
+              className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+              aria-label="Back"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
+          </div>
+        )}
+
+        {/* Loading phase */}
+        {phase === 'loading' && (
+          <GroupLoadingPhase members={selectedGroupMembers!} diagnosticImage={groupDiagnostic!.image} />
+        )}
+
+        {/* Result phase */}
+        {phase === 'result' && groupResultData && (
+          <GroupResultPhase
+            result={groupResultData}
+            diagnosticTitle={groupDiagnostic!.title}
+            diagnosticSubtitle={groupDiagnostic!.subtitle}
+            gradient={groupDiagnostic!.gradient}
+            onBack={onBack}
+          />
+        )}
+
+        {/* Select phase */}
+        {phase === 'select' && (
+          <div className="flex-1 flex flex-col items-center px-4 overflow-y-auto">
+            {/* Emoji and title */}
+            <img
+              src={groupDiagnostic!.image}
+              alt={groupDiagnostic!.title}
+              className="w-16 h-16 object-contain mb-2"
+            />
+            <h2 className="text-white font-serif italic font-black text-xl text-center mb-1">
+              {groupDiagnostic!.title}
+            </h2>
+            <p className="text-white/80 text-xs mb-4">Select 4-8 members</p>
+
+            {/* 2行4列グリッド */}
+            <div className="w-full max-w-[300px] mb-4">
+              <div className="grid grid-cols-4 gap-2 mb-2">
+                {[0, 1, 2, 3].map((index) => (
+                  <PersonCard
+                    key={index}
+                    person={selectedGroupMembers![index] || null}
+                    isPlaceholder={!selectedGroupMembers![index]}
+                    onClick={() => {
+                      if (selectedGroupMembers![index]) {
+                        handleRemoveGroupMember(index);
+                      } else if (selectedGroupMembers!.length < 8) {
+                        setSelectedSlot(index);
+                        setIsSheetOpen(true);
+                      }
+                    }}
+                    size="small"
+                  />
+                ))}
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {[4, 5, 6, 7].map((index) => (
+                  <PersonCard
+                    key={index}
+                    person={selectedGroupMembers![index] || null}
+                    isPlaceholder={!selectedGroupMembers![index]}
+                    onClick={() => {
+                      if (selectedGroupMembers![index]) {
+                        handleRemoveGroupMember(index);
+                      } else if (selectedGroupMembers!.length < 8) {
+                        setSelectedSlot(index);
+                        setIsSheetOpen(true);
+                      }
+                    }}
+                    size="small"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Member count */}
+            <p className="text-white/70 text-sm mb-4">
+              {selectedGroupMembers!.length} / 8 members selected
+            </p>
+
+            {/* Diagnose button */}
+            {canDiagnose && (
+              <button
+                onClick={handleGroupDiagnose}
+                className="px-8 py-3 bg-white rounded-full font-semibold text-gray-900 shadow-lg hover:bg-gray-100 transition-colors active:scale-95"
+              >
+                Diagnose
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Friend select sheet */}
+        <GroupFriendSelectSheet
+          isOpen={isSheetOpen}
+          onClose={() => {
+            setIsSheetOpen(false);
+            setSelectedSlot(null);
+          }}
+          onSelect={handleGroupMemberSelect}
+          selectedMembers={selectedGroupMembers!}
+        />
+      </div>
+    );
+  }
+
+  // ペア診断モード
+  const { diagnostic, selectedFriend } = props as PairDiagnosticProps;
   const bothSelected = selectedFriend !== null;
 
   return (

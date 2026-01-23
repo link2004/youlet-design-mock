@@ -6,14 +6,16 @@ import RankingScreen from './components/RankingScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
 import FriendDetailScreen from './components/FriendDetailScreen';
-import { DiagnosticType, FriendProfile } from './constants';
+import { DiagnosticType, GroupDiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'friend-detail' | 'ranking';
+export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'friend-detail' | 'ranking';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
   const [selectedDiagnostic, setSelectedDiagnostic] = useState<DiagnosticType | null>(null);
+  const [selectedGroupDiagnostic, setSelectedGroupDiagnostic] = useState<GroupDiagnosticType | null>(null);
   const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState<FriendProfile[]>([]);
   const [shouldOpenSheet, setShouldOpenSheet] = useState(false);
   const [diagnosticEntryPoint, setDiagnosticEntryPoint] = useState<'diagnostic' | 'friend-detail' | null>(null);
   const [friendDetailEntryPoint, setFriendDetailEntryPoint] = useState<'cards' | 'ranking' | null>(null);
@@ -22,6 +24,18 @@ const App: React.FC = () => {
     setDiagnosticEntryPoint('diagnostic');
     setSelectedDiagnostic(diagnostic);
     setCurrentPage('diagnostic-detail');
+  };
+
+  const handleSelectGroupDiagnostic = (diagnostic: GroupDiagnosticType) => {
+    setSelectedGroupDiagnostic(diagnostic);
+    setSelectedGroupMembers([]);
+    setCurrentPage('group-diagnostic-detail');
+  };
+
+  const handleBackFromGroupDiagnosticDetail = () => {
+    setSelectedGroupDiagnostic(null);
+    setSelectedGroupMembers([]);
+    setCurrentPage('diagnostic');
   };
 
   const handleBackFromDiagnosticDetail = () => {
@@ -98,8 +112,21 @@ const App: React.FC = () => {
             currentPage={currentPage}
             onNavigate={setCurrentPage}
             onSelectDiagnostic={handleSelectDiagnostic}
+            onSelectGroupDiagnostic={handleSelectGroupDiagnostic}
           />
         );
+      case 'group-diagnostic-detail':
+        if (selectedGroupDiagnostic) {
+          return (
+            <DiagnosticDetailScreen
+              groupDiagnostic={selectedGroupDiagnostic}
+              onBack={handleBackFromGroupDiagnosticDetail}
+              selectedGroupMembers={selectedGroupMembers}
+              onSelectGroupMembers={setSelectedGroupMembers}
+            />
+          );
+        }
+        return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} onSelectGroupDiagnostic={handleSelectGroupDiagnostic} />;
       case 'diagnostic-detail':
         if (selectedDiagnostic) {
           return (

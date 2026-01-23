@@ -433,7 +433,7 @@ export const DIAGNOSTIC_TYPES: DiagnosticType[] = [
 // グループ診断タイプ（4〜8人用）
 export interface GroupDiagnosticType {
   id: string;
-  emoji: string;
+  image: string;
   title: string;
   subtitle: string;
   description: string;
@@ -443,7 +443,7 @@ export interface GroupDiagnosticType {
 export const GROUP_DIAGNOSTIC_TYPES: GroupDiagnosticType[] = [
   {
     id: 'dna_soulmates',
-    emoji: '🧬',
+    image: '/images/emoji/dna_3d.png',
     title: 'DNA-Level Soulmates',
     subtitle: 'Best Couple Award',
     description: 'Find the pair with the deepest genetic connection',
@@ -451,7 +451,7 @@ export const GROUP_DIAGNOSTIC_TYPES: GroupDiagnosticType[] = [
   },
   {
     id: 'chaos_catalyst',
-    emoji: '💥',
+    image: '/images/emoji/collision_3d.png',
     title: 'Volatile Chemistry',
     subtitle: 'Chaos Catalyst Duo Award',
     description: 'Warning: Do Not Mix! Explosive combo detected',
@@ -459,7 +459,7 @@ export const GROUP_DIAGNOSTIC_TYPES: GroupDiagnosticType[] = [
   },
   {
     id: 'one_night_mistake',
-    emoji: '🙈',
+    image: '/images/emoji/see_no_evil_monkey_3d.png',
     title: 'One Night Mistake',
     subtitle: 'Regret-in-the-Making Award',
     description: 'The pair most likely to make questionable decisions',
