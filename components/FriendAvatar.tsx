@@ -24,7 +24,7 @@ const FriendAvatar: React.FC<FriendAvatarProps> = ({
       <img
         src={src}
         alt={alt}
-        className="w-full h-auto scale-[2.5] translate-y-[40%]"
+        className="w-full h-auto -translate-y-[5%]"
       />
     </div>
   );

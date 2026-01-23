@@ -1,5 +1,6 @@
 import React from 'react';
 import { FRIENDS_OF_FRIENDS_LIST } from '../constants';
+import FriendAvatar from './FriendAvatar';
 
 interface FriendsOfFriendsListProps {
   searchQuery: string;
@@ -26,13 +27,7 @@ const FriendsOfFriendsList: React.FC<FriendsOfFriendsListProps> = ({ searchQuery
             key={friend.id}
             className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-neutral-900 active:bg-neutral-100 dark:active:bg-neutral-800 transition-colors cursor-pointer"
           >
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700 shrink-0">
-              <img
-                src={friend.image}
-                alt={friend.name}
-                className="w-full h-auto scale-[2.5] translate-y-[40%]"
-              />
-            </div>
+            <FriendAvatar src={friend.image} alt={friend.name} />
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-sm text-black dark:text-white truncate">
                 {friend.name}
