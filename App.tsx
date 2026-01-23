@@ -89,9 +89,8 @@ const App: React.FC = () => {
       case 'ranking':
         return (
           <RankingScreen
-            currentPage={currentPage}
-            onNavigate={setCurrentPage}
             onSelectFriend={handleSelectFriendFromRanking}
+            onBack={() => setCurrentPage('cards')}
           />
         );
       case 'diagnostic':

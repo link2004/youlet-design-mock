@@ -1,13 +1,13 @@
 import React from 'react';
-import { Crown, Medal, Trophy } from 'lucide-react';
+import { Crown, Medal, Trophy, ChevronLeft } from 'lucide-react';
 import { FRIENDS_LIST, USER_ELEMENTS, FriendProfile } from '../constants';
-import BottomNav from './BottomNav';
 import { PageType } from '../App';
 
 interface RankingScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
   onSelectFriend: (friend: FriendProfile) => void;
+  onBack: () => void;
 }
 
 // 相性スコアを計算する関数
@@ -43,7 +43,7 @@ const getRankedFriends = () => {
   }));
 };
 
-const RankingScreen: React.FC<RankingScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
+const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack }) => {
   const rankedFriends = getRankedFriends();
 
   const getRankIcon = (rank: number) => {
@@ -99,6 +99,13 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ currentPage, onNavigate, 
 
       {/* Header */}
       <div className="relative flex items-center px-4 py-2 mt-4 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-neutral-700 dark:text-neutral-400"
+        >
+          <ChevronLeft size={24} strokeWidth={2} />
+          <span className="text-base font-medium">Back</span>
+        </button>
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-black text-xl tracking-tight text-black dark:text-white flex items-center gap-2">
           <Trophy size={20} className="text-orange-400" />
           Compatibility
@@ -114,7 +121,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ currentPage, onNavigate, 
       </div>
 
       {/* Ranking List */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-4 pb-24">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-4 pb-6">
         <div className="flex flex-col gap-2">
           {rankedFriends.map((friend, index) => {
             const rank = index + 1;
@@ -158,8 +165,6 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ currentPage, onNavigate, 
           })}
         </div>
       </div>
-
-      <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
     </div>
   );
 };
