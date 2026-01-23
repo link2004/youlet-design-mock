@@ -1,5 +1,5 @@
 import React from 'react';
-import { FRIENDS_LIST } from '../constants';
+import { FRIENDS_LIST, FriendProfile } from '../constants';
 import BottomNav from './BottomNav';
 import FriendCard from './FriendCard';
 import { PageType } from '../App';
@@ -7,9 +7,10 @@ import { PageType } from '../App';
 interface FeedScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
+  onSelectFriend: (friend: FriendProfile) => void;
 }
 
-const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate }) => {
+const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       {/* Status Bar */}
@@ -50,9 +51,7 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate }) => {
               key={friend.id}
               name={friend.name}
               image={friend.image}
-              onClick={() => {
-                // Future: Open friend detail view
-              }}
+              onClick={() => onSelectFriend(friend)}
             />
           ))}
         </div>

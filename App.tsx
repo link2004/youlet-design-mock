@@ -4,9 +4,10 @@ import PhoneScreen from './components/PhoneScreen';
 import FeedScreen from './components/FeedScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
+import FriendDetailScreen from './components/FriendDetailScreen';
 import { DiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail';
+export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'friend-detail';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
@@ -19,14 +20,52 @@ const App: React.FC = () => {
   };
 
   const handleBackFromDiagnosticDetail = () => {
-    setCurrentPage('diagnostic');
+    // If coming from friend-detail flow, go back to friend-detail
+    // Otherwise go back to diagnostic list
+    if (selectedFriend) {
+      setCurrentPage('friend-detail');
+    } else {
+      setCurrentPage('diagnostic');
+    }
     setSelectedDiagnostic(null);
+  };
+
+  const handleSelectFriendFromFeed = (friend: FriendProfile) => {
+    setSelectedFriend(friend);
+    setCurrentPage('friend-detail');
+  };
+
+  const handleBackFromFriendDetail = () => {
+    setSelectedFriend(null);
+    setCurrentPage('cards');
+  };
+
+  const handleSelectDiagnosticFromFriendDetail = (diagnostic: DiagnosticType) => {
+    setSelectedDiagnostic(diagnostic);
+    setCurrentPage('diagnostic-detail');
   };
 
   const renderScreen = () => {
     switch (currentPage) {
       case 'cards':
-        return <FeedScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
+        return (
+          <FeedScreen
+            currentPage={currentPage}
+            onNavigate={setCurrentPage}
+            onSelectFriend={handleSelectFriendFromFeed}
+          />
+        );
+      case 'friend-detail':
+        if (selectedFriend) {
+          return (
+            <FriendDetailScreen
+              friend={selectedFriend}
+              onBack={handleBackFromFriendDetail}
+              onSelectDiagnostic={handleSelectDiagnosticFromFriendDetail}
+            />
+          );
+        }
+        return <FeedScreen currentPage="cards" onNavigate={setCurrentPage} onSelectFriend={handleSelectFriendFromFeed} />;
       case 'diagnostic':
         return (
           <DiagnosticScreen
