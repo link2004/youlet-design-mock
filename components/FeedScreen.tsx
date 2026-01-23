@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Search, Trophy } from 'lucide-react';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
 import BottomNav from './BottomNav';
@@ -18,12 +18,18 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
   const [searchQuery, setSearchQuery] = useState('');
   const [previewFriend, setPreviewFriend] = useState<FriendProfile | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const previewFriendRef = useRef<FriendProfile | null>(null);
+
+  // Keep ref in sync with state for use in setTimeout callback
+  useEffect(() => {
+    previewFriendRef.current = previewFriend;
+  }, [previewFriend]);
 
   const handleBlur = () => {
     // Delay to allow click on search results
     setTimeout(() => {
-      // Don't close search if preview modal is open
-      if (previewFriend) return;
+      // Don't close search if preview modal is open (use ref to get latest value)
+      if (previewFriendRef.current) return;
       setIsSearchFocused(false);
       setSearchQuery('');
     }, 150);
