@@ -20,22 +20,27 @@ const calculateCompatibilityScore = (friend: FriendProfile): number => {
   // 性格の一致数
   const personalityMatches = friend.personality.filter(p => userPersonality.includes(p)).length;
 
-  // スコア計算: 趣味 30点/個、性格 20点/個、ベース40点
-  const baseScore = 40;
-  const hobbyScore = hobbyMatches * 30;
-  const personalityScore = personalityMatches * 20;
+  // スコア計算: 趣味 15点/個、性格 10点/個
+  const hobbyScore = hobbyMatches * 15;
+  const personalityScore = personalityMatches * 10;
 
-  return Math.min(100, baseScore + hobbyScore + personalityScore);
+  return hobbyScore + personalityScore;
 };
 
-// ランキングデータを生成
+// ランキングデータを生成（スコアを98%から始めて順位ごとに減少）
 const getRankedFriends = () => {
-  return FRIENDS_LIST
+  const sorted = FRIENDS_LIST
     .map(friend => ({
       ...friend,
-      score: calculateCompatibilityScore(friend)
+      rawScore: calculateCompatibilityScore(friend)
     }))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.rawScore - a.rawScore);
+
+  // 1位を98%として、順位ごとに3〜5%ずつ減少
+  return sorted.map((friend, index) => ({
+    ...friend,
+    score: Math.max(52, 98 - index * 4 - (index % 3))
+  }));
 };
 
 const RankingScreen: React.FC<RankingScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
@@ -93,7 +98,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ currentPage, onNavigate, 
       </div>
 
       {/* Header */}
-      <div className="relative flex items-center px-4 py-2 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
+      <div className="relative flex items-center px-4 py-2 mt-4 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-black text-xl tracking-tight text-black dark:text-white flex items-center gap-2">
           <Trophy size={20} className="text-orange-400" />
           Compatibility
