@@ -22,7 +22,7 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
         bg-gradient-to-br ${diagnostic.gradient}
         border-2 border-white/30
         active:scale-[0.98] transition-transform duration-150
-        flex flex-col items-center justify-between p-3 pt-4
+        flex flex-col items-start justify-end p-5 gap-2
       `}
     >
       {/* Emoji image */}
@@ -33,7 +33,7 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
       />
 
       {/* Text content */}
-      <h3 className="text-white font-serif italic font-black text-sm leading-tight text-center">
+      <h3 className="text-white font-serif italic font-black text-sm leading-tight text-left">
         {(() => {
           const words = diagnostic.title.split(' ');
           if (words.length <= 2) {
