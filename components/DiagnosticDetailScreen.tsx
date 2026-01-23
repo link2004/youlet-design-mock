@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronLeft, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, Plus, Heart, Sparkles, MessageCircleHeart, X, Share2 } from 'lucide-react';
 import { DiagnosticType, FRIENDS_LIST, MY_PROFILE } from '../constants';
 
 interface Friend {
@@ -7,6 +7,24 @@ interface Friend {
   name: string;
   image: string;
 }
+
+type DiagnosticPhase = 'select' | 'loading' | 'result';
+
+interface DiagnosticResult {
+  percentage: number;
+  strengths: string[];
+  advice: string;
+}
+
+const LOVE_RESULT: DiagnosticResult = {
+  percentage: 87,
+  strengths: [
+    "共通の趣味が多い",
+    "価値観が近い",
+    "コミュニケーションスタイルが合う"
+  ],
+  advice: "お互いの小さな違いを尊重し合うことで、より深い関係を築けるでしょう。"
+};
 
 interface DiagnosticDetailScreenProps {
   diagnostic: DiagnosticType;
@@ -18,6 +36,201 @@ interface FriendSelectSheetProps {
   onClose: () => void;
   onSelect: (friend: Friend) => void;
 }
+
+// 脈打つハートコンポーネント
+const PulsingHeart: React.FC = () => {
+  return (
+    <div className="relative">
+      <Heart
+        className="w-16 h-16 text-white fill-white drop-shadow-lg"
+        style={{
+          animation: 'pulse-heart 1.2s ease-in-out infinite',
+        }}
+      />
+      <style>{`
+        @keyframes pulse-heart {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.2); }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 数字カウントアップコンポーネント
+const CountUpNumber: React.FC<{ target: number; duration?: number }> = ({ target, duration = 1500 }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutCubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(target * eased));
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [target, duration]);
+
+  return <span>{count}</span>;
+};
+
+// ローディング画面用のミニカード
+interface MiniCardProps {
+  person: Friend | typeof MY_PROFILE;
+}
+
+const MiniCard: React.FC<MiniCardProps> = ({ person }) => {
+  return (
+    <div className="w-20">
+      <div className="w-full aspect-[2/3] rounded-xl bg-white shadow-lg border-2 border-white/80 flex flex-col">
+        <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[10px] min-h-0 overflow-hidden">
+          <img
+            src={person.image}
+            alt={person.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="px-2 py-1 bg-white border-t border-neutral-200 rounded-b-[10px] shrink-0">
+          <span className="text-[10px] text-neutral-700 font-semibold block text-center truncate">
+            {person.name}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ローディング画面
+interface LoadingPhaseProps {
+  myProfile: typeof MY_PROFILE;
+  friend: Friend;
+}
+
+const LoadingPhase: React.FC<LoadingPhaseProps> = ({ myProfile, friend }) => {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center px-4">
+      {/* 脈打つハート */}
+      <div className="mb-8">
+        <PulsingHeart />
+      </div>
+
+      {/* 2枚のカード */}
+      <div className="flex items-center justify-center gap-4 mb-8">
+        <MiniCard person={myProfile} />
+        <MiniCard person={friend} />
+      </div>
+
+      {/* ローディングテキスト */}
+      <p className="text-white/90 font-medium text-lg animate-pulse">
+        Analyzing...
+      </p>
+    </div>
+  );
+};
+
+// 結果画面
+interface ResultPhaseProps {
+  myProfile: typeof MY_PROFILE;
+  friend: Friend;
+  result: DiagnosticResult;
+  onClose: () => void;
+}
+
+const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, onClose }) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  useEffect(() => {
+    // パーセンテージのカウントアップ後に詳細を表示
+    const timer = setTimeout(() => {
+      setShowDetails(true);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flex-1 flex flex-col items-center px-4 py-6 overflow-y-auto">
+      {/* 2枚のカード + ハート */}
+      <div className="flex items-center justify-center gap-3 mb-6">
+        <MiniCard person={myProfile} />
+        <Heart className="w-6 h-6 text-white fill-white" />
+        <MiniCard person={friend} />
+      </div>
+
+      {/* パーセンテージ */}
+      <div className="text-center mb-2">
+        <span className="text-6xl font-black text-white drop-shadow-lg">
+          <CountUpNumber target={result.percentage} />%
+        </span>
+      </div>
+      <p className="text-white/90 font-semibold text-lg mb-6">
+        Love Compatibility
+      </p>
+
+      {/* 詳細分析カード */}
+      <div
+        className={`
+          w-full max-w-xs bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl
+          transition-all duration-500
+          ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+        `}
+      >
+        {/* 相性の良い点 */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="w-4 h-4 text-pink-500" />
+            <span className="font-bold text-gray-800 text-sm">相性の良い点</span>
+          </div>
+          <ul className="space-y-1 pl-6">
+            {result.strengths.map((strength, index) => (
+              <li key={index} className="text-gray-700 text-sm list-disc">
+                {strength}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* アドバイス */}
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <MessageCircleHeart className="w-4 h-4 text-pink-500" />
+            <span className="font-bold text-gray-800 text-sm">アドバイス</span>
+          </div>
+          <p className="text-gray-700 text-sm pl-6">
+            {result.advice}
+          </p>
+        </div>
+      </div>
+
+      {/* ボタン */}
+      <div
+        className={`
+          flex items-center justify-center gap-4 mt-6
+          transition-all duration-500 delay-300
+          ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+        `}
+      >
+        <button
+          onClick={onClose}
+          className="flex items-center gap-2 px-6 py-2.5 bg-white/20 backdrop-blur-sm rounded-full text-white font-semibold transition-colors hover:bg-white/30 active:scale-95"
+        >
+          <X className="w-4 h-4" />
+          Close
+        </button>
+        <button
+          className="flex items-center gap-2 px-6 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
+        >
+          <Share2 className="w-4 h-4" />
+          Share
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, onSelect }) => {
   if (!isOpen) return null;
@@ -148,10 +361,26 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
 const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnostic, onBack }) => {
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [phase, setPhase] = useState<DiagnosticPhase>('select');
+  const [resultData, setResultData] = useState<DiagnosticResult | null>(null);
 
   const handleFriendSelect = (friend: Friend) => {
     setSelectedFriend(friend);
     setIsSheetOpen(false);
+  };
+
+  const handleDiagnose = () => {
+    setPhase('loading');
+    // 2.5秒後に結果を表示
+    setTimeout(() => {
+      setResultData(LOVE_RESULT);
+      setPhase('result');
+    }, 2500);
+  };
+
+  const handleClose = () => {
+    setPhase('select');
+    setResultData(null);
   };
 
   const bothSelected = selectedFriend !== null;
@@ -181,48 +410,68 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
         </div>
       </div>
 
-      {/* Header with back button */}
-      <div className="relative flex items-center px-4 py-2 shrink-0 z-40">
-        <button
-          onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
-          aria-label="Back"
-        >
-          <ChevronLeft className="w-6 h-6 text-white" />
-        </button>
-      </div>
-
-      {/* Content area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4">
-        {/* Emoji and title */}
-        <img
-          src={diagnostic.image}
-          alt={diagnostic.title}
-          className="w-20 h-20 object-contain mb-4"
-        />
-        <h2 className="text-white font-serif italic font-black text-2xl text-center mb-8">
-          {diagnostic.title}
-        </h2>
-
-        {/* Card placement area */}
-        <div className="flex items-center justify-center gap-6 mb-8">
-          <PersonCard person={MY_PROFILE} />
-          <PersonCard
-            person={selectedFriend}
-            isPlaceholder={!selectedFriend}
-            onClick={() => setIsSheetOpen(true)}
-          />
-        </div>
-
-        {/* Diagnose button */}
-        {bothSelected && (
+      {/* Header with back button - only show in select phase */}
+      {phase === 'select' && (
+        <div className="relative flex items-center px-4 py-2 shrink-0 z-40">
           <button
-            className="px-8 py-3 bg-white rounded-full font-semibold text-gray-900 shadow-lg hover:bg-gray-100 transition-colors active:scale-95"
+            onClick={onBack}
+            className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+            aria-label="Back"
           >
-            Diagnose
+            <ChevronLeft className="w-6 h-6 text-white" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Loading phase */}
+      {phase === 'loading' && selectedFriend && (
+        <LoadingPhase myProfile={MY_PROFILE} friend={selectedFriend} />
+      )}
+
+      {/* Result phase */}
+      {phase === 'result' && selectedFriend && resultData && (
+        <ResultPhase
+          myProfile={MY_PROFILE}
+          friend={selectedFriend}
+          result={resultData}
+          onClose={handleClose}
+        />
+      )}
+
+      {/* Select phase - Content area */}
+      {phase === 'select' && (
+        <div className="flex-1 flex flex-col items-center justify-center px-4">
+          {/* Emoji and title */}
+          <img
+            src={diagnostic.image}
+            alt={diagnostic.title}
+            className="w-20 h-20 object-contain mb-4"
+          />
+          <h2 className="text-white font-serif italic font-black text-2xl text-center mb-8">
+            {diagnostic.title}
+          </h2>
+
+          {/* Card placement area */}
+          <div className="flex items-center justify-center gap-6 mb-8">
+            <PersonCard person={MY_PROFILE} />
+            <PersonCard
+              person={selectedFriend}
+              isPlaceholder={!selectedFriend}
+              onClick={() => setIsSheetOpen(true)}
+            />
+          </div>
+
+          {/* Diagnose button */}
+          {bothSelected && (
+            <button
+              onClick={handleDiagnose}
+              className="px-8 py-3 bg-white rounded-full font-semibold text-gray-900 shadow-lg hover:bg-gray-100 transition-colors active:scale-95"
+            >
+              Diagnose
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Friend select sheet */}
       <FriendSelectSheet
