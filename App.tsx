@@ -67,25 +67,24 @@ const App: React.FC = () => {
   const renderScreen = () => {
     switch (currentPage) {
       case 'cards':
-        return (
-          <FeedScreen
-            currentPage={currentPage}
-            onNavigate={setCurrentPage}
-            onSelectFriend={handleSelectFriendFromFeed}
-          />
-        );
       case 'friend-detail':
-        if (selectedFriend) {
-          return (
-            <FriendDetailScreen
-              friend={selectedFriend}
-              onBack={handleBackFromFriendDetail}
-              onSelectDiagnostic={handleSelectDiagnosticFromFriendDetail}
-              initialSheetOpen={shouldOpenSheet}
+        return (
+          <>
+            <FeedScreen
+              currentPage="cards"
+              onNavigate={setCurrentPage}
+              onSelectFriend={handleSelectFriendFromFeed}
             />
-          );
-        }
-        return <FeedScreen currentPage="cards" onNavigate={setCurrentPage} onSelectFriend={handleSelectFriendFromFeed} />;
+            {currentPage === 'friend-detail' && selectedFriend && (
+              <FriendDetailScreen
+                friend={selectedFriend}
+                onBack={handleBackFromFriendDetail}
+                onSelectDiagnostic={handleSelectDiagnosticFromFriendDetail}
+                initialSheetOpen={shouldOpenSheet}
+              />
+            )}
+          </>
+        );
       case 'ranking':
         return (
           <RankingScreen

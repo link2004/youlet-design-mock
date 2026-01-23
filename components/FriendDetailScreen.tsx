@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft } from 'lucide-react';
 import { FriendProfile, DiagnosticType } from '../constants';
 import DiagnosticTypeSheet from './DiagnosticTypeSheet';
@@ -12,14 +13,22 @@ interface FriendDetailScreenProps {
 
 const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(initialSheetOpen);
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const container = document.getElementById('iphone-modal-portal');
+    setPortalContainer(container);
+  }, []);
 
   const handleDiagnosticSelect = (diagnostic: DiagnosticType) => {
     setIsSheetOpen(false);
     onSelectDiagnostic(diagnostic);
   };
 
-  return (
-    <div className="relative w-full h-full font-sans overflow-hidden flex flex-col">
+  if (!portalContainer) return null;
+
+  return createPortal(
+    <div className="absolute inset-0 z-50 font-sans overflow-hidden flex flex-col pointer-events-auto">
       {/* Blur background */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-0" />
 
@@ -95,7 +104,8 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
         onClose={() => setIsSheetOpen(false)}
         onSelect={handleDiagnosticSelect}
       />
-    </div>
+    </div>,
+    portalContainer
   );
 };
 
