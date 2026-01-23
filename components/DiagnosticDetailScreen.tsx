@@ -47,23 +47,27 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
 
         {/* Friend grid */}
         <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(60vh - 40px)' }}>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {FRIENDS_LIST.map((friend) => (
               <button
                 key={friend.id}
                 onClick={() => onSelect(friend)}
-                className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95"
+                className="flex flex-col group"
               >
-                <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-                  <img
-                    src={friend.image}
-                    alt={friend.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-full rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden transition-transform group-active:scale-95">
+                  <div className="aspect-[2/3] flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
+                    <img
+                      src={friend.image}
+                      alt={friend.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="px-2 py-2 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
+                    <span className="text-[11px] text-neutral-700 dark:text-neutral-300 font-semibold block text-center truncate">
+                      {friend.name}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-700 dark:text-gray-300 truncate w-full text-center">
-                  {friend.name}
-                </span>
               </button>
             ))}
           </div>
@@ -84,28 +88,38 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
     return (
       <button
         onClick={onClick}
-        className="w-28 h-36 rounded-2xl border-2 border-dashed border-white/50 bg-white/10 backdrop-blur-sm flex flex-col items-center justify-center gap-2 transition-all hover:bg-white/20 active:scale-95"
+        className="w-24 flex flex-col group"
       >
-        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-          <Plus className="w-6 h-6 text-white" />
+        <div className="w-full rounded-xl border-2 border-dashed border-white/50 bg-white/10 backdrop-blur-sm overflow-hidden transition-transform group-active:scale-95">
+          <div className="aspect-[2/3] flex items-center justify-center">
+            <Plus className="w-8 h-8 text-white/70" />
+          </div>
+          <div className="px-2 py-2 border-t border-dashed border-white/30">
+            <span className="text-[11px] text-white/70 font-semibold block text-center">
+              Select
+            </span>
+          </div>
         </div>
-        <span className="text-white/70 text-xs">Select Friend</span>
       </button>
     );
   }
 
   return (
-    <div className="w-28 h-36 rounded-2xl bg-white/20 backdrop-blur-sm border-2 border-white/30 flex flex-col items-center justify-center gap-2 p-3">
-      <div className="w-16 h-16 rounded-full overflow-hidden bg-white/30">
-        <img
-          src={person.image}
-          alt={person.name}
-          className="w-full h-full object-cover"
-        />
+    <div className="w-24 flex flex-col">
+      <div className="w-full rounded-xl bg-white shadow-md border-2 border-neutral-200 overflow-hidden">
+        <div className="aspect-[2/3] flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100">
+          <img
+            src={person.image}
+            alt={person.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="px-2 py-2 bg-white border-t border-neutral-200">
+          <span className="text-[11px] text-neutral-700 font-semibold block text-center truncate">
+            {person.name}
+          </span>
+        </div>
       </div>
-      <span className="text-white font-medium text-sm truncate w-full text-center">
-        {person.name}
-      </span>
     </div>
   );
 };
