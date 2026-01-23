@@ -249,91 +249,151 @@ const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagno
         </button>
       </div>
 
-      {/* Card Area */}
-      <div className="flex-1 flex items-center justify-center px-8">
+      {/* Card Area - Horizontal Scroll */}
+      <div className="flex-1 flex items-center">
         <div
-          className={`w-full max-w-[260px] bg-gradient-to-br ${gradient} rounded-3xl p-4 shadow-2xl`}
-          onClick={(e) => e.stopPropagation()}
+          className="w-full flex gap-4 overflow-x-auto py-4"
+          style={{
+            scrollSnapType: 'x mandatory',
+            paddingLeft: 'calc(50% - 130px)',
+            paddingRight: 'calc(50% - 100px)',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
         >
-          {/* Header: Cards + Heart */}
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="w-14">
-              <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
-                <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
-                  <img src={myProfile.image} alt={myProfile.name} className="w-full h-full object-contain" />
+          {/* 詳細カード */}
+          <div
+            className={`w-[260px] flex-shrink-0 bg-gradient-to-br ${gradient} rounded-3xl p-4 shadow-2xl`}
+            style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header: Cards + Heart */}
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <div className="w-14">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                  <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                    <img src={myProfile.image} alt={myProfile.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                    <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{myProfile.name}</span>
+                  </div>
                 </div>
-                <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
-                  <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{myProfile.name}</span>
+              </div>
+              <Heart className="w-4 h-4 text-white fill-white" />
+              <div className="w-14">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                  <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                    <img src={friend.image} alt={friend.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                    <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{friend.name}</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <Heart className="w-4 h-4 text-white fill-white" />
-            <div className="w-14">
-              <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
-                <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
-                  <img src={friend.image} alt={friend.name} className="w-full h-full object-contain" />
+
+            {/* Percentage */}
+            <div className="text-center mb-2">
+              <span className="text-3xl font-serif italic font-black text-white drop-shadow">{result.percentage}%</span>
+              <p className="text-white/90 font-serif italic font-semibold text-[10px]">{diagnosticTitle}</p>
+            </div>
+
+            {/* Content Card */}
+            <div className="bg-white/95 rounded-xl p-3 space-y-2">
+              {/* Date Scenario */}
+              <div>
+                <div className="flex items-center gap-1 mb-1">
+                  <span className="text-xs">🎬</span>
+                  <span className="font-bold text-gray-800 text-[9px]">もし二人がデートしたら...</span>
                 </div>
-                <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
-                  <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{friend.name}</span>
+                <p className="text-gray-600 text-[8px] leading-relaxed line-clamp-4">
+                  {result.dateScenario.scenes.slice(0, 3).join(' → ')}...
+                </p>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-200" />
+
+              {/* Strengths */}
+              <div>
+                <div className="flex items-center gap-1 mb-1">
+                  <Sparkles className="w-3 h-3 text-pink-500" />
+                  <span className="font-bold text-gray-800 text-[9px]">うまくいくポイント</span>
+                </div>
+                <div className="space-y-0.5">
+                  {result.strengths.map((s, i) => (
+                    <p key={i} className="text-gray-600 text-[8px]">• {s.point}</p>
+                  ))}
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-200" />
+
+              {/* Warnings */}
+              <div>
+                <div className="flex items-center gap-1 mb-1">
+                  <AlertTriangle className="w-3 h-3 text-amber-500" />
+                  <span className="font-bold text-gray-800 text-[9px]">注意ポイント</span>
+                </div>
+                <div className="space-y-0.5">
+                  {result.warnings.map((w, i) => (
+                    <p key={i} className="text-gray-600 text-[8px]">• {w.point}</p>
+                  ))}
                 </div>
               </div>
             </div>
+
+            {/* Footer */}
+            <p className="text-center text-white/70 text-[8px] mt-2">YouLet AI Compatibility</p>
           </div>
 
-          {/* Percentage */}
-          <div className="text-center mb-2">
-            <span className="text-3xl font-serif italic font-black text-white drop-shadow">{result.percentage}%</span>
-            <p className="text-white/90 font-serif italic font-semibold text-[10px]">{diagnosticTitle}</p>
-          </div>
-
-          {/* Content Card */}
-          <div className="bg-white/95 rounded-xl p-3 space-y-2">
-            {/* Date Scenario */}
-            <div>
-              <div className="flex items-center gap-1 mb-1">
-                <span className="text-xs">🎬</span>
-                <span className="font-bold text-gray-800 text-[9px]">もし二人がデートしたら...</span>
+          {/* シンプルカード */}
+          <div
+            className={`w-[200px] flex-shrink-0 bg-gradient-to-br ${gradient} rounded-3xl p-6 shadow-2xl flex flex-col justify-between`}
+            style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* アバター */}
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-14">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                  <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                    <img src={myProfile.image} alt={myProfile.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                    <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{myProfile.name}</span>
+                  </div>
+                </div>
               </div>
-              <p className="text-gray-600 text-[8px] leading-relaxed line-clamp-4">
-                {result.dateScenario.scenes.slice(0, 3).join(' → ')}...
+              <Heart className="w-5 h-5 text-white fill-white" />
+              <div className="w-14">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                  <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                    <img src={friend.image} alt={friend.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                    <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{friend.name}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* パーセンテージ（大きめ） */}
+            <div className="text-center flex-1 flex flex-col justify-center">
+              <span className="text-5xl font-serif italic font-black text-white drop-shadow">
+                {result.percentage}%
+              </span>
+              <p className="text-white/90 font-serif italic font-semibold text-sm mt-1">
+                {diagnosticTitle}
               </p>
             </div>
 
-            {/* Divider */}
-            <div className="border-t border-gray-200" />
-
-            {/* Strengths */}
-            <div>
-              <div className="flex items-center gap-1 mb-1">
-                <Sparkles className="w-3 h-3 text-pink-500" />
-                <span className="font-bold text-gray-800 text-[9px]">うまくいくポイント</span>
-              </div>
-              <div className="space-y-0.5">
-                {result.strengths.map((s, i) => (
-                  <p key={i} className="text-gray-600 text-[8px]">• {s.point}</p>
-                ))}
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-gray-200" />
-
-            {/* Warnings */}
-            <div>
-              <div className="flex items-center gap-1 mb-1">
-                <AlertTriangle className="w-3 h-3 text-amber-500" />
-                <span className="font-bold text-gray-800 text-[9px]">注意ポイント</span>
-              </div>
-              <div className="space-y-0.5">
-                {result.warnings.map((w, i) => (
-                  <p key={i} className="text-gray-600 text-[8px]">• {w.point}</p>
-                ))}
-              </div>
-            </div>
+            {/* フッター */}
+            <p className="text-center text-white/70 text-[10px] mt-4">
+              YouLet AI Compatibility
+            </p>
           </div>
-
-          {/* Footer */}
-          <p className="text-center text-white/70 text-[8px] mt-2">YouLet 💕 AI Compatibility</p>
         </div>
       </div>
 
