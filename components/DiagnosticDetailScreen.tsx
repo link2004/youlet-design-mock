@@ -1,30 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Plus, Heart, Sparkles, MessageCircleHeart, X, Share2 } from 'lucide-react';
-import { DiagnosticType, FRIENDS_LIST, MY_PROFILE } from '../constants';
-
-interface Friend {
-  id: number;
-  name: string;
-  image: string;
-}
+import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2 } from 'lucide-react';
+import { DiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
 
 type DiagnosticPhase = 'select' | 'loading' | 'result';
 
 interface DiagnosticResult {
   percentage: number;
-  strengths: string[];
-  advice: string;
+  dateScenario: {
+    title: string;
+    scenes: string[];
+  };
+  strengths: {
+    point: string;
+    reason: string;
+  }[];
+  warnings: {
+    point: string;
+    tip: string;
+  }[];
 }
 
-const LOVE_RESULT: DiagnosticResult = {
+// 友達名を埋め込んでモックデータを生成
+const generateLoveResult = (friendName: string): DiagnosticResult => ({
   percentage: 87,
+  dateScenario: {
+    title: "渋谷カフェ → 原宿散歩デート",
+    scenes: [
+      "📍 渋谷のカフェで待ち合わせ",
+      `あなた「深煎りエチオピアで」\n${friendName}「え、私も同じの頼もうとしてた！」`,
+      "二人で写真を撮りながら原宿まで散歩することに",
+      `あなたの一眼レフを見て${friendName}「重そう...持とうか？」`,
+      `優しさに胸キュン...かと思いきや「私も撮りたい！貸して！」`,
+      "結局カメラの取り合いで1時間経過 😂",
+      "帰りは二人とも疲れて無言...でもなぜか心地いい"
+    ]
+  },
   strengths: [
-    "共通の趣味が多い",
-    "価値観が近い",
-    "コミュニケーションスタイルが合う"
+    { point: "コーヒーの好みが合う", reason: "カフェ選びで揉めない" },
+    { point: "写真を一緒に楽しめる", reason: "「ちょっと待って」が通じる" },
+    { point: "静かな時間も心地よい", reason: "お互いIntrovertなので沈黙OK" }
   ],
-  advice: "お互いの小さな違いを尊重し合うことで、より深い関係を築けるでしょう。"
-};
+  warnings: [
+    { point: "最初のデートは緊張で無言危機", tip: "共通の趣味の話から入ろう" },
+    { point: "「どこ行く？」「どこでも」ループ", tip: "デートプランは事前に決めておこう" },
+    { point: "お互い譲り合いすぎて決まらない", tip: "じゃんけんで決めるルールを作ろう" }
+  ]
+});
 
 interface DiagnosticDetailScreenProps {
   diagnostic: DiagnosticType;
@@ -34,15 +55,21 @@ interface DiagnosticDetailScreenProps {
 interface FriendSelectSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (friend: Friend) => void;
+  onSelect: (friend: FriendProfile) => void;
 }
 
-// 脈打つハートコンポーネント
-const PulsingHeart: React.FC = () => {
+// 脈打つハートコンポーネント（診断タイプの画像を使用）
+interface PulsingHeartProps {
+  imageSrc: string;
+}
+
+const PulsingHeart: React.FC<PulsingHeartProps> = ({ imageSrc }) => {
   return (
     <div className="relative">
-      <Heart
-        className="w-16 h-16 text-white fill-white drop-shadow-lg"
+      <img
+        src={imageSrc}
+        alt="heart"
+        className="w-20 h-20 object-contain drop-shadow-lg"
         style={{
           animation: 'pulse-heart 1.2s ease-in-out infinite',
         }}
@@ -81,7 +108,7 @@ const CountUpNumber: React.FC<{ target: number; duration?: number }> = ({ target
 
 // ローディング画面用のミニカード
 interface MiniCardProps {
-  person: Friend | typeof MY_PROFILE;
+  person: FriendProfile | typeof MY_PROFILE;
 }
 
 const MiniCard: React.FC<MiniCardProps> = ({ person }) => {
@@ -108,15 +135,16 @@ const MiniCard: React.FC<MiniCardProps> = ({ person }) => {
 // ローディング画面
 interface LoadingPhaseProps {
   myProfile: typeof MY_PROFILE;
-  friend: Friend;
+  friend: FriendProfile;
+  diagnosticImage: string;
 }
 
-const LoadingPhase: React.FC<LoadingPhaseProps> = ({ myProfile, friend }) => {
+const LoadingPhase: React.FC<LoadingPhaseProps> = ({ myProfile, friend, diagnosticImage }) => {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4">
-      {/* 脈打つハート */}
+      {/* 脈打つハート（診断タイプの画像） */}
       <div className="mb-8">
-        <PulsingHeart />
+        <PulsingHeart imageSrc={diagnosticImage} />
       </div>
 
       {/* 2枚のカード */}
@@ -136,12 +164,13 @@ const LoadingPhase: React.FC<LoadingPhaseProps> = ({ myProfile, friend }) => {
 // 結果画面
 interface ResultPhaseProps {
   myProfile: typeof MY_PROFILE;
-  friend: Friend;
+  friend: FriendProfile;
   result: DiagnosticResult;
+  diagnosticTitle: string;
   onClose: () => void;
 }
 
-const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, onClose }) => {
+const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, onClose }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
@@ -155,61 +184,89 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, on
   return (
     <div className="flex-1 flex flex-col items-center px-4 py-6 overflow-y-auto">
       {/* 2枚のカード + ハート */}
-      <div className="flex items-center justify-center gap-3 mb-6">
+      <div className="flex items-center justify-center gap-3 mb-4">
         <MiniCard person={myProfile} />
         <Heart className="w-6 h-6 text-white fill-white" />
         <MiniCard person={friend} />
       </div>
 
       {/* パーセンテージ */}
-      <div className="text-center mb-2">
-        <span className="text-6xl font-black text-white drop-shadow-lg">
+      <div className="text-center mb-1">
+        <span className="text-5xl font-black text-white drop-shadow-lg">
           <CountUpNumber target={result.percentage} />%
         </span>
       </div>
-      <p className="text-white/90 font-semibold text-lg mb-6">
-        Love Compatibility
+      <p className="text-white/90 font-semibold text-base mb-4">
+        {diagnosticTitle}
       </p>
 
-      {/* 詳細分析カード */}
+      {/* 詳細分析カード群 */}
       <div
         className={`
-          w-full max-w-xs bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl
+          w-full max-w-xs space-y-3
           transition-all duration-500
           ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}
       >
-        {/* 相性の良い点 */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4 text-pink-500" />
-            <span className="font-bold text-gray-800 text-sm">相性の良い点</span>
+        {/* デートシナリオカード */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🎬</span>
+            <span className="font-bold text-gray-800 text-sm">もし二人がデートしたら...</span>
           </div>
-          <ul className="space-y-1 pl-6">
+          <p className="text-gray-500 text-xs mb-3">{result.dateScenario.title}</p>
+          <div className="space-y-2 max-h-40 overflow-y-auto">
+            {result.dateScenario.scenes.map((scene, index) => (
+              <p key={index} className="text-gray-700 text-sm whitespace-pre-line leading-relaxed">
+                {scene}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        {/* うまくいくポイントカード */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-4 h-4 text-pink-500" />
+            <span className="font-bold text-gray-800 text-sm">うまくいくポイント</span>
+          </div>
+          <ul className="space-y-2">
             {result.strengths.map((strength, index) => (
-              <li key={index} className="text-gray-700 text-sm list-disc">
-                {strength}
+              <li key={index} className="flex items-start gap-2">
+                <span className="text-pink-500 mt-0.5">•</span>
+                <div>
+                  <span className="text-gray-800 text-sm font-medium">{strength.point}</span>
+                  <p className="text-gray-500 text-xs">{strength.reason}</p>
+                </div>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* アドバイス */}
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <MessageCircleHeart className="w-4 h-4 text-pink-500" />
-            <span className="font-bold text-gray-800 text-sm">アドバイス</span>
+        {/* 注意ポイントカード */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <span className="font-bold text-gray-800 text-sm">注意ポイント</span>
           </div>
-          <p className="text-gray-700 text-sm pl-6">
-            {result.advice}
-          </p>
+          <ul className="space-y-2">
+            {result.warnings.map((warning, index) => (
+              <li key={index} className="flex items-start gap-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                <div>
+                  <span className="text-gray-800 text-sm font-medium">{warning.point}</span>
+                  <p className="text-gray-500 text-xs">💡 {warning.tip}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
       {/* ボタン */}
       <div
         className={`
-          flex items-center justify-center gap-4 mt-6
+          flex items-center justify-center gap-4 mt-6 pb-4
           transition-all duration-500 delay-300
           ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}
@@ -291,7 +348,7 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
 };
 
 interface PersonCardProps {
-  person: Friend | typeof MY_PROFILE | null;
+  person: FriendProfile | typeof MY_PROFILE | null;
   isPlaceholder?: boolean;
   onClick?: () => void;
 }
@@ -359,21 +416,22 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
 };
 
 const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnostic, onBack }) => {
-  const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
+  const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [phase, setPhase] = useState<DiagnosticPhase>('select');
   const [resultData, setResultData] = useState<DiagnosticResult | null>(null);
 
-  const handleFriendSelect = (friend: Friend) => {
+  const handleFriendSelect = (friend: FriendProfile) => {
     setSelectedFriend(friend);
     setIsSheetOpen(false);
   };
 
   const handleDiagnose = () => {
+    if (!selectedFriend) return;
     setPhase('loading');
     // 2.5秒後に結果を表示
     setTimeout(() => {
-      setResultData(LOVE_RESULT);
+      setResultData(generateLoveResult(selectedFriend.name));
       setPhase('result');
     }, 2500);
   };
@@ -425,7 +483,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
 
       {/* Loading phase */}
       {phase === 'loading' && selectedFriend && (
-        <LoadingPhase myProfile={MY_PROFILE} friend={selectedFriend} />
+        <LoadingPhase myProfile={MY_PROFILE} friend={selectedFriend} diagnosticImage={diagnostic.image} />
       )}
 
       {/* Result phase */}
@@ -434,6 +492,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
           myProfile={MY_PROFILE}
           friend={selectedFriend}
           result={resultData}
+          diagnosticTitle={diagnostic.title}
           onClose={handleClose}
         />
       )}

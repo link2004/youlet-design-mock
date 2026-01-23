@@ -222,18 +222,87 @@ export const AI_CONVERSATION: Array<{
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
 
+// 友達プロフィール型
+export interface FriendProfile {
+  id: number;
+  name: string;
+  image: string;
+  hobbies: string[];
+  personality: string[];
+}
+
 // 友達一覧（交換済みカード）
-export const FRIENDS_LIST = [
-  { id: 1, name: "Momo", image: "/images/characters/char16.png" },
-  { id: 2, name: "Kento", image: "/images/characters/char17.png" },
-  { id: 3, name: "Nina", image: "/images/characters/char18.png" },
-  { id: 4, name: "Ryo", image: "/images/characters/char19.png" },
-  { id: 5, name: "Sora", image: "/images/characters/char20.png" },
-  { id: 6, name: "Leon", image: "/images/characters/char21.png" },
-  { id: 7, name: "Akane", image: "/images/characters/char22.png" },
-  { id: 8, name: "Kai", image: "/images/characters/char23.png" },
-  { id: 9, name: "Miku", image: "/images/characters/char24.png" },
-  { id: 10, name: "Yuto", image: "/images/characters/char25.png" },
+export const FRIENDS_LIST: FriendProfile[] = [
+  {
+    id: 1,
+    name: "Momo",
+    image: "/images/characters/char16.png",
+    hobbies: ["Photography", "Coffee", "Art"],
+    personality: ["Introvert", "Creative"]
+  },
+  {
+    id: 2,
+    name: "Kento",
+    image: "/images/characters/char17.png",
+    hobbies: ["Gaming", "Anime", "Music"],
+    personality: ["Extrovert", "Energetic"]
+  },
+  {
+    id: 3,
+    name: "Nina",
+    image: "/images/characters/char18.png",
+    hobbies: ["Reading", "Yoga", "Travel"],
+    personality: ["Calm", "Thoughtful"]
+  },
+  {
+    id: 4,
+    name: "Ryo",
+    image: "/images/characters/char19.png",
+    hobbies: ["Cooking", "Movies", "Music"],
+    personality: ["Kind", "Romantic"]
+  },
+  {
+    id: 5,
+    name: "Sora",
+    image: "/images/characters/char20.png",
+    hobbies: ["Hiking", "Photography", "Cooking"],
+    personality: ["Adventurous", "Optimist"]
+  },
+  {
+    id: 6,
+    name: "Leon",
+    image: "/images/characters/char21.png",
+    hobbies: ["Gaming", "Anime", "Coffee"],
+    personality: ["Introvert", "Curious"]
+  },
+  {
+    id: 7,
+    name: "Akane",
+    image: "/images/characters/char22.png",
+    hobbies: ["Art", "Music", "Reading"],
+    personality: ["Creative", "Honest"]
+  },
+  {
+    id: 8,
+    name: "Kai",
+    image: "/images/characters/char23.png",
+    hobbies: ["Travel", "Hiking", "Photography"],
+    personality: ["Adventurous", "Extrovert"]
+  },
+  {
+    id: 9,
+    name: "Miku",
+    image: "/images/characters/char24.png",
+    hobbies: ["Movies", "Coffee", "Yoga"],
+    personality: ["Calm", "Kind"]
+  },
+  {
+    id: 10,
+    name: "Yuto",
+    image: "/images/characters/char25.png",
+    hobbies: ["Cooking", "Gaming", "Travel"],
+    personality: ["Curious", "Optimist"]
+  },
 ];
 
 // 診断タイプ
