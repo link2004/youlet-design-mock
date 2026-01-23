@@ -429,3 +429,40 @@ export const DIAGNOSTIC_TYPES: DiagnosticType[] = [
     gradient: 'from-emerald-500 to-teal-500',
   },
 ];
+
+// グループ診断タイプ（4〜8人用）
+export interface GroupDiagnosticType {
+  id: string;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  gradient: string;
+}
+
+export const GROUP_DIAGNOSTIC_TYPES: GroupDiagnosticType[] = [
+  {
+    id: 'dna_soulmates',
+    emoji: '🧬',
+    title: 'DNA-Level Soulmates',
+    subtitle: 'Best Couple Award',
+    description: 'Find the pair with the deepest genetic connection',
+    gradient: 'from-rose-500 to-pink-600',
+  },
+  {
+    id: 'chaos_catalyst',
+    emoji: '💥',
+    title: 'Volatile Chemistry',
+    subtitle: 'Chaos Catalyst Duo Award',
+    description: 'Warning: Do Not Mix! Explosive combo detected',
+    gradient: 'from-orange-500 to-red-600',
+  },
+  {
+    id: 'one_night_mistake',
+    emoji: '🙈',
+    title: 'One Night Mistake',
+    subtitle: 'Regret-in-the-Making Award',
+    description: 'The pair most likely to make questionable decisions',
+    gradient: 'from-violet-500 to-purple-700',
+  },
+];
