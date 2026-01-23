@@ -161,17 +161,127 @@ const LoadingPhase: React.FC<LoadingPhaseProps> = ({ myProfile, friend, diagnost
   );
 };
 
+// シェア用コンパクトカード
+interface ShareCardProps {
+  myProfile: typeof MY_PROFILE;
+  friend: FriendProfile;
+  result: DiagnosticResult;
+  diagnosticTitle: string;
+  gradient: string;
+  onClose: () => void;
+}
+
+const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onClose }) => {
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        {/* Share Card */}
+        <div
+          className={`w-full max-w-[280px] bg-gradient-to-br ${gradient} rounded-3xl p-4 shadow-2xl`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header: Cards + Heart */}
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <div className="w-14">
+              <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                  <img src={myProfile.image} alt={myProfile.name} className="w-full h-full object-contain" />
+                </div>
+                <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                  <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{myProfile.name}</span>
+                </div>
+              </div>
+            </div>
+            <Heart className="w-4 h-4 text-white fill-white" />
+            <div className="w-14">
+              <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                  <img src={friend.image} alt={friend.name} className="w-full h-full object-contain" />
+                </div>
+                <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                  <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{friend.name}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Percentage */}
+          <div className="text-center mb-2">
+            <span className="text-3xl font-black text-white drop-shadow">{result.percentage}%</span>
+            <p className="text-white/90 font-semibold text-[10px]">{diagnosticTitle}</p>
+          </div>
+
+          {/* Content Card */}
+          <div className="bg-white/95 rounded-xl p-3 space-y-2">
+            {/* Date Scenario */}
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                <span className="text-xs">🎬</span>
+                <span className="font-bold text-gray-800 text-[9px]">もし二人がデートしたら...</span>
+              </div>
+              <p className="text-gray-600 text-[8px] leading-relaxed line-clamp-4">
+                {result.dateScenario.scenes.slice(0, 3).join(' → ')}...
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-200" />
+
+            {/* Strengths */}
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                <Sparkles className="w-3 h-3 text-pink-500" />
+                <span className="font-bold text-gray-800 text-[9px]">うまくいくポイント</span>
+              </div>
+              <div className="space-y-0.5">
+                {result.strengths.map((s, i) => (
+                  <p key={i} className="text-gray-600 text-[8px]">• {s.point}</p>
+                ))}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-200" />
+
+            {/* Warnings */}
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                <AlertTriangle className="w-3 h-3 text-amber-500" />
+                <span className="font-bold text-gray-800 text-[9px]">注意ポイント</span>
+              </div>
+              <div className="space-y-0.5">
+                {result.warnings.map((w, i) => (
+                  <p key={i} className="text-gray-600 text-[8px]">• {w.point}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <p className="text-center text-white/70 text-[8px] mt-2">YouLet 💕 AI Compatibility</p>
+        </div>
+      </div>
+    </>
+  );
+};
+
 // 結果画面
 interface ResultPhaseProps {
   myProfile: typeof MY_PROFILE;
   friend: FriendProfile;
   result: DiagnosticResult;
   diagnosticTitle: string;
+  gradient: string;
   onClose: () => void;
 }
 
-const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, onClose }) => {
+const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onClose }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [showShareCard, setShowShareCard] = useState(false);
 
   useEffect(() => {
     // パーセンテージのカウントアップ後に詳細を表示
@@ -279,12 +389,25 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
           Close
         </button>
         <button
+          onClick={() => setShowShareCard(true)}
           className="flex items-center gap-2 px-6 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
         >
           <Share2 className="w-4 h-4" />
           Share
         </button>
       </div>
+
+      {/* Share Card Modal */}
+      {showShareCard && (
+        <ShareCard
+          myProfile={myProfile}
+          friend={friend}
+          result={result}
+          diagnosticTitle={diagnosticTitle}
+          gradient={gradient}
+          onClose={() => setShowShareCard(false)}
+        />
+      )}
     </div>
   );
 };
@@ -493,6 +616,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
           friend={selectedFriend}
           result={resultData}
           diagnosticTitle={diagnostic.title}
+          gradient={diagnostic.gradient}
           onClose={handleClose}
         />
       )}
