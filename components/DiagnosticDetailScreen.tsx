@@ -215,7 +215,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
             <span className="font-bold text-gray-800 text-sm">もし二人がデートしたら...</span>
           </div>
           <p className="text-gray-500 text-xs mb-3">{result.dateScenario.title}</p>
-          <div className="space-y-2 max-h-40 overflow-y-auto">
+          <div className="space-y-2">
             {result.dateScenario.scenes.map((scene, index) => (
               <p key={index} className="text-gray-700 text-sm whitespace-pre-line leading-relaxed">
                 {scene}
