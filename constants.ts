@@ -185,9 +185,7 @@ export const STATS = [
   { icon: Globe, count: 0, color: "text-yellow-500", label: "Web" },
 ];
 
-export const MENU_ITEMS = [
-  { icon: Pencil, label: "Edit profile" },
-];
+export const MENU_ITEMS: { icon: typeof Pencil; label: string }[] = [];
 
 export const NAV_ITEMS = [
   { icon: Layout, label: "Feed", active: false },
