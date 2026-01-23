@@ -237,6 +237,7 @@ export interface DiagnosticType {
   title: string;
   description: string;
   gradient: string;
+  textDark?: boolean;
 }
 
 export const DIAGNOSTIC_TYPES: DiagnosticType[] = [
@@ -245,7 +246,7 @@ export const DIAGNOSTIC_TYPES: DiagnosticType[] = [
     image: '/images/emoji/sparkling_heart_3d.png',
     title: 'Love Compatibility',
     description: 'Discover your romantic match potential',
-    gradient: 'from-pink-500 to-rose-500',
+    gradient: 'from-fuchsia-500 to-pink-500',
   },
   {
     id: 'friendship',
