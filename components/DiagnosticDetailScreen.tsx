@@ -343,9 +343,10 @@ interface ResultPhaseProps {
   diagnosticTitle: string;
   gradient: string;
   onClose: () => void;
+  onDiagnoseAnother: () => void;
 }
 
-const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onClose }) => {
+const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onClose, onDiagnoseAnother }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
 
@@ -454,14 +455,20 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
         {/* ボタン */}
         <div
           className={`
-            flex items-center justify-center gap-4 mt-6 pb-4
+            flex items-center justify-center gap-3 mt-6 pb-4
             transition-all duration-500 delay-300
             ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
           `}
         >
           <button
+            onClick={onDiagnoseAnother}
+            className="px-5 py-2.5 bg-white/20 backdrop-blur-sm border border-white/40 rounded-full text-white font-semibold shadow-lg transition-colors hover:bg-white/30 active:scale-95"
+          >
+            Try Another
+          </button>
+          <button
             onClick={() => setShowShareCard(true)}
-            className="flex items-center gap-2 px-6 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-full text-gray-900 font-semibold shadow-lg transition-colors hover:bg-gray-100 active:scale-95"
           >
             <Share2 className="w-4 h-4" />
             Share
@@ -636,6 +643,12 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
     setResultData(null);
   };
 
+  const handleDiagnoseAnother = () => {
+    setSelectedFriend(null);
+    setPhase('select');
+    setResultData(null);
+  };
+
   const bothSelected = selectedFriend !== null;
 
   return (
@@ -690,6 +703,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
           diagnosticTitle={diagnostic.title}
           gradient={diagnostic.gradient}
           onClose={handleClose}
+          onDiagnoseAnother={handleDiagnoseAnother}
         />
       )}
 
