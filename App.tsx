@@ -14,22 +14,23 @@ const App: React.FC = () => {
   const [selectedDiagnostic, setSelectedDiagnostic] = useState<DiagnosticType | null>(null);
   const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
   const [shouldOpenSheet, setShouldOpenSheet] = useState(false);
+  const [diagnosticEntryPoint, setDiagnosticEntryPoint] = useState<'diagnostic' | 'friend-detail' | null>(null);
 
   const handleSelectDiagnostic = (diagnostic: DiagnosticType) => {
+    setDiagnosticEntryPoint('diagnostic');
     setSelectedDiagnostic(diagnostic);
     setCurrentPage('diagnostic-detail');
   };
 
   const handleBackFromDiagnosticDetail = () => {
-    // If coming from friend-detail flow, go back to friend-detail with sheet open
-    // Otherwise go back to diagnostic list
-    if (selectedFriend) {
+    if (diagnosticEntryPoint === 'friend-detail') {
       setShouldOpenSheet(true);
       setCurrentPage('friend-detail');
     } else {
       setCurrentPage('diagnostic');
     }
     setSelectedDiagnostic(null);
+    setDiagnosticEntryPoint(null);
   };
 
   const handleSelectFriendFromFeed = (friend: FriendProfile) => {
@@ -45,6 +46,7 @@ const App: React.FC = () => {
   };
 
   const handleSelectDiagnosticFromFriendDetail = (diagnostic: DiagnosticType) => {
+    setDiagnosticEntryPoint('friend-detail');
     setShouldOpenSheet(false);
     setSelectedDiagnostic(diagnostic);
     setCurrentPage('diagnostic-detail');
