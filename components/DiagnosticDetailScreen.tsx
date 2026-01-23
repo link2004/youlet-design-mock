@@ -54,15 +54,15 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
                 onClick={() => onSelect(friend)}
                 className="group"
               >
-                <div className="w-full aspect-[2/3] rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden transition-transform group-active:scale-95 flex flex-col">
-                  <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
+                <div className="w-full aspect-[2/3] rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 border-neutral-200 dark:border-neutral-600 transition-transform group-active:scale-95 flex flex-col">
+                  <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800 rounded-t-[10px] min-h-0 overflow-hidden">
                     <img
                       src={friend.image}
                       alt={friend.name}
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <div className="px-2 py-1.5 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
+                  <div className="px-2 py-1.5 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600 rounded-b-[10px] shrink-0">
                     <span className="text-[11px] text-neutral-700 dark:text-neutral-300 font-semibold block text-center truncate">
                       {friend.name}
                     </span>
@@ -90,11 +90,11 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
         onClick={onClick}
         className="w-24 group"
       >
-        <div className="w-full aspect-[2/3] rounded-xl border-2 border-dashed border-white/50 bg-white/10 backdrop-blur-sm overflow-hidden transition-transform group-active:scale-95 flex flex-col">
-          <div className="flex-1 flex items-center justify-center">
+        <div className="w-full aspect-[2/3] rounded-xl border-2 border-dashed border-white/50 bg-white/10 backdrop-blur-sm transition-transform group-active:scale-95 flex flex-col">
+          <div className="flex-1 flex items-center justify-center min-h-0">
             <Plus className="w-8 h-8 text-white/70" />
           </div>
-          <div className="px-2 py-1.5 border-t border-dashed border-white/30">
+          <div className="px-2 py-1.5 border-t border-dashed border-white/30 shrink-0">
             <span className="text-[11px] text-white/70 font-semibold block text-center">
               Select
             </span>
@@ -106,15 +106,15 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick 
 
   return (
     <div className="w-24">
-      <div className="w-full aspect-[2/3] rounded-xl bg-white shadow-md border-2 border-neutral-200 overflow-hidden flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100">
+      <div className="w-full aspect-[2/3] rounded-xl bg-white shadow-md border-2 border-neutral-200 flex flex-col">
+        <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[10px] min-h-0 overflow-hidden">
           <img
             src={person.image}
             alt={person.name}
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="px-2 py-1.5 bg-white border-t border-neutral-200">
+        <div className="px-2 py-1.5 bg-white border-t border-neutral-200 rounded-b-[10px] shrink-0">
           <span className="text-[11px] text-neutral-700 font-semibold block text-center truncate">
             {person.name}
           </span>
