@@ -225,6 +225,7 @@ export const AI_CONVERSATION: Array<{
 // 友達プロフィール型
 export interface FriendProfile {
   id: number;
+  userId: string;  // @username 形式
   name: string;
   image: string;
   hobbies: string[];
@@ -235,6 +236,7 @@ export interface FriendProfile {
 export const FRIENDS_LIST: FriendProfile[] = [
   {
     id: 1,
+    userId: "@momo_123",
     name: "Momo",
     image: "/images/characters/char16.png",
     hobbies: ["Photography", "Coffee", "Art"],
@@ -242,6 +244,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 2,
+    userId: "@kento_game",
     name: "Kento",
     image: "/images/characters/char17.png",
     hobbies: ["Gaming", "Anime", "Music"],
@@ -249,6 +252,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 3,
+    userId: "@nina_yoga",
     name: "Nina",
     image: "/images/characters/char18.png",
     hobbies: ["Reading", "Yoga", "Travel"],
@@ -256,6 +260,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 4,
+    userId: "@ryo_chef",
     name: "Ryo",
     image: "/images/characters/char19.png",
     hobbies: ["Cooking", "Movies", "Music"],
@@ -263,6 +268,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 5,
+    userId: "@sora_hike",
     name: "Sora",
     image: "/images/characters/char20.png",
     hobbies: ["Hiking", "Photography", "Cooking"],
@@ -270,6 +276,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 6,
+    userId: "@leon_play",
     name: "Leon",
     image: "/images/characters/char21.png",
     hobbies: ["Gaming", "Anime", "Coffee"],
@@ -277,6 +284,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 7,
+    userId: "@akane_art",
     name: "Akane",
     image: "/images/characters/char22.png",
     hobbies: ["Art", "Music", "Reading"],
@@ -284,6 +292,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 8,
+    userId: "@kai_travel",
     name: "Kai",
     image: "/images/characters/char23.png",
     hobbies: ["Travel", "Hiking", "Photography"],
@@ -291,6 +300,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 9,
+    userId: "@miku_chill",
     name: "Miku",
     image: "/images/characters/char24.png",
     hobbies: ["Movies", "Coffee", "Yoga"],
@@ -298,10 +308,79 @@ export const FRIENDS_LIST: FriendProfile[] = [
   },
   {
     id: 10,
+    userId: "@yuto_cook",
     name: "Yuto",
     image: "/images/characters/char25.png",
     hobbies: ["Cooking", "Gaming", "Travel"],
     personality: ["Curious", "Optimist"]
+  },
+];
+
+// 友達の友達一覧（検索候補）
+export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
+  {
+    id: 101,
+    userId: "@yuki_art",
+    name: "Yuki",
+    image: "/images/characters/char1.png",
+    hobbies: ["Art", "Photography", "Coffee"],
+    personality: ["Creative", "Calm"]
+  },
+  {
+    id: 102,
+    userId: "@haru_music",
+    name: "Haru",
+    image: "/images/characters/char2.png",
+    hobbies: ["Music", "Gaming", "Movies"],
+    personality: ["Energetic", "Optimist"]
+  },
+  {
+    id: 103,
+    userId: "@ren_travel",
+    name: "Ren",
+    image: "/images/characters/char3.png",
+    hobbies: ["Travel", "Hiking", "Cooking"],
+    personality: ["Adventurous", "Kind"]
+  },
+  {
+    id: 104,
+    userId: "@mei_yoga",
+    name: "Mei",
+    image: "/images/characters/char4.png",
+    hobbies: ["Yoga", "Reading", "Coffee"],
+    personality: ["Calm", "Thoughtful"]
+  },
+  {
+    id: 105,
+    userId: "@taro_game",
+    name: "Taro",
+    image: "/images/characters/char5.png",
+    hobbies: ["Gaming", "Anime", "Music"],
+    personality: ["Curious", "Honest"]
+  },
+  {
+    id: 106,
+    userId: "@sakura_photo",
+    name: "Sakura",
+    image: "/images/characters/char6.png",
+    hobbies: ["Photography", "Art", "Travel"],
+    personality: ["Creative", "Extrovert"]
+  },
+  {
+    id: 107,
+    userId: "@kazu_cook",
+    name: "Kazu",
+    image: "/images/characters/char7.png",
+    hobbies: ["Cooking", "Movies", "Gaming"],
+    personality: ["Kind", "Introvert"]
+  },
+  {
+    id: 108,
+    userId: "@nana_read",
+    name: "Nana",
+    image: "/images/characters/char8.png",
+    hobbies: ["Reading", "Music", "Yoga"],
+    personality: ["Thoughtful", "Honest"]
   },
 ];
 

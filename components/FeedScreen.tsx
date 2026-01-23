@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import { Search } from 'lucide-react';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
 import BottomNav from './BottomNav';
 import FriendCard from './FriendCard';
+import FriendsOfFriendsList from './FriendsOfFriendsList';
 import { PageType } from '../App';
 
 interface FeedScreenProps {
@@ -11,6 +13,18 @@ interface FeedScreenProps {
 }
 
 const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleBlur = () => {
+    // Delay to allow click on search results
+    setTimeout(() => {
+      setIsSearchFocused(false);
+      setSearchQuery('');
+    }, 150);
+  };
+
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       {/* Status Bar */}
@@ -43,18 +57,39 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
         </h1>
       </div>
 
-      {/* Friends Grid */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="grid grid-cols-3 gap-3">
-          {FRIENDS_LIST.map((friend) => (
-            <FriendCard
-              key={friend.id}
-              name={friend.name}
-              image={friend.image}
-              onClick={() => onSelectFriend(friend)}
-            />
-          ))}
+      {/* Search Bar */}
+      <div className="px-4 py-2 shrink-0">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Search by @username..."
+            className="w-full pl-9 pr-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-sm text-black dark:text-white placeholder-neutral-400 outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={handleBlur}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
+      </div>
+
+      {/* Content Area */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        {isSearchFocused ? (
+          <FriendsOfFriendsList searchQuery={searchQuery} />
+        ) : (
+          <div className="grid grid-cols-3 gap-3">
+            {FRIENDS_LIST.map((friend) => (
+              <FriendCard
+                key={friend.id}
+                name={friend.name}
+                image={friend.image}
+                onClick={() => onSelectFriend(friend)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
