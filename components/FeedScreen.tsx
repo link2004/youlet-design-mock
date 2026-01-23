@@ -35,9 +35,11 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate }) => {
         </div>
       </div>
 
-      {/* Header */}
-      <div className="px-5 pt-2 pb-4 shrink-0">
-        <h1 className="text-2xl font-bold text-black dark:text-white">Friends</h1>
+      {/* Header with YouLet logo */}
+      <div className="relative flex items-center justify-center px-4 py-2 bg-cream dark:bg-black shrink-0 z-40 transition-colors duration-300">
+        <h1 className="font-serif italic font-black text-2xl tracking-tight text-black dark:text-white">
+          YouLet
+        </h1>
       </div>
 
       {/* Friends Grid */}

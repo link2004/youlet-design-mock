@@ -153,6 +153,13 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
         </div>
       </div>
 
+      {/* Header with YouLet logo */}
+      <div className="relative flex items-center justify-center px-4 py-2 bg-cream dark:bg-black shrink-0 z-40 transition-colors duration-300">
+        <h1 className="font-serif italic font-black text-2xl tracking-tight text-black dark:text-white">
+          YouLet
+        </h1>
+      </div>
+
       {/* Main Content - Character centered */}
       <div className="flex-1 flex items-center justify-center">
         <div className="relative flex flex-col items-center">
