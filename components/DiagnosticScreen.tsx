@@ -22,7 +22,7 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
         bg-gradient-to-br ${diagnostic.gradient}
         border-2 border-white/30
         active:scale-[0.98] transition-transform duration-150
-        flex flex-col items-center justify-center p-3 gap-2
+        flex flex-col items-center justify-between p-3 pt-4
       `}
     >
       {/* Emoji image */}
@@ -33,8 +33,13 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
       />
 
       {/* Text content */}
-      <h3 className="text-white font-serif italic font-black text-xs leading-tight text-center">
-        {diagnostic.title}
+      <h3 className="text-white font-serif italic font-black text-sm leading-tight text-center">
+        {diagnostic.title.split(' ').map((word, i, arr) => (
+          <span key={i}>
+            {word}
+            {i < arr.length - 1 && <br />}
+          </span>
+        ))}
       </h3>
     </button>
   );
