@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft } from 'lucide-react';
 import { FriendProfile } from '../constants';
 
@@ -17,11 +18,11 @@ const FriendCardPreview: React.FC<FriendCardPreviewProps> = ({
 }) => {
   if (!isOpen || !friend) return null;
 
-  return (
-    <div className="absolute inset-0 z-50 flex flex-col">
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex flex-col">
       {/* Blurred backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-md"
+        className="fixed inset-0 bg-black/60 backdrop-blur-md"
         onClick={onClose}
       />
 
@@ -68,7 +69,8 @@ const FriendCardPreview: React.FC<FriendCardPreviewProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
