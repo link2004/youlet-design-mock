@@ -322,7 +322,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 101,
     userId: "@yuki_art",
     name: "Yuki",
-    image: "/images/characters/char1.png",
+    image: "/images/characters/char16.png",
     hobbies: ["Art", "Photography", "Coffee"],
     personality: ["Creative", "Calm"]
   },
@@ -330,7 +330,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 102,
     userId: "@haru_music",
     name: "Haru",
-    image: "/images/characters/char2.png",
+    image: "/images/characters/char17.png",
     hobbies: ["Music", "Gaming", "Movies"],
     personality: ["Energetic", "Optimist"]
   },
@@ -338,7 +338,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 103,
     userId: "@ren_travel",
     name: "Ren",
-    image: "/images/characters/char3.png",
+    image: "/images/characters/char18.png",
     hobbies: ["Travel", "Hiking", "Cooking"],
     personality: ["Adventurous", "Kind"]
   },
@@ -346,7 +346,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 104,
     userId: "@mei_yoga",
     name: "Mei",
-    image: "/images/characters/char4.png",
+    image: "/images/characters/char19.png",
     hobbies: ["Yoga", "Reading", "Coffee"],
     personality: ["Calm", "Thoughtful"]
   },
@@ -354,7 +354,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 105,
     userId: "@taro_game",
     name: "Taro",
-    image: "/images/characters/char5.png",
+    image: "/images/characters/char20.png",
     hobbies: ["Gaming", "Anime", "Music"],
     personality: ["Curious", "Honest"]
   },
@@ -362,7 +362,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 106,
     userId: "@sakura_photo",
     name: "Sakura",
-    image: "/images/characters/char6.png",
+    image: "/images/characters/char21.png",
     hobbies: ["Photography", "Art", "Travel"],
     personality: ["Creative", "Extrovert"]
   },
@@ -370,7 +370,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 107,
     userId: "@kazu_cook",
     name: "Kazu",
-    image: "/images/characters/char7.png",
+    image: "/images/characters/char22.png",
     hobbies: ["Cooking", "Movies", "Gaming"],
     personality: ["Kind", "Introvert"]
   },
@@ -378,7 +378,7 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     id: 108,
     userId: "@nana_read",
     name: "Nana",
-    image: "/images/characters/char8.png",
+    image: "/images/characters/char23.png",
     hobbies: ["Reading", "Music", "Yoga"],
     personality: ["Thoughtful", "Honest"]
   },
