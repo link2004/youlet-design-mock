@@ -9,10 +9,6 @@ import {
   Heart,
   MessageCircle,
   User,
-  Users,
-  Sparkles,
-  Gem,
-  MapPin,
   LucideIcon
 } from 'lucide-react';
 
@@ -237,7 +233,7 @@ export const FRIENDS_LIST = [
 // 診断タイプ
 export interface DiagnosticType {
   id: string;
-  icon: LucideIcon;
+  image: string;
   title: string;
   description: string;
   gradient: string;
@@ -246,35 +242,35 @@ export interface DiagnosticType {
 export const DIAGNOSTIC_TYPES: DiagnosticType[] = [
   {
     id: 'love',
-    icon: Heart,
+    image: '/images/emoji/sparkling_heart_3d.png',
     title: 'Love Compatibility',
     description: 'Discover your romantic match potential',
     gradient: 'from-pink-500 to-rose-500',
   },
   {
     id: 'friendship',
-    icon: Users,
+    image: '/images/emoji/people_hugging_3d.png',
     title: 'Friendship Diagnosis',
     description: 'Find your ideal friend type',
     gradient: 'from-blue-500 to-cyan-500',
   },
   {
     id: 'hobbies',
-    icon: Sparkles,
+    image: '/images/emoji/sparkles_3d.png',
     title: 'Hidden Common Hobbies',
     description: 'Uncover shared interests',
     gradient: 'from-purple-500 to-violet-500',
   },
   {
     id: 'marriage',
-    icon: Gem,
+    image: '/images/emoji/ring_3d.png',
     title: 'Marriage Compatibility',
     description: 'Explore long-term potential',
     gradient: 'from-amber-500 to-orange-500',
   },
   {
     id: 'date',
-    icon: MapPin,
+    image: '/images/emoji/round_pushpin_3d.png',
     title: 'Date Plan Suggestions',
     description: 'Get personalized date ideas',
     gradient: 'from-emerald-500 to-teal-500',

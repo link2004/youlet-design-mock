@@ -14,8 +14,6 @@ interface DiagnosticCardProps {
 }
 
 const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) => {
-  const Icon = diagnostic.icon;
-
   return (
     <button
       onClick={onClick}
@@ -26,9 +24,13 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
         flex flex-col items-start justify-between p-4
       `}
     >
-      {/* Icon container with semi-transparent background */}
-      <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-        <Icon size={24} className="text-white" strokeWidth={2} />
+      {/* Emoji image container with semi-transparent background */}
+      <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
+        <img
+          src={diagnostic.image}
+          alt={diagnostic.title}
+          className="w-10 h-10 object-contain"
+        />
       </div>
 
       {/* Text content */}
