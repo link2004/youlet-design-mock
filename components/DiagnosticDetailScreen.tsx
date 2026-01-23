@@ -342,11 +342,11 @@ interface ResultPhaseProps {
   result: DiagnosticResult;
   diagnosticTitle: string;
   gradient: string;
-  onClose: () => void;
+  onBack: () => void;
   onDiagnoseAnother: () => void;
 }
 
-const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onClose, onDiagnoseAnother }) => {
+const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, diagnosticTitle, gradient, onBack, onDiagnoseAnother }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
 
@@ -363,7 +363,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
       {/* Header with back button */}
       <div className="flex items-center px-4 py-2 shrink-0">
         <button
-          onClick={onClose}
+          onClick={onBack}
           className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
@@ -702,7 +702,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = ({ diagnos
           result={resultData}
           diagnosticTitle={diagnostic.title}
           gradient={diagnostic.gradient}
-          onClose={handleClose}
+          onBack={onBack}
           onDiagnoseAnother={handleDiagnoseAnother}
         />
       )}
