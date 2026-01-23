@@ -101,10 +101,9 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
       <div className="relative flex items-center px-4 py-2 mt-4 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
         <button
           onClick={onBack}
-          className="flex items-center gap-1 text-neutral-700 dark:text-neutral-400"
+          className="flex items-center text-neutral-700 dark:text-neutral-400"
         >
           <ChevronLeft size={24} strokeWidth={2} />
-          <span className="text-base font-medium">Back</span>
         </button>
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-black text-xl tracking-tight text-black dark:text-white flex items-center gap-2">
           <Trophy size={20} className="text-orange-400" />
