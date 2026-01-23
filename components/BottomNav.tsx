@@ -21,17 +21,18 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate }) => {
         style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       >
         {NAV_ITEMS.map((item, index) => (
-          <div
+          <button
             key={index}
-            className="cursor-pointer"
+            className="cursor-pointer bg-transparent border-none p-0"
             onClick={() => onNavigate(item.page)}
+            aria-label={item.label}
           >
             <item.icon
               size={24}
               className={`fill-current ${currentPage === item.page ? "text-orange-400" : "text-neutral-400 dark:text-neutral-500"}`}
               strokeWidth={0}
             />
-          </div>
+          </button>
         ))}
       </div>
     </div>

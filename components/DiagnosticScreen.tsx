@@ -6,6 +6,7 @@ import { PageType } from '../App';
 interface DiagnosticScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
+  onSelectDiagnostic: (diagnostic: DiagnosticType) => void;
 }
 
 interface DiagnosticCardProps {
@@ -47,7 +48,7 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
   );
 };
 
-const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavigate }) => {
+const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavigate, onSelectDiagnostic }) => {
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       {/* Status Bar */}
@@ -87,9 +88,7 @@ const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavi
             <DiagnosticCard
               key={diagnostic.id}
               diagnostic={diagnostic}
-              onClick={() => {
-                // Future: Open diagnostic detail view
-              }}
+              onClick={() => onSelectDiagnostic(diagnostic)}
             />
           ))}
         </div>
