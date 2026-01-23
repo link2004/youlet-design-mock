@@ -36,10 +36,10 @@ const DiagnosticCard: React.FC<DiagnosticCardProps> = ({ diagnostic, onClick }) 
 
       {/* Text content */}
       <div className="text-center mt-4">
-        <h3 className="text-white font-bold text-sm leading-tight mb-1">
+        <h3 className="text-white font-serif italic font-black text-sm leading-tight mb-1">
           {diagnostic.title}
         </h3>
-        <p className="text-white/70 text-xs leading-tight">
+        <p className="text-white/70 font-serif italic text-xs leading-tight">
           {diagnostic.description}
         </p>
       </div>
