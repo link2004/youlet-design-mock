@@ -221,12 +221,12 @@ const ShareCard: React.FC<ShareCardProps> = ({ myProfile, friend, result, diagno
   return (
     <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col">
       {/* Header */}
-      <div className="flex items-center px-4 pt-3 pb-2 shrink-0">
+      <div className="flex items-center px-4 pt-14 pb-2 shrink-0">
         <button
           onClick={onClose}
-          className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center active:scale-95"
+          className="p-2 active:scale-95"
         >
-          <X className="w-5 h-5 text-white" />
+          <X className="w-7 h-7 text-white" />
         </button>
       </div>
 
