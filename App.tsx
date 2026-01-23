@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import IPhoneMockup from './components/IPhoneMockup';
 import PhoneScreen from './components/PhoneScreen';
-import HeartScreen from './components/HeartScreen';
 import FeedScreen from './components/FeedScreen';
 
-export type PageType = 'feed' | 'explorer' | 'heart' | 'chat' | 'account';
+export type PageType = 'cards' | 'profile';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<PageType>('account');
+  const [currentPage, setCurrentPage] = useState<PageType>('profile');
 
   const renderScreen = () => {
     switch (currentPage) {
-      case 'feed':
+      case 'cards':
         return <FeedScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
-      case 'heart':
-        return <HeartScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
-      case 'account':
+      case 'profile':
       default:
         return <PhoneScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
     }
