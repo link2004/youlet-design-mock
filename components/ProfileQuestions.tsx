@@ -142,16 +142,14 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
       <div className="relative overflow-hidden">
         <div
           className={`bg-white dark:bg-neutral-900 rounded-2xl p-6 transition-all duration-200 ${getCardTransform()} ${getInitialPosition()}`}
-          style={{
-            transform: animationPhase === 'enter'
-              ? undefined
-              : undefined
-          }}
+          style={{ minHeight: '180px' }}
         >
           {/* Question */}
-          <p className="text-base font-medium text-neutral-900 dark:text-white mb-8 text-center leading-relaxed">
-            {currentQuestion.question}
-          </p>
+          <div className="h-16 flex items-center justify-center mb-4">
+            <p className="text-base font-medium text-neutral-900 dark:text-white text-center leading-relaxed">
+              {currentQuestion.question}
+            </p>
+          </div>
 
           {/* Answer Circles */}
           <div className="flex items-center justify-center gap-4">
@@ -214,8 +212,8 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
       </div>
 
       {/* Percentage */}
-      <div className="text-center mt-2">
-        <span className="text-sm font-medium text-orange-500">
+      <div className="text-center mt-1">
+        <span className="text-xs font-medium text-orange-500">
           {Math.round(((currentIndex + 1) / totalCount) * 100)}%
         </span>
       </div>
