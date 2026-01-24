@@ -12,10 +12,7 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
   const [isAnimating, setIsAnimating] = React.useState(false);
   const [slideDirection, setSlideDirection] = React.useState<'left' | 'right'>('right');
 
-  const answeredCount = Object.keys(answers).length;
   const totalCount = PROFILE_QUESTIONS.length;
-  const progressPercent = (answeredCount / totalCount) * 100;
-
   const currentQuestion = PROFILE_QUESTIONS[currentIndex];
 
   const goToNext = () => {
@@ -94,24 +91,6 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
         </h2>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {currentIndex + 1} / {totalCount}
-          </span>
-          <span className="text-sm font-medium text-orange-500">
-            {answeredCount} answered
-          </span>
-        </div>
-        <div className="h-2 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-300"
-            style={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
-          />
-        </div>
-      </div>
-
       {/* Question Card */}
       <div className="relative overflow-hidden">
         <div
@@ -166,6 +145,22 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
         >
           <ChevronLeft size={20} />
         </button>
+
+        {/* Dots indicator */}
+        <div className="flex gap-1">
+          {PROFILE_QUESTIONS.map((_, idx) => (
+            <div
+              key={idx}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                idx === currentIndex
+                  ? 'bg-orange-400'
+                  : answers[PROFILE_QUESTIONS[idx].id]
+                  ? 'bg-orange-200 dark:bg-orange-900'
+                  : 'bg-neutral-300 dark:bg-neutral-600'
+              }`}
+            />
+          ))}
+        </div>
 
         <button
           onClick={goToNext}
