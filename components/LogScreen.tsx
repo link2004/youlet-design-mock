@@ -39,27 +39,43 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
 
   useEffect(() => {
     // スクロール位置を初期インデックスに設定
-    if (scrollRef.current && scrollRef.current.children[0]) {
-      const itemWidth = (scrollRef.current.children[0] as HTMLElement).offsetWidth + 12; // gap included
-      scrollRef.current.scrollLeft = currentIndex * itemWidth;
+    if (scrollRef.current && scrollRef.current.children[currentIndex]) {
+      const item = scrollRef.current.children[currentIndex] as HTMLElement;
+      const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+      const containerCenter = scrollRef.current.offsetWidth / 2;
+      scrollRef.current.scrollLeft = itemCenter - containerCenter;
     }
   }, []);
 
   const handleScroll = () => {
-    if (scrollRef.current && scrollRef.current.children[0]) {
-      const itemWidth = (scrollRef.current.children[0] as HTMLElement).offsetWidth + 12;
-      const newIndex = Math.round(scrollRef.current.scrollLeft / itemWidth);
-      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
-        setCurrentIndex(newIndex);
+    if (scrollRef.current) {
+      const containerCenter = scrollRef.current.scrollLeft + scrollRef.current.offsetWidth / 2;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      Array.from(scrollRef.current.children).forEach((child, idx) => {
+        const item = child as HTMLElement;
+        const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+        const distance = Math.abs(containerCenter - itemCenter);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = idx;
+        }
+      });
+
+      if (closestIndex !== currentIndex) {
+        setCurrentIndex(closestIndex);
       }
     }
   };
 
   const goToIndex = (index: number) => {
-    if (scrollRef.current && scrollRef.current.children[0] && index >= 0 && index < images.length) {
-      const itemWidth = (scrollRef.current.children[0] as HTMLElement).offsetWidth + 12;
+    if (scrollRef.current && scrollRef.current.children[index] && index >= 0 && index < images.length) {
+      const item = scrollRef.current.children[index] as HTMLElement;
+      const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+      const containerCenter = scrollRef.current.offsetWidth / 2;
       scrollRef.current.scrollTo({
-        left: index * itemWidth,
+        left: itemCenter - containerCenter,
         behavior: 'smooth',
       });
     }
@@ -95,19 +111,21 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
         ref={scrollRef}
         onScroll={handleScroll}
         onClick={handleClose}
-        className="h-full w-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar items-center"
+        className="h-full w-full overflow-x-auto no-scrollbar flex items-center gap-4"
         style={{
           scrollSnapType: 'x mandatory',
-          gap: '16px',
-          paddingLeft: '30px',
-          paddingRight: '30px',
+          paddingLeft: 'calc(50% - 40%)',
+          paddingRight: 'calc(50% - 40%)',
         }}
       >
         {images.map((img, idx) => (
           <div
             key={idx}
-            className="h-full flex-shrink-0 flex items-center justify-center snap-center"
-            style={{ width: 'calc(100% - 76px)' }}
+            className="h-full flex-shrink-0 flex items-center justify-center"
+            style={{
+              width: '80%',
+              scrollSnapAlign: 'center',
+            }}
           >
             <img
               src={img}
