@@ -970,40 +970,23 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick,
 interface GroupFriendSelectSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectMultiple: (friends: FriendProfile[]) => void;
   selectedMembers: FriendProfile[];
+  onUpdateMembers: (members: FriendProfile[]) => void;
   maxMembers: number;
 }
 
-const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen, onClose, onSelectMultiple, selectedMembers, maxMembers }) => {
-  const [tempSelected, setTempSelected] = useState<FriendProfile[]>([]);
-
-  // シートが閉じたら選択をリセット
-  React.useEffect(() => {
-    if (!isOpen) {
-      setTempSelected([]);
-    }
-  }, [isOpen]);
-
+const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen, onClose, selectedMembers, onUpdateMembers, maxMembers }) => {
   if (!isOpen) return null;
 
-  const alreadySelectedIds = selectedMembers.map(m => m.id);
-  const tempSelectedIds = tempSelected.map(m => m.id);
-  const remainingSlots = maxMembers - selectedMembers.length;
+  const selectedIds = selectedMembers.map(m => m.id);
 
   const toggleSelect = (friend: FriendProfile) => {
-    if (tempSelectedIds.includes(friend.id)) {
-      setTempSelected(tempSelected.filter(f => f.id !== friend.id));
-    } else if (tempSelected.length < remainingSlots) {
-      setTempSelected([...tempSelected, friend]);
-    }
-  };
-
-  const handleConfirm = () => {
-    if (tempSelected.length > 0) {
-      onSelectMultiple(tempSelected);
-      setTempSelected([]);
-      onClose();
+    if (selectedIds.includes(friend.id)) {
+      // 解除
+      onUpdateMembers(selectedMembers.filter(m => m.id !== friend.id));
+    } else if (selectedMembers.length < maxMembers) {
+      // 追加
+      onUpdateMembers([...selectedMembers, friend]);
     }
   };
 
@@ -1030,30 +1013,19 @@ const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen,
           <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
         </div>
 
-        {/* Header with confirm button */}
-        <div className="px-4 pb-3 flex items-center justify-between">
+        {/* Header */}
+        <div className="px-4 pb-3 text-center">
           <span className="text-sm text-neutral-500">
-            {tempSelected.length} / {remainingSlots} selected
+            {selectedMembers.length} / {maxMembers} selected
           </span>
-          <button
-            onClick={handleConfirm}
-            disabled={tempSelected.length === 0}
-            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
-              tempSelected.length > 0
-                ? 'bg-orange-500 text-white active:bg-orange-600'
-                : 'bg-gray-200 text-gray-400'
-            }`}
-          >
-            Add
-          </button>
         </div>
 
         {/* Friend grid */}
-        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
+        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(70vh - 80px)' }}>
           <div className="grid grid-cols-4 gap-2">
-            {FRIENDS_LIST.filter(friend => !alreadySelectedIds.includes(friend.id)).map((friend) => {
-              const isSelected = tempSelectedIds.includes(friend.id);
-              const isDisabled = !isSelected && tempSelected.length >= remainingSlots;
+            {FRIENDS_LIST.map((friend) => {
+              const isSelected = selectedIds.includes(friend.id);
+              const isDisabled = !isSelected && selectedMembers.length >= maxMembers;
               return (
                 <button
                   key={friend.id}
@@ -1471,16 +1443,13 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
         {/* Friend select sheet */}
         <GroupFriendSelectSheet
           isOpen={isSheetOpen}
-          onClose={() => {
-            setIsSheetOpen(false);
-            setSelectedSlot(null);
-          }}
-          onSelectMultiple={(friends) => {
+          onClose={() => setIsSheetOpen(false)}
+          selectedMembers={selectedGroupMembers!}
+          onUpdateMembers={(members) => {
             if (props.onSelectGroupMembers) {
-              props.onSelectGroupMembers([...selectedGroupMembers!, ...friends]);
+              props.onSelectGroupMembers(members);
             }
           }}
-          selectedMembers={selectedGroupMembers!}
           maxMembers={8}
         />
 
