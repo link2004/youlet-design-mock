@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Trophy, Crown, Medal } from 'lucide-react';
+import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Crown, Medal } from 'lucide-react';
 import { DiagnosticType, GroupDiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
 import StatusBar from './StatusBar';
 
@@ -696,10 +696,7 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
 
         {/* Header */}
         <div className="px-4 pb-3">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <Trophy size={18} className="text-orange-400" />
-            <h3 className="font-bold text-neutral-900 dark:text-white text-base">Past Results</h3>
-          </div>
+          <h3 className="font-bold text-neutral-900 dark:text-white text-base text-center mb-1">Past Results</h3>
           <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">{diagnosticTitle}</p>
         </div>
 
