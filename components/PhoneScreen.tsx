@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, ChevronLeft, Star, Moon, Sun } from 'lucide-react';
 import { USER_DATA, MENU_ITEMS } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
+import ProfileCardFlip from './ProfileCardFlip';
+import EventApprovalModal from './EventApprovalModal';
 import { PageType } from '../App';
 
 interface PhoneScreenProps {
@@ -13,10 +15,23 @@ interface PhoneScreenProps {
 }
 
 const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) => {
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [showSettings, setShowSettings] = React.useState(false);
-  const [showElements, setShowElements] = React.useState(false);
-  const [showStory, setShowStory] = React.useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showElements, setShowElements] = useState(false);
+  const [showStory, setShowStory] = useState(false);
+  const [showEventApproval, setShowEventApproval] = useState(false);
+  const [hasShownEventApproval, setHasShownEventApproval] = useState(false);
+
+  // Show event approval modal on first load (simulating app launch)
+  useEffect(() => {
+    if (!hasShownEventApproval) {
+      const timer = setTimeout(() => {
+        setShowEventApproval(true);
+        setHasShownEventApproval(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasShownEventApproval]);
 
   React.useEffect(() => {
     if (darkMode) {
@@ -75,22 +90,7 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
 
             {/* Profile Section */}
             <div className="flex flex-col items-center mt-6 mb-6">
-              <div className="relative mb-2">
-                <div className="w-56 h-56 flex items-center justify-center">
-                  <img
-                    src={USER_DATA.avatar}
-                    alt="Profile"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_15.png";
-                    }}
-                  />
-                </div>
-                {/* Foot shadow */}
-                <div
-                  className="absolute bottom-3 left-1/2 -translate-x-1/2 w-40 h-6 rounded-[50%] bg-black/20 dark:bg-white/35 blur-md"
-                />
-              </div>
+              <ProfileCardFlip />
 
               <div className="mb-1">
                 <span className="text-2xl font-bold text-neutral-900 dark:text-white">{USER_DATA.name}</span>
@@ -98,6 +98,9 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               <div className="text-neutral-500 dark:text-neutral-400 text-sm font-medium">
                 {USER_DATA.age} years old • {USER_DATA.location}
               </div>
+              <p className="text-neutral-400 dark:text-neutral-500 text-xs mt-2">
+                タップでカードを裏返す
+              </p>
             </div>
 
             {/* Promo Cards - Horizontal Scroll with Snap */}
@@ -231,6 +234,18 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
       {/* Story View Modal */}
       {showStory && (
         <StoryView onClose={() => setShowStory(false)} />
+      )}
+
+      {/* Event Approval Modal */}
+      {showEventApproval && (
+        <EventApprovalModal
+          onClose={() => setShowEventApproval(false)}
+          onApprove={(eventIds) => {
+            console.log('Approved events:', eventIds);
+            // In a real app, this would update the CARD_BACK_EVENTS
+            setShowEventApproval(false);
+          }}
+        />
       )}
     </div>
   );

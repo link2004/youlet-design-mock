@@ -84,3 +84,41 @@ export const AI_CONVERSATION: Array<{
   { sender: 'user', message: "Nice choice! I've been wanting to try Fujifilm." },
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
+
+// AIが提案する直近の出来事（承認待ち）
+export const AI_SUGGESTED_EVENTS: Array<{
+  id: string;
+  title: string;
+  emoji: string;
+  description: string;
+}> = [
+  {
+    id: '1',
+    title: 'パスポートを失くした',
+    emoji: '😱',
+    description: '旅行前に大慌て...'
+  },
+  {
+    id: '2',
+    title: '新しいカメラを買った',
+    emoji: '📷',
+    description: 'Fujifilm X-T5をついに購入！'
+  },
+  {
+    id: '3',
+    title: 'カフェ巡りにハマっている',
+    emoji: '☕',
+    description: '週末は新しいカフェを探索中'
+  },
+];
+
+// カード裏面に表示される承認済みイベント
+export const CARD_BACK_EVENTS: Array<{
+  id: string;
+  title: string;
+  emoji: string;
+  date: string;
+}> = [
+  { id: 'approved-1', title: '新しいカメラを買った', emoji: '📷', date: '3日前' },
+  { id: 'approved-2', title: 'カフェ巡りにハマっている', emoji: '☕', date: '1週間前' },
+];
