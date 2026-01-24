@@ -649,11 +649,11 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
 interface PastRankingSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectFriend: (friend: FriendProfile) => void;
+  onSelectResult: (friend: FriendProfile, percentage: number) => void;
   diagnosticTitle: string;
 }
 
-const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, onSelectFriend, diagnosticTitle }) => {
+const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, onSelectResult, diagnosticTitle }) => {
   const [pastResults] = useState<PastDiagnosisResult[]>(() => generateMockPastResults());
 
   if (!isOpen) return null;
@@ -709,7 +709,7 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
                 <button
                   key={result.friend.id}
                   onClick={() => {
-                    onSelectFriend(result.friend);
+                    onSelectResult(result.friend, result.percentage);
                     onClose();
                   }}
                   className="flex items-center gap-3 p-3 rounded-xl transition-transform active:scale-[0.98]"
@@ -762,6 +762,7 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
 interface GroupPastResultsSheetProps {
   isOpen: boolean;
   onClose: () => void;
+  onSelectGroup: (members: FriendProfile[]) => void;
 }
 
 // グループ診断の過去結果モックデータ
@@ -775,7 +776,7 @@ const generateGroupPastResults = () => {
   ];
 };
 
-const GroupPastResultsSheet: React.FC<GroupPastResultsSheetProps> = ({ isOpen, onClose }) => {
+const GroupPastResultsSheet: React.FC<GroupPastResultsSheetProps> = ({ isOpen, onClose, onSelectGroup }) => {
   const [pastGroups] = useState(() => generateGroupPastResults());
 
   if (!isOpen) return null;
@@ -814,6 +815,7 @@ const GroupPastResultsSheet: React.FC<GroupPastResultsSheetProps> = ({ isOpen, o
             {pastGroups.map((group, index) => (
               <button
                 key={index}
+                onClick={() => onSelectGroup(group)}
                 className="flex items-center gap-1 p-3 rounded-xl active:bg-gray-100 transition-colors"
               >
                 {group.map((friend, friendIndex) => (
@@ -1357,6 +1359,11 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
         <GroupPastResultsSheet
           isOpen={isGroupPastResultsOpen}
           onClose={() => setIsGroupPastResultsOpen(false)}
+          onSelectGroup={(members) => {
+            setIsGroupPastResultsOpen(false);
+            setGroupResultData(generateGroupResult(members, groupDiagnostic!.id));
+            setPhase('result');
+          }}
         />
       </div>
     );
@@ -1457,7 +1464,13 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
       <PastRankingSheet
         isOpen={isRankingSheetOpen}
         onClose={() => setIsRankingSheetOpen(false)}
-        onSelectFriend={handleFriendSelect}
+        onSelectResult={(friend, percentage) => {
+          if (props.onSelectFriend) {
+            props.onSelectFriend(friend);
+          }
+          setResultData(generateLoveResult(friend.name));
+          setPhase('result');
+        }}
         diagnosticTitle={diagnostic.title}
       />
     </div>
