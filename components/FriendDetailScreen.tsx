@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, MessageSquare } from 'lucide-react';
 import { FriendProfile, DiagnosticType } from '../constants';
 import DiagnosticTypeSheet from './DiagnosticTypeSheet';
 
@@ -9,9 +9,10 @@ interface FriendDetailScreenProps {
   onBack: () => void;
   onSelectDiagnostic: (diagnostic: DiagnosticType) => void;
   initialSheetOpen?: boolean;
+  onViewAIConversation?: () => void;
 }
 
-const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false }) => {
+const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false, onViewAIConversation }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(initialSheetOpen);
   const [isFlipped, setIsFlipped] = useState(false);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
@@ -142,6 +143,20 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
                     </div>
                   )}
                 </div>
+
+                {/* View AI Conversation Button */}
+                {onViewAIConversation && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onViewAIConversation();
+                    }}
+                    className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 bg-white/20 backdrop-blur-sm rounded-xl text-white text-sm font-medium hover:bg-white/30 transition-colors active:scale-[0.98]"
+                  >
+                    <MessageSquare size={16} />
+                    View AI Conversation
+                  </button>
+                )}
 
                 <p className="text-white/60 text-xs text-center mt-3 font-medium">
                   Tap to flip back

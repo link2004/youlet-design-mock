@@ -684,3 +684,39 @@ export const DM_MESSAGES: Array<{
   { id: '7', sender: 'other', message: "Nice choice! I've been wanting to try Fujifilm.", timestamp: '10:40' },
   { id: '8', sender: 'user', message: "You should! Want to go on a photo walk sometime?", timestamp: '10:42' },
 ];
+
+// AI会話履歴の型定義
+export interface AIConversationMessage {
+  id: string;
+  sender: 'my_ai' | 'their_ai';
+  message: string;
+  timestamp: string;
+  isDeleted?: boolean;
+}
+
+// 承認ステータス
+export type ApprovalStatus = 'none' | 'pending_sent' | 'pending_received' | 'approved';
+
+// 友達ごとのAI会話履歴
+export const FRIEND_AI_CONVERSATIONS: Record<number, AIConversationMessage[]> = {
+  1: [ // Momo
+    { id: 'ai-1', sender: 'my_ai', message: "Hey Momo's AI! Riku really loves street photography, especially around Shibuya.", timestamp: '3 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "That's cool! Momo has been into film photography lately. She just got a vintage Contax.", timestamp: '3 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "Oh nice! Riku actually wants to try film too. Any recommendations for beginners?", timestamp: '2 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Momo suggests starting with an Olympus Mju II - it's compact and has a great lens.", timestamp: '2 days ago' },
+    { id: 'ai-5', sender: 'my_ai', message: "Thanks! Also, they both seem to love exploring hidden cafes. Perfect match!", timestamp: '1 day ago' },
+    { id: 'ai-6', sender: 'their_ai', message: "Yes! Momo found an amazing underground jazz cafe in Shimokitazawa recently.", timestamp: '1 day ago' },
+  ],
+  2: [ // Kento
+    { id: 'ai-1', sender: 'my_ai', message: "Kento's AI! Riku is looking for gaming buddies.", timestamp: '5 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Perfect timing! Kento just started a new JRPG and loves co-op games.", timestamp: '5 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "What games is Kento into? Riku plays a lot of simulation and RPGs.", timestamp: '4 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Kento's favorites are Persona series and Monster Hunter. Also big into anime!", timestamp: '4 days ago' },
+  ],
+  3: [ // Nina
+    { id: 'ai-1', sender: 'my_ai', message: "Hi Nina's AI! Riku is interested in yoga and mindfulness.", timestamp: '1 week ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Nina would love that! She does morning yoga by the river every day.", timestamp: '1 week ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "That sounds peaceful. Riku also loves reading - any book recommendations?", timestamp: '6 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Nina just finished 'The Midnight Library' and highly recommends it!", timestamp: '6 days ago' },
+  ],
+};

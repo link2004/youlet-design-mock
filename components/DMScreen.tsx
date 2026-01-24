@@ -1,12 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera } from 'lucide-react';
-import { DM_CHATS, DM_MESSAGES, USER_DATA } from '../constants';
+import { DM_CHATS, DM_MESSAGES, USER_DATA, FRIENDS_LIST, ApprovalStatus } from '../constants';
 import BottomNav from './BottomNav';
 import { PageType } from '../App';
+import DMConversationApprovalWidget from './DMConversationApprovalWidget';
 
 interface DMScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
+  approvalStatuses?: Map<number, ApprovalStatus>;
+  onApprove?: (friendId: number) => void;
+  onViewAIConversation?: (friendId: number) => void;
+  onSimulateTheirApproval?: (friendId: number) => void;
+  initialChatId?: string;
 }
 
 interface ChatItemProps {
@@ -59,11 +65,18 @@ const ChatItem: React.FC<ChatItemProps> = ({ chat, onClick }) => (
 interface ChatDetailProps {
   chat: typeof DM_CHATS[0];
   onBack: () => void;
+  approvalStatus?: ApprovalStatus;
+  onApprove?: () => void;
+  onViewAIConversation?: () => void;
+  onSimulateTheirApproval?: () => void;
 }
 
-const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
+const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack, approvalStatus, onApprove, onViewAIConversation, onSimulateTheirApproval }) => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Find the friend profile for the widget
+  const friend = FRIENDS_LIST.find(f => f.name === chat.name);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -121,8 +134,8 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
-        <div className="flex flex-col gap-2">
+      <div className="flex-1 overflow-y-auto py-4 no-scrollbar">
+        <div className="flex flex-col gap-2 px-4">
           {DM_MESSAGES.map((msg) => (
             <div
               key={msg.id}
@@ -144,8 +157,20 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
               </div>
             </div>
           ))}
-          <div ref={messagesEndRef} />
         </div>
+
+        {/* AI Conversation Approval Widget */}
+        {friend && approvalStatus && approvalStatus !== 'none' && (
+          <DMConversationApprovalWidget
+            friend={friend}
+            status={approvalStatus}
+            onApprove={onApprove}
+            onViewConversation={onViewAIConversation}
+            onSimulateTheirApproval={onSimulateTheirApproval}
+          />
+        )}
+
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
@@ -180,13 +205,44 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
   );
 };
 
-const DMScreen: React.FC<DMScreenProps> = ({ currentPage, onNavigate }) => {
+const DMScreen: React.FC<DMScreenProps> = ({
+  currentPage,
+  onNavigate,
+  approvalStatuses,
+  onApprove,
+  onViewAIConversation,
+  onSimulateTheirApproval,
+  initialChatId,
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChat, setSelectedChat] = useState<typeof DM_CHATS[0] | null>(null);
+
+  // Open chat when initialChatId is provided
+  useEffect(() => {
+    if (initialChatId) {
+      const chat = DM_CHATS.find(c => c.id === initialChatId);
+      if (chat) {
+        setSelectedChat(chat);
+      }
+    }
+  }, [initialChatId]);
 
   const filteredChats = DM_CHATS.filter(chat =>
     chat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Get approval status for the selected chat
+  const getApprovalStatusForChat = (chatName: string): ApprovalStatus => {
+    const friend = FRIENDS_LIST.find(f => f.name === chatName);
+    if (!friend || !approvalStatuses) return 'none';
+    return approvalStatuses.get(friend.id) || 'none';
+  };
+
+  // Get friend ID from chat name
+  const getFriendIdFromChat = (chatName: string): number | undefined => {
+    const friend = FRIENDS_LIST.find(f => f.name === chatName);
+    return friend?.id;
+  };
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
@@ -271,6 +327,25 @@ const DMScreen: React.FC<DMScreenProps> = ({ currentPage, onNavigate }) => {
         <ChatDetail
           chat={selectedChat}
           onBack={() => setSelectedChat(null)}
+          approvalStatus={getApprovalStatusForChat(selectedChat.name)}
+          onApprove={() => {
+            const friendId = getFriendIdFromChat(selectedChat.name);
+            if (friendId && onApprove) {
+              onApprove(friendId);
+            }
+          }}
+          onViewAIConversation={() => {
+            const friendId = getFriendIdFromChat(selectedChat.name);
+            if (friendId && onViewAIConversation) {
+              onViewAIConversation(friendId);
+            }
+          }}
+          onSimulateTheirApproval={() => {
+            const friendId = getFriendIdFromChat(selectedChat.name);
+            if (friendId && onSimulateTheirApproval) {
+              onSimulateTheirApproval(friendId);
+            }
+          }}
         />
       )}
     </div>
