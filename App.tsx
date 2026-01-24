@@ -8,7 +8,10 @@ import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
 import FriendDetailScreen from './components/FriendDetailScreen';
 import DMScreen from './components/DMScreen';
 import AIConversationHistoryScreen from './components/AIConversationHistoryScreen';
-import { DiagnosticType, GroupDiagnosticType, FriendProfile, ApprovalStatus, FRIENDS_LIST } from './constants';
+import { DiagnosticType, GroupDiagnosticType, FriendProfile, FRIENDS_LIST } from './constants';
+
+// Approval status type (local definition for AI conversation approval flow)
+type ApprovalStatus = 'none' | 'pending_sent' | 'pending_received' | 'approved';
 
 export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'friend-detail' | 'ranking' | 'dm' | 'ai-conversation-history';
 
@@ -52,20 +55,6 @@ const App: React.FC = () => {
     }
     setSelectedDiagnostic(null);
     setDiagnosticEntryPoint(null);
-  };
-
-  const handleSelectFriendFromFeed = (friend: FriendProfile) => {
-    setFriendDetailEntryPoint('cards');
-    setSelectedFriend(friend);
-    setShouldOpenSheet(false);
-    setCurrentPage('friend-detail');
-  };
-
-  const handleSelectFriendFromRanking = (friend: FriendProfile) => {
-    setFriendDetailEntryPoint('ranking');
-    setSelectedFriend(friend);
-    setShouldOpenSheet(false);
-    setCurrentPage('friend-detail');
   };
 
   const handleBackFromFriendDetail = () => {
@@ -170,7 +159,6 @@ const App: React.FC = () => {
             <FeedScreen
               currentPage="cards"
               onNavigate={setCurrentPage}
-              onSelectFriend={handleSelectFriendFromFeed}
             />
             {currentPage === 'friend-detail' && selectedFriend && (
               <FriendDetailScreen
@@ -187,7 +175,8 @@ const App: React.FC = () => {
       case 'ranking':
         return (
           <RankingScreen
-            onSelectFriend={handleSelectFriendFromRanking}
+            currentPage={currentPage}
+            onNavigate={setCurrentPage}
             onBack={() => setCurrentPage('cards')}
           />
         );
@@ -243,7 +232,6 @@ const App: React.FC = () => {
               <FeedScreen
                 currentPage="cards"
                 onNavigate={setCurrentPage}
-                onSelectFriend={handleSelectFriendFromFeed}
               />
               <AIConversationHistoryScreen
                 friend={selectedFriend}
@@ -254,7 +242,7 @@ const App: React.FC = () => {
             </>
           );
         }
-        return <FeedScreen currentPage="cards" onNavigate={setCurrentPage} onSelectFriend={handleSelectFriendFromFeed} />;
+        return <FeedScreen currentPage="cards" onNavigate={setCurrentPage} />;
       case 'profile':
       default:
         return <PhoneScreen currentPage={currentPage} onNavigate={setCurrentPage} />;

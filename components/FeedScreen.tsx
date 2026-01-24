@@ -11,10 +11,9 @@ import { PageType } from '../App';
 interface FeedScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
-  onSelectFriend: (friend: FriendProfile) => void;
 }
 
-const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
+const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [previewFriend, setPreviewFriend] = useState<FriendProfile | null>(null);
@@ -98,7 +97,6 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
                 key={friend.id}
                 name={friend.name}
                 image={friend.image}
-                onClick={() => onSelectFriend(friend)}
               />
             ))}
           </div>
