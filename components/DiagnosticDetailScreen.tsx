@@ -1334,47 +1334,60 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
             </h2>
             <p className="text-white/80 text-xs mb-4">Select 4-8 members</p>
 
-            {/* グリッド - 最初は4枠、4枠埋まると+4枠表示 */}
+            {/* グリッド - 選択数+1枠を表示（最小4、最大8） */}
             <div className="w-full max-w-[300px] mb-4">
-              <div className="grid grid-cols-4 gap-2">
-                {[0, 1, 2, 3].map((index) => (
-                  <PersonCard
-                    key={index}
-                    person={selectedGroupMembers![index] || null}
-                    isPlaceholder={!selectedGroupMembers![index]}
-                    onClick={() => {
-                      if (selectedGroupMembers![index]) {
-                        handleRemoveGroupMember(index);
-                      } else if (selectedGroupMembers!.length < 8) {
-                        setSelectedSlot(index);
-                        setIsSheetOpen(true);
-                      }
-                    }}
-                    size="small"
-                  />
-                ))}
-              </div>
-              {/* 4枠埋まったら2行目を表示 */}
-              {selectedGroupMembers!.length >= 4 && (
-                <div className="grid grid-cols-4 gap-2 mt-2">
-                  {[4, 5, 6, 7].map((index) => (
-                    <PersonCard
-                      key={index}
-                      person={selectedGroupMembers![index] || null}
-                      isPlaceholder={!selectedGroupMembers![index]}
-                      onClick={() => {
-                        if (selectedGroupMembers![index]) {
-                          handleRemoveGroupMember(index);
-                        } else if (selectedGroupMembers!.length < 8) {
-                          setSelectedSlot(index);
-                          setIsSheetOpen(true);
-                        }
-                      }}
-                      size="small"
-                    />
-                  ))}
-                </div>
-              )}
+              {(() => {
+                const memberCount = selectedGroupMembers!.length;
+                // 表示する枠数: 最小4、選択数+1（ただし最大8）
+                const slotsToShow = Math.min(8, Math.max(4, memberCount + 1));
+                // 1行目（0-3）
+                const firstRowSlots = Math.min(4, slotsToShow);
+                // 2行目（4-7）
+                const secondRowSlots = Math.max(0, slotsToShow - 4);
+
+                return (
+                  <>
+                    <div className="grid grid-cols-4 gap-2">
+                      {Array.from({ length: firstRowSlots }, (_, i) => i).map((index) => (
+                        <PersonCard
+                          key={index}
+                          person={selectedGroupMembers![index] || null}
+                          isPlaceholder={!selectedGroupMembers![index]}
+                          onClick={() => {
+                            if (selectedGroupMembers![index]) {
+                              handleRemoveGroupMember(index);
+                            } else if (selectedGroupMembers!.length < 8) {
+                              setSelectedSlot(index);
+                              setIsSheetOpen(true);
+                            }
+                          }}
+                          size="small"
+                        />
+                      ))}
+                    </div>
+                    {secondRowSlots > 0 && (
+                      <div className="grid grid-cols-4 gap-2 mt-2">
+                        {Array.from({ length: secondRowSlots }, (_, i) => i + 4).map((index) => (
+                          <PersonCard
+                            key={index}
+                            person={selectedGroupMembers![index] || null}
+                            isPlaceholder={!selectedGroupMembers![index]}
+                            onClick={() => {
+                              if (selectedGroupMembers![index]) {
+                                handleRemoveGroupMember(index);
+                              } else if (selectedGroupMembers!.length < 8) {
+                                setSelectedSlot(index);
+                                setIsSheetOpen(true);
+                              }
+                            }}
+                            size="small"
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             {/* Member count */}
