@@ -1064,45 +1064,43 @@ const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen,
   );
 };
 
-// グループ診断結果の型
-interface GroupDiagnosticResult {
-  winnerPair: [FriendProfile, FriendProfile];
+// グループ診断結果の型（トップ3）
+interface GroupPairResult {
+  pair: [FriendProfile, FriendProfile];
   percentage: number;
-  reason: string;
 }
 
-// グループ診断結果を生成
-const generateGroupResult = (members: FriendProfile[], diagnosticId: string): GroupDiagnosticResult => {
-  // ランダムに2人を選ぶ
-  const shuffled = [...members].sort(() => Math.random() - 0.5);
-  const pair: [FriendProfile, FriendProfile] = [shuffled[0], shuffled[1]];
+interface GroupDiagnosticResult {
+  topThree: [GroupPairResult, GroupPairResult, GroupPairResult];
+}
 
-  const reasons: Record<string, string[]> = {
-    dna_soulmates: [
-      'Their energy frequencies resonate perfectly!',
-      'A cosmic connection written in the stars',
-      'Twin flame energy detected at 99.7%',
-    ],
-    chaos_catalyst: [
-      'Warning: Combined chaos level exceeds safety limits',
-      'These two should never be left alone together',
-      'Expect fireworks... and maybe a few broken things',
-    ],
-    one_night_mistake: [
-      'The chemistry is there... the judgment is not',
-      'Proceed with caution (they won\'t)',
-      'A story they\'ll regret telling their grandchildren',
-    ],
-  };
+// グループ診断結果を生成（トップ3の組み合わせ）
+const generateGroupResult = (members: FriendProfile[], _diagnosticId: string): GroupDiagnosticResult => {
+  // 全てのペアの組み合わせを生成
+  const allPairs: [FriendProfile, FriendProfile][] = [];
+  for (let i = 0; i < members.length; i++) {
+    for (let j = i + 1; j < members.length; j++) {
+      allPairs.push([members[i], members[j]]);
+    }
+  }
 
-  const reasonList = reasons[diagnosticId] || reasons.dna_soulmates;
-  const reason = reasonList[Math.floor(Math.random() * reasonList.length)];
+  // シャッフルしてランダムなペアを選択
+  const shuffled = allPairs.sort(() => Math.random() - 0.5);
 
-  return {
-    winnerPair: pair,
-    percentage: Math.floor(Math.random() * 20) + 80,
-    reason,
-  };
+  // トップ3のペアにパーセンテージを割り当て（降順）
+  const percentages = [
+    Math.floor(Math.random() * 10) + 90, // 90-99%
+    Math.floor(Math.random() * 15) + 75, // 75-89%
+    Math.floor(Math.random() * 20) + 55, // 55-74%
+  ].sort((a, b) => b - a);
+
+  const topThree: [GroupPairResult, GroupPairResult, GroupPairResult] = [
+    { pair: shuffled[0], percentage: percentages[0] },
+    { pair: shuffled[1], percentage: percentages[1] },
+    { pair: shuffled[2], percentage: percentages[2] },
+  ];
+
+  return { topThree };
 };
 
 // グループ診断のローディング画面
@@ -1162,19 +1160,27 @@ interface GroupResultPhaseProps {
   result: GroupDiagnosticResult;
   diagnosticTitle: string;
   diagnosticSubtitle: string;
-  gradient: string;
   onBack: () => void;
 }
 
-const GroupResultPhase: React.FC<GroupResultPhaseProps> = ({ result, diagnosticTitle, diagnosticSubtitle, gradient, onBack }) => {
-  const [showDetails, setShowDetails] = useState(false);
+const GroupResultPhase: React.FC<GroupResultPhaseProps> = ({ result, diagnosticTitle, diagnosticSubtitle, onBack }) => {
+  const [showRanks, setShowRanks] = useState([false, false, false]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowDetails(true);
-    }, 1200);
-    return () => clearTimeout(timer);
+    // 順番にアニメーション表示
+    const timers = [
+      setTimeout(() => setShowRanks(prev => [true, prev[1], prev[2]]), 300),
+      setTimeout(() => setShowRanks(prev => [prev[0], true, prev[2]]), 700),
+      setTimeout(() => setShowRanks(prev => [prev[0], prev[1], true]), 1100),
+    ];
+    return () => timers.forEach(t => clearTimeout(t));
   }, []);
+
+  const rankMedals = [
+    '/images/rank/1st_3d.png',
+    '/images/rank/2nd_3d.png',
+    '/images/rank/3rd_3d.png',
+  ];
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto">
@@ -1190,53 +1196,69 @@ const GroupResultPhase: React.FC<GroupResultPhaseProps> = ({ result, diagnosticT
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center px-4 pb-6">
-        {/* Award badge */}
-        <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 mb-4">
-          <span className="text-white/90 text-sm font-semibold">🏆 {diagnosticSubtitle}</span>
-        </div>
+        {/* Title */}
+        <h2 className="text-white font-serif italic font-black text-xl mb-1">{diagnosticTitle}</h2>
+        <p className="text-white/80 text-sm mb-6">{diagnosticSubtitle}</p>
 
-        {/* 2枚のカード + ハート */}
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <MiniCard person={result.winnerPair[0]} />
-          <Heart className="w-6 h-6 text-white fill-white" />
-          <MiniCard person={result.winnerPair[1]} />
-        </div>
+        {/* Top 3 Ranking */}
+        <div className="w-full max-w-xs space-y-3">
+          {result.topThree.map((item, index) => (
+            <div
+              key={index}
+              className={`
+                bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-xl
+                transition-all duration-500
+                ${showRanks[index] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}
+              `}
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="flex items-center gap-3">
+                {/* Rank medal */}
+                <img
+                  src={rankMedals[index]}
+                  alt={`${index + 1}位`}
+                  className="w-10 h-10 object-contain shrink-0"
+                />
 
-        {/* パーセンテージ */}
-        <div className="text-center mb-1">
-          <span className="text-5xl font-serif italic font-black text-white drop-shadow-lg">
-            <CountUpNumber target={result.percentage} />%
-          </span>
-        </div>
-        <p className="text-white/90 font-serif italic font-semibold text-base mb-4">
-          {diagnosticTitle}
-        </p>
+                {/* Pair avatars */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-gradient-to-b from-neutral-50 to-neutral-100 border border-neutral-200">
+                    <img
+                      src={item.pair[0].image}
+                      alt={item.pair[0].name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <Heart className="w-3 h-3 text-pink-400 fill-pink-400 shrink-0" />
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-gradient-to-b from-neutral-50 to-neutral-100 border border-neutral-200">
+                    <img
+                      src={item.pair[1].image}
+                      alt={item.pair[1].name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
 
-        {/* 理由カード */}
-        <div
-          className={`
-            w-full max-w-xs
-            transition-all duration-500
-            ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-          `}
-        >
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-pink-500" />
-              <span className="font-bold text-gray-800 text-sm">Why these two?</span>
+                {/* Names and percentage */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-gray-800 font-semibold text-xs truncate">
+                    {item.pair[0].name} & {item.pair[1].name}
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    {showRanks[index] ? <CountUpNumber target={item.percentage} duration={800} /> : 0}%
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="text-gray-700 text-sm leading-relaxed">
-              {result.reason}
-            </p>
-          </div>
+          ))}
         </div>
 
         {/* ボタン */}
         <div
           className={`
             flex items-center justify-center gap-3 mt-6 pb-4
-            transition-all duration-500 delay-300
-            ${showDetails ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+            transition-all duration-500
+            ${showRanks[2] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
           `}
         >
           <button
@@ -1354,7 +1376,6 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
             result={groupResultData}
             diagnosticTitle={groupDiagnostic!.title}
             diagnosticSubtitle={groupDiagnostic!.subtitle}
-            gradient={groupDiagnostic!.gradient}
             onBack={onBack}
           />
         )}
