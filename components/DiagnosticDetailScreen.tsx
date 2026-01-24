@@ -1334,9 +1334,9 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
             </h2>
             <p className="text-white/80 text-xs mb-4">Select 4-8 members</p>
 
-            {/* 2行4列グリッド */}
+            {/* グリッド - 最初は4枠、4枠埋まると+4枠表示 */}
             <div className="w-full max-w-[300px] mb-4">
-              <div className="grid grid-cols-4 gap-2 mb-2">
+              <div className="grid grid-cols-4 gap-2">
                 {[0, 1, 2, 3].map((index) => (
                   <PersonCard
                     key={index}
@@ -1354,24 +1354,27 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
                   />
                 ))}
               </div>
-              <div className="grid grid-cols-4 gap-2">
-                {[4, 5, 6, 7].map((index) => (
-                  <PersonCard
-                    key={index}
-                    person={selectedGroupMembers![index] || null}
-                    isPlaceholder={!selectedGroupMembers![index]}
-                    onClick={() => {
-                      if (selectedGroupMembers![index]) {
-                        handleRemoveGroupMember(index);
-                      } else if (selectedGroupMembers!.length < 8) {
-                        setSelectedSlot(index);
-                        setIsSheetOpen(true);
-                      }
-                    }}
-                    size="small"
-                  />
-                ))}
-              </div>
+              {/* 4枠埋まったら2行目を表示 */}
+              {selectedGroupMembers!.length >= 4 && (
+                <div className="grid grid-cols-4 gap-2 mt-2">
+                  {[4, 5, 6, 7].map((index) => (
+                    <PersonCard
+                      key={index}
+                      person={selectedGroupMembers![index] || null}
+                      isPlaceholder={!selectedGroupMembers![index]}
+                      onClick={() => {
+                        if (selectedGroupMembers![index]) {
+                          handleRemoveGroupMember(index);
+                        } else if (selectedGroupMembers!.length < 8) {
+                          setSelectedSlot(index);
+                          setIsSheetOpen(true);
+                        }
+                      }}
+                      size="small"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Member count */}
