@@ -534,10 +534,11 @@ export interface AIConversationTrigger {
 // DMメッセージ型
 export interface DMMessage {
   id: string;
-  sender: 'user' | 'other' | 'ai';
+  sender: 'user' | 'other';
   message: string;
   timestamp: string;
-  aiTrigger?: AIConversationTrigger;  // AIの場合のみ
+  isAI?: boolean;  // AIが代わりに書いたメッセージか
+  aiTrigger?: AIConversationTrigger;  // 最初のAIメッセージのみ
 }
 
 // DMチャット型
@@ -559,9 +560,9 @@ export const DM_CHATS: DMChat[] = [
     id: '1',
     name: 'Momo',
     avatar: '/images/characters/char16.png',
-    lastMessage: "Hey! Momo found an amazing hidden cafe today ☕",
+    lastMessage: "Ethiopian beans are the best! Would love to check it out sometime.",
     timestamp: '2h',
-    unread: true,
+    unread: false,
     online: true,
     hasAIMessage: true,
     aiReason: "You both love Coffee",
@@ -590,9 +591,9 @@ export const DM_CHATS: DMChat[] = [
     id: '4',
     name: 'Ryo',
     avatar: '/images/characters/char19.png',
-    lastMessage: "Ryo just made homemade pasta from scratch! 🍝",
+    lastMessage: "I always mess up that part! Would love to learn your technique.",
     timestamp: '4h',
-    unread: true,
+    unread: false,
     online: true,
     hasAIMessage: true,
     aiReason: "You both love Cooking",
@@ -601,9 +602,9 @@ export const DM_CHATS: DMChat[] = [
     id: '5',
     name: 'Sora',
     avatar: '/images/characters/char20.png',
-    lastMessage: "Sora captured some incredible sunset photos! 📷",
+    lastMessage: "Great tips! Maybe we could do a photo walk together?",
     timestamp: '10h',
-    unread: true,
+    unread: false,
     online: false,
     hasAIMessage: true,
     aiReason: "You both love Photography",
@@ -623,18 +624,40 @@ export const DM_CHATS: DMChat[] = [
 // DM 会話詳細 (各チャットごとのメッセージ)
 export const DM_MESSAGES_BY_CHAT: Record<string, DMMessage[]> = {
   '1': [
-    // Momo - AIメッセージで始まる会話
+    // Momo - AI同士のラリー（4回）
     {
       id: 'ai-1',
-      sender: 'ai',
+      sender: 'other',
       message: "Hey! Momo found an amazing hidden cafe in Shimokita today ☕ You both love coffee - maybe you could check it out together?",
       timestamp: '14:30',
+      isAI: true,
       aiTrigger: {
         type: 'shared_hobby',
         hobby: 'Coffee',
         event: { id: 'momo-1', title: 'Found a hidden cafe in Shimokita', emoji: '☕', date: '2 hours ago' },
         reason: "You both love Coffee"
       }
+    },
+    {
+      id: 'ai-2',
+      sender: 'user',
+      message: "Oh nice! I love finding new coffee spots. What kind of beans do they use?",
+      timestamp: '14:32',
+      isAI: true,
+    },
+    {
+      id: 'ai-3',
+      sender: 'other',
+      message: "They have single origin Ethiopian - your favorite! The latte art is beautiful too 🎨",
+      timestamp: '14:35',
+      isAI: true,
+    },
+    {
+      id: 'ai-4',
+      sender: 'user',
+      message: "Ethiopian beans are the best! Would love to check it out sometime. Thanks for sharing!",
+      timestamp: '14:38',
+      isAI: true,
     },
   ],
   '2': [
@@ -652,12 +675,13 @@ export const DM_MESSAGES_BY_CHAT: Record<string, DMMessage[]> = {
     { id: '3', sender: 'other', message: "See you at the gaming event!", timestamp: '09:30' },
   ],
   '4': [
-    // Ryo - AIメッセージで始まる会話
+    // Ryo - AI同士のラリー（4回）
     {
       id: 'ai-1',
-      sender: 'ai',
+      sender: 'other',
       message: "Ryo just made homemade pasta from scratch! 🍝 Since you're both into cooking, maybe you could swap recipes?",
       timestamp: '16:45',
+      isAI: true,
       aiTrigger: {
         type: 'shared_hobby',
         hobby: 'Cooking',
@@ -665,20 +689,63 @@ export const DM_MESSAGES_BY_CHAT: Record<string, DMMessage[]> = {
         reason: "You both love Cooking"
       }
     },
+    {
+      id: 'ai-2',
+      sender: 'user',
+      message: "Wow, homemade pasta! That's impressive. Did you make the sauce too?",
+      timestamp: '16:48',
+      isAI: true,
+    },
+    {
+      id: 'ai-3',
+      sender: 'other',
+      message: "Yes! Carbonara with fresh eggs. The key is tempering them slowly so they don't scramble 🥚",
+      timestamp: '16:52',
+      isAI: true,
+    },
+    {
+      id: 'ai-4',
+      sender: 'user',
+      message: "I always mess up that part! Would love to learn your technique sometime.",
+      timestamp: '16:55',
+      isAI: true,
+    },
   ],
   '5': [
-    // Sora - AIメッセージで始まる会話
+    // Sora - AI同士のラリー（4回）
     {
       id: 'ai-1',
-      sender: 'ai',
+      sender: 'other',
       message: "Sora captured some incredible sunset photos yesterday! 📷 You both love photography - would love to see you share tips!",
       timestamp: '10:15',
+      isAI: true,
       aiTrigger: {
         type: 'shared_hobby',
         hobby: 'Photography',
         event: { id: 'sora-2', title: 'Captured a beautiful sunset', emoji: '📷', date: '3 days ago' },
         reason: "You both love Photography"
       }
+    },
+    {
+      id: 'ai-2',
+      sender: 'user',
+      message: "Those sunset shots look amazing! What camera settings did you use?",
+      timestamp: '10:20',
+      isAI: true,
+    },
+    {
+      id: 'ai-3',
+      sender: 'other',
+      message: "Shot at f/8, ISO 100, with a graduated ND filter. Golden hour is magical! ✨",
+      timestamp: '10:25',
+      isAI: true,
+    },
+    {
+      id: 'ai-4',
+      sender: 'user',
+      message: "Great tips! I've been wanting to try ND filters. Maybe we could do a photo walk together?",
+      timestamp: '10:30',
+      isAI: true,
     },
   ],
   '6': [
@@ -688,6 +755,4 @@ export const DM_MESSAGES_BY_CHAT: Record<string, DMMessage[]> = {
     { id: '3', sender: 'other', message: "Great playlist recommendation 🎵", timestamp: '16:00' },
   ],
 };
-
-// 後方互換性のため（古い形式のDM_MESSAGESは削除）
 

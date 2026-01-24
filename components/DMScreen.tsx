@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera, Bot } from 'lucide-react';
+import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera } from 'lucide-react';
 import { DM_CHATS, DM_MESSAGES_BY_CHAT, USER_DATA, DMChat, DMMessage } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
@@ -63,24 +63,66 @@ interface ChatDetailProps {
   onBack: () => void;
 }
 
-// AIメッセージのバブルコンポーネント（通常のメッセージとほぼ同じ、小さいAIマークのみ）
-const AIMessageBubble: React.FC<{ message: DMMessage }> = ({ message }) => (
-  <div className="flex justify-start">
-    <div className="max-w-[75%] px-4 py-2 rounded-2xl rounded-bl-md bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white">
-      <p className="text-sm">{message.message}</p>
-      <div className="flex items-center justify-between mt-1">
-        {/* 小さいAIマーク */}
-        <div className="flex items-center gap-1">
-          <Bot size={12} className="text-purple-500" />
-          <span className="text-[10px] text-purple-500">AI</span>
+// メッセージバブルコンポーネント
+interface MessageBubbleProps {
+  message: DMMessage;
+  chatAvatar: string;  // 相手のアバター
+}
+
+const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar }) => {
+  const isUser = message.sender === 'user';
+
+  // AIメッセージの場合はアバターを表示
+  if (message.isAI) {
+    const avatarSrc = isUser ? USER_DATA.avatar : chatAvatar;
+
+    return (
+      <div className={`flex items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* アバター */}
+        <img
+          src={avatarSrc}
+          alt="Avatar"
+          className="w-8 h-8 rounded-full object-cover shrink-0"
+        />
+        {/* メッセージバブル */}
+        <div
+          className={`max-w-[70%] px-4 py-2 rounded-2xl ${
+            isUser
+              ? 'bg-orange-400 text-white rounded-br-md'
+              : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
+          }`}
+        >
+          <p className="text-sm">{message.message}</p>
+          <p className={`text-[10px] mt-1 text-right ${
+            isUser ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
+          }`}>
+            {message.timestamp}
+          </p>
         </div>
-        <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+      </div>
+    );
+  }
+
+  // 通常のメッセージ（アバターなし）
+  return (
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div
+        className={`max-w-[75%] px-4 py-2 rounded-2xl ${
+          isUser
+            ? 'bg-orange-400 text-white rounded-br-md'
+            : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
+        }`}
+      >
+        <p className="text-sm">{message.message}</p>
+        <p className={`text-[10px] mt-1 text-right ${
+          isUser ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
+        }`}>
           {message.timestamp}
         </p>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
   const [inputValue, setInputValue] = useState('');
@@ -124,34 +166,9 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto py-4 no-scrollbar">
         <div className="flex flex-col gap-3 px-4">
-          {messages.map((msg) => {
-            // AIメッセージの場合
-            if (msg.sender === 'ai') {
-              return <AIMessageBubble key={msg.id} message={msg} />;
-            }
-            // 通常のメッセージ
-            return (
-              <div
-                key={msg.id}
-                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[75%] px-4 py-2 rounded-2xl ${
-                    msg.sender === 'user'
-                      ? 'bg-orange-400 text-white rounded-br-md'
-                      : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
-                  }`}
-                >
-                  <p className="text-sm">{msg.message}</p>
-                  <p className={`text-[10px] mt-1 ${
-                    msg.sender === 'user' ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
-                  }`}>
-                    {msg.timestamp}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+          {messages.map((msg) => (
+            <MessageBubble key={msg.id} message={msg} chatAvatar={chat.avatar} />
+          ))}
         </div>
 
         <div ref={messagesEndRef} />
