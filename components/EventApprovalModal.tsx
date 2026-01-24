@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { X, Check, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Check, Sparkles, ChevronDown, Eye, EyeOff } from 'lucide-react';
 import { AI_SUGGESTED_EVENTS } from '../constants';
+
+interface EventDetails {
+  additionalContext: string;
+  isPublic: boolean;
+}
 
 interface EventApprovalModalProps {
   onClose: () => void;
-  onApprove: (eventIds: string[]) => void;
+  onApprove: (eventIds: string[], eventDetails: Record<string, EventDetails>) => void;
 }
 
 const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onApprove }) => {
   const [selectedEvents, setSelectedEvents] = useState<Set<string>>(new Set());
+  const [eventDetails, setEventDetails] = useState<Record<string, EventDetails>>({});
+  const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
   const [showContent, setShowContent] = useState(false);
   const [typingText, setTypingText] = useState('');
   const [typingComplete, setTypingComplete] = useState(false);
+  const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
   const fullText = 'AI found some recent events from your activity. Add them to your card?';
 
@@ -42,15 +50,48 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
+        setExpandedEvent(null);
+        // Remove details for deselected event
+        setEventDetails(prevDetails => {
+          const newDetails = { ...prevDetails };
+          delete newDetails[id];
+          return newDetails;
+        });
       } else {
         next.add(id);
+        setExpandedEvent(id);
+        // Initialize details for newly selected event
+        if (!eventDetails[id]) {
+          setEventDetails(prevDetails => ({
+            ...prevDetails,
+            [id]: { additionalContext: '', isPublic: true }
+          }));
+        }
+        // Focus the textarea after a short delay
+        setTimeout(() => {
+          textareaRefs.current[id]?.focus();
+        }, 100);
       }
       return next;
     });
   };
 
+  const handleContextChange = (id: string, value: string) => {
+    setEventDetails(prev => ({
+      ...prev,
+      [id]: { ...prev[id], additionalContext: value }
+    }));
+  };
+
+  const togglePublic = (id: string) => {
+    setEventDetails(prev => ({
+      ...prev,
+      [id]: { ...prev[id], isPublic: !prev[id]?.isPublic }
+    }));
+  };
+
   const handleApprove = () => {
-    onApprove(Array.from(selectedEvents));
+    onApprove(Array.from(selectedEvents), eventDetails);
     onClose();
   };
 
@@ -97,48 +138,125 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
 
         {/* Events List */}
         <div
-          className="p-4 space-y-3 max-h-[280px] overflow-y-auto transition-opacity duration-500"
+          className="p-4 space-y-3 max-h-[320px] overflow-y-auto transition-opacity duration-500"
           style={{ opacity: typingComplete ? 1 : 0.3 }}
         >
-          {AI_SUGGESTED_EVENTS.map((event, index) => (
-            <button
-              key={event.id}
-              onClick={() => toggleEvent(event.id)}
-              className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 ${
-                selectedEvents.has(event.id)
-                  ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/20'
-                  : 'border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800'
-              }`}
-              style={{
-                opacity: typingComplete ? 1 : 0,
-                transform: typingComplete ? 'translateX(0)' : 'translateX(-20px)',
-                transitionDelay: `${index * 100}ms`,
-              }}
-            >
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">{event.emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-neutral-900 dark:text-white">
-                    {event.title}
-                  </p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-                    {event.description}
-                  </p>
-                </div>
+          {AI_SUGGESTED_EVENTS.map((event, index) => {
+            const isSelected = selectedEvents.has(event.id);
+            const isExpanded = expandedEvent === event.id && isSelected;
+            const details = eventDetails[event.id];
+
+            return (
+              <div
+                key={event.id}
+                className={`rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
+                  isSelected
+                    ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/20'
+                    : 'border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800'
+                }`}
+                style={{
+                  opacity: typingComplete ? 1 : 0,
+                  transform: typingComplete ? 'translateX(0)' : 'translateX(-20px)',
+                  transitionDelay: `${index * 100}ms`,
+                }}
+              >
+                {/* Event Header */}
+                <button
+                  onClick={() => toggleEvent(event.id)}
+                  className="w-full text-left p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">{event.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-neutral-900 dark:text-white">
+                        {event.title}
+                      </p>
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5 truncate">
+                        {event.description}
+                      </p>
+                    </div>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+                        isSelected
+                          ? 'bg-orange-400 border-orange-400'
+                          : 'border-neutral-300 dark:border-neutral-600'
+                      }`}
+                    >
+                      {isSelected && (
+                        <Check size={14} className="text-white" strokeWidth={3} />
+                      )}
+                    </div>
+                  </div>
+                </button>
+
+                {/* Expanded Details Form */}
                 <div
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                    selectedEvents.has(event.id)
-                      ? 'bg-orange-400 border-orange-400'
-                      : 'border-neutral-300 dark:border-neutral-600'
+                  className={`overflow-hidden transition-all duration-300 ${
+                    isExpanded ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'
                   }`}
                 >
-                  {selectedEvents.has(event.id) && (
-                    <Check size={14} className="text-white" strokeWidth={3} />
-                  )}
+                  <div className="px-4 pb-4 space-y-3">
+                    {/* Divider */}
+                    <div className="border-t border-orange-200 dark:border-orange-800" />
+
+                    {/* Additional Context Input */}
+                    <div>
+                      <label className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5 block">
+                        Add your story (optional)
+                      </label>
+                      <textarea
+                        ref={(el) => { textareaRefs.current[event.id] = el; }}
+                        value={details?.additionalContext || ''}
+                        onChange={(e) => handleContextChange(event.id, e.target.value)}
+                        placeholder="e.g., Got extended 2 weeks because of this..."
+                        className="w-full px-3 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400/50 resize-none"
+                        rows={2}
+                      />
+                    </div>
+
+                    {/* Public/Private Toggle */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePublic(event.id);
+                      }}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        details?.isPublic
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                          : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
+                      }`}
+                    >
+                      {details?.isPublic ? (
+                        <>
+                          <Eye size={14} />
+                          <span>Visible on card</span>
+                        </>
+                      ) : (
+                        <>
+                          <EyeOff size={14} />
+                          <span>Private (AI only)</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
+
+                {/* Collapse/Expand indicator for selected items */}
+                {isSelected && !isExpanded && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedEvent(event.id);
+                    }}
+                    className="w-full py-2 flex items-center justify-center text-orange-500 hover:bg-orange-100/50 dark:hover:bg-orange-900/30 transition-colors"
+                  >
+                    <ChevronDown size={16} />
+                    <span className="text-xs ml-1">Add details</span>
+                  </button>
+                )}
               </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
 
         {/* Footer */}

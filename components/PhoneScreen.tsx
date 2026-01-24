@@ -227,8 +227,9 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
       {showEventApproval && (
         <EventApprovalModal
           onClose={() => setShowEventApproval(false)}
-          onApprove={(eventIds) => {
+          onApprove={(eventIds, eventDetails) => {
             console.log('Approved events:', eventIds);
+            console.log('Event details:', eventDetails);
             setShowEventApproval(false);
           }}
         />
