@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, Lock, Pencil, Trash2, Send, Edit3 } from 'lucide-react';
-import { FriendProfile, FriendEvent, AIConversationMessage, FRIEND_AI_CONVERSATIONS, ApprovalStatus } from '../constants';
-import AIConversationEditModal from './AIConversationEditModal';
+import { ChevronLeft, Lock, Send, Edit3 } from 'lucide-react';
+import { FriendProfile, FriendEvent, AIConversationMessage, FRIEND_AI_CONVERSATIONS, ApprovalStatus, CARD_BACK_EVENTS } from '../constants';
 import CardBackEditModal from './CardBackEditModal';
 
 interface AIConversationHistoryScreenProps {
@@ -20,9 +19,8 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
 }) => {
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const [messages, setMessages] = useState<AIConversationMessage[]>([]);
-  const [editingMessage, setEditingMessage] = useState<AIConversationMessage | null>(null);
   const [showContent, setShowContent] = useState(false);
-  const [events, setEvents] = useState<FriendEvent[]>(friend.events);
+  const [myEvents, setMyEvents] = useState<FriendEvent[]>(CARD_BACK_EVENTS);
   const [showCardBackEditModal, setShowCardBackEditModal] = useState(false);
 
   useEffect(() => {
@@ -39,18 +37,6 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
     const timer = setTimeout(() => setShowContent(true), 100);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleEditSave = (messageId: string, newText: string) => {
-    setMessages(prev =>
-      prev.map(m => (m.id === messageId ? { ...m, message: newText } : m))
-    );
-    setEditingMessage(null);
-  };
-
-  const handleDelete = (messageId: string) => {
-    setMessages(prev => prev.filter(m => m.id !== messageId));
-    setEditingMessage(null);
-  };
 
   const isApproved = approvalStatus === 'approved';
 
@@ -108,14 +94,14 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
 
       {/* Messages */}
       <div className="relative z-10 flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
-        {/* Event Details Section */}
-        {events.length > 0 && (
+        {/* My Events Section */}
+        {myEvents.length > 0 && (
           <div className="mb-4 bg-neutral-100 dark:bg-neutral-800/50 rounded-2xl p-4">
             <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-3">
-              Today's Events
+              My Events
             </h3>
             <div className="space-y-3">
-              {events.map((event) => (
+              {myEvents.map((event) => (
                 <div key={event.id} className="flex gap-3">
                   <span className="text-xl flex-shrink-0">{event.emoji}</span>
                   <div className="flex-1 min-w-0">
@@ -187,24 +173,6 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
                         </div>
                       )}
                     </div>
-
-                    {/* Edit/Delete buttons for my AI messages */}
-                    {isMyAI && (
-                      <div className="absolute -left-16 top-1/2 -translate-y-1/2 flex gap-1">
-                        <button
-                          onClick={() => setEditingMessage(msg)}
-                          className="p-1.5 rounded-full bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
-                        >
-                          <Pencil size={12} className="text-neutral-600 dark:text-neutral-300" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(msg.id)}
-                          className="p-1.5 rounded-full bg-neutral-200 dark:bg-neutral-700 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-                        >
-                          <Trash2 size={12} className="text-neutral-600 dark:text-neutral-300" />
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -280,23 +248,13 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
         </div>
       )}
 
-      {/* Edit Modal */}
-      {editingMessage && (
-        <AIConversationEditModal
-          message={editingMessage}
-          onClose={() => setEditingMessage(null)}
-          onSave={handleEditSave}
-          onDelete={handleDelete}
-        />
-      )}
-
       {/* Card Back Edit Modal */}
       {showCardBackEditModal && (
         <CardBackEditModal
-          events={events}
+          events={myEvents}
           onClose={() => setShowCardBackEditModal(false)}
           onSave={(newEvents) => {
-            setEvents(newEvents);
+            setMyEvents(newEvents);
             setShowCardBackEditModal(false);
           }}
         />
