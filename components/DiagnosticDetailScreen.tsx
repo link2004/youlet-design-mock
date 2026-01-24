@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Crown, Medal, Menu } from 'lucide-react';
+import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Crown, Medal, Menu, Clock } from 'lucide-react';
 import { DiagnosticType, GroupDiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
 import StatusBar from './StatusBar';
 
@@ -653,12 +653,29 @@ interface PastRankingSheetProps {
   diagnosticTitle: string;
 }
 
+type SortMode = 'compatibility' | 'time';
+
 const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, onSelectResult, diagnosticTitle }) => {
   const [pastResults] = useState<PastDiagnosisResult[]>(() => generateMockPastResults());
+  const [sortMode, setSortMode] = useState<SortMode>('compatibility');
 
   if (!isOpen) return null;
 
+  // ソート済みの結果
+  const sortedResults = [...pastResults].sort((a, b) => {
+    if (sortMode === 'compatibility') {
+      return b.percentage - a.percentage;
+    } else {
+      // 時間順（diagnosedAtをパース: "1d ago" -> 1, "3d ago" -> 3）
+      const parseTime = (str: string) => parseInt(str.replace(/\D/g, '')) || 0;
+      return parseTime(a.diagnosedAt) - parseTime(b.diagnosedAt);
+    }
+  });
+
   const getRankIcon = (rank: number) => {
+    if (sortMode === 'time') {
+      return <span className="text-neutral-400 font-bold text-sm w-6 text-center">{rank}</span>;
+    }
     switch (rank) {
       case 1:
         return <img src="/images/rank/1st_3d.png" alt="1st" className="w-6 h-6" />;
@@ -694,16 +711,44 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
           <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
         </div>
 
-        {/* Header */}
+        {/* Header with sort toggle */}
         <div className="px-4 pb-3">
-          <h3 className="font-bold text-neutral-900 dark:text-white text-base text-center mb-1">Past Results</h3>
+          <div className="flex items-center justify-between mb-1">
+            <div className="w-16" /> {/* Spacer */}
+            <h3 className="font-bold text-neutral-900 dark:text-white text-base text-center">Past Results</h3>
+            {/* Sort toggle */}
+            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-0.5">
+              <button
+                onClick={() => setSortMode('compatibility')}
+                className={`p-1.5 rounded-full transition-colors ${
+                  sortMode === 'compatibility'
+                    ? 'bg-white dark:bg-gray-700 shadow-sm'
+                    : 'text-gray-400'
+                }`}
+                aria-label="Sort by compatibility"
+              >
+                <Crown size={14} className={sortMode === 'compatibility' ? 'text-orange-500' : 'text-gray-400'} />
+              </button>
+              <button
+                onClick={() => setSortMode('time')}
+                className={`p-1.5 rounded-full transition-colors ${
+                  sortMode === 'time'
+                    ? 'bg-white dark:bg-gray-700 shadow-sm'
+                    : 'text-gray-400'
+                }`}
+                aria-label="Sort by time"
+              >
+                <Clock size={14} className={sortMode === 'time' ? 'text-orange-500' : 'text-gray-400'} />
+              </button>
+            </div>
+          </div>
           <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">{diagnosticTitle}</p>
         </div>
 
         {/* Ranking list */}
         <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
           <div className="flex flex-col gap-2">
-            {pastResults.map((result, index) => {
+            {sortedResults.map((result, index) => {
               const rank = index + 1;
               return (
                 <button
@@ -747,7 +792,7 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
             })}
           </div>
 
-          {pastResults.length === 0 && (
+          {sortedResults.length === 0 && (
             <div className="text-center py-8 text-neutral-400">
               <p>No past results yet</p>
             </div>
