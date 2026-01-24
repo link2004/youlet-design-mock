@@ -7,7 +7,6 @@ import StatusBar from './StatusBar';
 import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
 import ProfileCardFlip from './ProfileCardFlip';
-import EventApprovalModal from './EventApprovalModal';
 import ProfileQuestions from './ProfileQuestions';
 import { PageType } from '../App';
 
@@ -21,24 +20,11 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   const [showSettings, setShowSettings] = useState(false);
   const [showElements, setShowElements] = useState(false);
   const [showStory, setShowStory] = useState(false);
-  const [showEventApproval, setShowEventApproval] = useState(false);
-  const [hasShownEventApproval, setHasShownEventApproval] = useState(false);
   const [questionAnswers, setQuestionAnswers] = useState<Record<string, AnswerValue>>({});
 
   const handleAnswerChange = (questionId: string, answer: AnswerValue) => {
     setQuestionAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
-
-  // Show event approval modal on first load (simulating app launch)
-  useEffect(() => {
-    if (!hasShownEventApproval) {
-      const timer = setTimeout(() => {
-        setShowEventApproval(true);
-        setHasShownEventApproval(true);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [hasShownEventApproval]);
 
   useEffect(() => {
     if (darkMode) {
@@ -198,18 +184,6 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
       {/* Story View Modal */}
       {showStory && (
         <StoryView onClose={() => setShowStory(false)} />
-      )}
-
-      {/* Event Approval Modal */}
-      {showEventApproval && (
-        <EventApprovalModal
-          onClose={() => setShowEventApproval(false)}
-          onApprove={(eventIds, eventDetails) => {
-            console.log('Approved events:', eventIds);
-            console.log('Event details:', eventDetails);
-            setShowEventApproval(false);
-          }}
-        />
       )}
     </div>
   );
