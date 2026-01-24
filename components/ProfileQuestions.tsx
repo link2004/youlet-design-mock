@@ -167,22 +167,6 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
           <ChevronLeft size={20} />
         </button>
 
-        {/* Dots indicator */}
-        <div className="flex gap-1">
-          {PROFILE_QUESTIONS.map((_, idx) => (
-            <div
-              key={idx}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                idx === currentIndex
-                  ? 'bg-orange-400'
-                  : answers[PROFILE_QUESTIONS[idx].id]
-                  ? 'bg-orange-200 dark:bg-orange-900'
-                  : 'bg-neutral-300 dark:bg-neutral-600'
-              }`}
-            />
-          ))}
-        </div>
-
         <button
           onClick={goToNext}
           disabled={currentIndex === totalCount - 1}
