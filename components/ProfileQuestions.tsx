@@ -9,40 +9,87 @@ interface ProfileQuestionsProps {
 
 const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerChange }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [isAnimating, setIsAnimating] = React.useState(false);
-  const [slideDirection, setSlideDirection] = React.useState<'left' | 'right'>('right');
+  const [animationPhase, setAnimationPhase] = React.useState<'idle' | 'exit' | 'enter'>('idle');
+  const [slideDirection, setSlideDirection] = React.useState<'next' | 'prev'>('next');
 
   const totalCount = PROFILE_QUESTIONS.length;
   const currentQuestion = PROFILE_QUESTIONS[currentIndex];
 
   const goToNext = () => {
-    if (currentIndex < totalCount - 1 && !isAnimating) {
-      setSlideDirection('right');
-      setIsAnimating(true);
+    if (currentIndex < totalCount - 1 && animationPhase === 'idle') {
+      setSlideDirection('next');
+      setAnimationPhase('exit');
+
+      // Exit animation
       setTimeout(() => {
         setCurrentIndex(prev => prev + 1);
-        setIsAnimating(false);
+        setAnimationPhase('enter');
+
+        // Enter animation complete
+        setTimeout(() => {
+          setAnimationPhase('idle');
+        }, 200);
       }, 200);
     }
   };
 
   const goToPrev = () => {
-    if (currentIndex > 0 && !isAnimating) {
-      setSlideDirection('left');
-      setIsAnimating(true);
+    if (currentIndex > 0 && animationPhase === 'idle') {
+      setSlideDirection('prev');
+      setAnimationPhase('exit');
+
+      // Exit animation
       setTimeout(() => {
         setCurrentIndex(prev => prev - 1);
-        setIsAnimating(false);
+        setAnimationPhase('enter');
+
+        // Enter animation complete
+        setTimeout(() => {
+          setAnimationPhase('idle');
+        }, 200);
       }, 200);
     }
   };
 
   const handleAnswer = (answer: AnswerValue) => {
     onAnswerChange(currentQuestion.id, answer);
-    // Auto-advance to next question after a short delay
+    // Wait 0.2s before starting animation
     setTimeout(() => {
       goToNext();
-    }, 300);
+    }, 200);
+  };
+
+  const getCardTransform = () => {
+    if (animationPhase === 'idle') {
+      return 'translate-x-0 opacity-100';
+    }
+
+    if (animationPhase === 'exit') {
+      // Exit: slide out
+      if (slideDirection === 'next') {
+        return '-translate-x-full opacity-0'; // Go left
+      } else {
+        return 'translate-x-full opacity-0'; // Go right
+      }
+    }
+
+    if (animationPhase === 'enter') {
+      // Enter: start from opposite side, animate to center
+      return 'translate-x-0 opacity-100';
+    }
+
+    return 'translate-x-0 opacity-100';
+  };
+
+  const getInitialPosition = () => {
+    if (animationPhase === 'enter') {
+      if (slideDirection === 'next') {
+        return 'animate-slide-from-right';
+      } else {
+        return 'animate-slide-from-left';
+      }
+    }
+    return '';
   };
 
   const getCircleStyle = (position: number, isSelected: boolean) => {
@@ -94,13 +141,12 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
       {/* Question Card */}
       <div className="relative overflow-hidden">
         <div
-          className={`bg-white dark:bg-neutral-900 rounded-2xl p-6 transition-all duration-200 ${
-            isAnimating
-              ? slideDirection === 'right'
-                ? 'translate-x-full opacity-0'
-                : '-translate-x-full opacity-0'
-              : 'translate-x-0 opacity-100'
-          }`}
+          className={`bg-white dark:bg-neutral-900 rounded-2xl p-6 transition-all duration-200 ${getCardTransform()} ${getInitialPosition()}`}
+          style={{
+            transform: animationPhase === 'enter'
+              ? undefined
+              : undefined
+          }}
         >
           {/* Question */}
           <p className="text-base font-medium text-neutral-900 dark:text-white mb-8 text-center leading-relaxed">
@@ -133,10 +179,10 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center gap-3 mt-4">
         <button
           onClick={goToPrev}
-          disabled={currentIndex === 0}
+          disabled={currentIndex === 0 || animationPhase !== 'idle'}
           className={`p-2 rounded-full transition-colors ${
             currentIndex === 0
               ? 'text-neutral-300 dark:text-neutral-600'
@@ -146,25 +192,17 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
           <ChevronLeft size={20} />
         </button>
 
-        {/* Dots indicator */}
-        <div className="flex gap-1">
-          {PROFILE_QUESTIONS.map((_, idx) => (
-            <div
-              key={idx}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                idx === currentIndex
-                  ? 'bg-orange-400'
-                  : answers[PROFILE_QUESTIONS[idx].id]
-                  ? 'bg-orange-200 dark:bg-orange-900'
-                  : 'bg-neutral-300 dark:bg-neutral-600'
-              }`}
-            />
-          ))}
+        {/* Progress bar */}
+        <div className="flex-1 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-orange-400 rounded-full transition-all duration-300"
+            style={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
+          />
         </div>
 
         <button
           onClick={goToNext}
-          disabled={currentIndex === totalCount - 1}
+          disabled={currentIndex === totalCount - 1 || animationPhase !== 'idle'}
           className={`p-2 rounded-full transition-colors ${
             currentIndex === totalCount - 1
               ? 'text-neutral-300 dark:text-neutral-600'
@@ -174,6 +212,42 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
           <ChevronRight size={20} />
         </button>
       </div>
+
+      {/* Percentage */}
+      <div className="text-center mt-2">
+        <span className="text-sm font-medium text-orange-500">
+          {Math.round(((currentIndex + 1) / totalCount) * 100)}%
+        </span>
+      </div>
+
+      <style>{`
+        @keyframes slideFromRight {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        @keyframes slideFromLeft {
+          from {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-from-right {
+          animation: slideFromRight 0.2s ease-out forwards;
+        }
+        .animate-slide-from-left {
+          animation: slideFromLeft 0.2s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };
