@@ -57,9 +57,6 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           </div>
         </div>
 
-        {/* Name */}
-        <h2 className="text-white font-serif italic font-black text-2xl mt-4">{friend.name}</h2>
-
         {/* Action Buttons */}
         <div className="flex flex-col gap-3 mt-6 w-full max-w-[260px]">
           <button
