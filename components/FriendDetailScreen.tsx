@@ -75,7 +75,7 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           className="flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
         >
           <Heart className="w-5 h-5" />
-          <span>相性診断</span>
+          <span>Compatibility</span>
         </button>
       </div>
     </div>,
