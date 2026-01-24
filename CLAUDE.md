@@ -65,3 +65,4 @@ npm run preview  # ビルド結果プレビュー
 - agent-browser: headless モードで使用する
 - 作業完了後は毎回必ずコミットする（細かい修正でも必ず）
 - **UI調整ルール**: UIに関する細かい調整を行う際は、必ずagent-browserでユーザーの要望通りにできているか検証し、達成するまで改善を繰り返す
+- **agent-browser検証**: agent-browserによるUI検証は、Taskツールでサブエージェントを使ってバックグラウンドで実行する
