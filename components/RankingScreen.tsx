@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { Crown, Medal, ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
-import { FRIENDS_LIST, FriendProfile } from '../constants';
+import { FRIENDS_LIST } from '../constants';
 import StatusBar from './StatusBar';
-import { PageType } from '../App';
-
 interface RankingScreenProps {
-  currentPage: PageType;
-  onNavigate: (page: PageType) => void;
-  onSelectFriend: (friend: FriendProfile) => void;
   onBack: () => void;
 }
 
@@ -83,7 +78,7 @@ const getWeeklyRanking = (categoryId: string) => {
   }));
 };
 
-const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack }) => {
+const RankingScreen: React.FC<RankingScreenProps> = ({ onBack }) => {
   const [activeCategory, setActiveCategory] = useState(RANKING_CATEGORIES[0].id);
   const currentCategory = RANKING_CATEGORIES.find(c => c.id === activeCategory) || RANKING_CATEGORIES[0];
   const rankedFriends = getWeeklyRanking(activeCategory);
@@ -173,10 +168,9 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
           {rankedFriends.map((friend, index) => {
             const rank = index + 1;
             return (
-              <button
+              <div
                 key={friend.id}
-                onClick={() => onSelectFriend(friend)}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition-transform active:scale-[0.98] ${getRankBgClass(rank)}`}
+                className={`flex items-center gap-3 p-3 rounded-xl border ${getRankBgClass(rank)}`}
               >
                 {/* Rank */}
                 <div className="w-8 flex justify-center">
@@ -215,7 +209,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
                     <span className="text-[10px] text-neutral-400">this week</span>
                   )}
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
