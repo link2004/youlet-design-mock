@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle } from 'lucide-react';
+import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Trophy, Crown, Medal } from 'lucide-react';
 import { DiagnosticType, GroupDiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
+
+// 過去の診断結果のモックデータ（診断タイプごと）
+interface PastDiagnosisResult {
+  friend: FriendProfile;
+  percentage: number;
+  diagnosedAt: string;
+}
+
+const generateMockPastResults = (): PastDiagnosisResult[] => {
+  // ランダムに5人を選んでモック結果を生成
+  const shuffled = [...FRIENDS_LIST].sort(() => Math.random() - 0.5).slice(0, 5);
+  return shuffled.map((friend, index) => ({
+    friend,
+    percentage: 98 - index * 8 - Math.floor(Math.random() * 5),
+    diagnosedAt: `${Math.floor(Math.random() * 7) + 1}d ago`,
+  })).sort((a, b) => b.percentage - a.percentage);
+};
 
 type DiagnosticPhase = 'select' | 'loading' | 'result';
 
@@ -627,6 +644,130 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
   );
 };
 
+// 過去の診断ランキングシート
+interface PastRankingSheetProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectFriend: (friend: FriendProfile) => void;
+  diagnosticTitle: string;
+}
+
+const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, onSelectFriend, diagnosticTitle }) => {
+  const [pastResults] = useState<PastDiagnosisResult[]>(() => generateMockPastResults());
+
+  if (!isOpen) return null;
+
+  const getRankIcon = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return <Crown size={16} className="text-yellow-500 fill-yellow-500" />;
+      case 2:
+        return <Medal size={16} className="text-gray-400 fill-gray-400" />;
+      case 3:
+        return <Medal size={16} className="text-amber-600 fill-amber-600" />;
+      default:
+        return <span className="text-neutral-400 font-bold text-xs w-4 text-center">{rank}</span>;
+    }
+  };
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/50 z-40 transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      {/* Sheet */}
+      <div
+        className={`
+          absolute bottom-0 left-0 right-0 z-50
+          bg-white dark:bg-gray-900 rounded-t-3xl
+          transform transition-transform duration-300 ease-out
+          ${isOpen ? 'translate-y-0' : 'translate-y-full'}
+        `}
+        style={{ maxHeight: '70%' }}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center py-3">
+          <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+        </div>
+
+        {/* Header */}
+        <div className="px-4 pb-3">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Trophy size={18} className="text-orange-400" />
+            <h3 className="font-bold text-neutral-900 dark:text-white text-base">Past Results</h3>
+          </div>
+          <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">{diagnosticTitle}</p>
+        </div>
+
+        {/* Ranking list */}
+        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
+          <div className="flex flex-col gap-2">
+            {pastResults.map((result, index) => {
+              const rank = index + 1;
+              return (
+                <button
+                  key={result.friend.id}
+                  onClick={() => {
+                    onSelectFriend(result.friend);
+                    onClose();
+                  }}
+                  className={`flex items-center gap-3 p-3 rounded-xl border transition-transform active:scale-[0.98] ${
+                    rank === 1
+                      ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200'
+                      : rank === 2
+                      ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200'
+                      : rank === 3
+                      ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200'
+                      : 'bg-white border-neutral-200'
+                  }`}
+                >
+                  {/* Rank */}
+                  <div className="w-6 flex justify-center">
+                    {getRankIcon(rank)}
+                  </div>
+
+                  {/* Avatar */}
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-neutral-100 to-neutral-200 overflow-hidden border-2 border-white shadow-sm">
+                    <img
+                      src={result.friend.image}
+                      alt={result.friend.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Name & Info */}
+                  <div className="flex-1 text-left">
+                    <p className="font-semibold text-neutral-900 text-sm">
+                      {result.friend.name}
+                    </p>
+                    <p className="text-[10px] text-neutral-400">
+                      {result.diagnosedAt}
+                    </p>
+                  </div>
+
+                  {/* Score */}
+                  <div className="flex flex-col items-end">
+                    <span className="text-base font-bold text-orange-500">{result.percentage}%</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {pastResults.length === 0 && (
+            <div className="text-center py-8 text-neutral-400">
+              <p>No past results yet</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
 interface PersonCardProps {
   person: FriendProfile | typeof MY_PROFILE | null;
   isPlaceholder?: boolean;
@@ -958,6 +1099,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
 
   // ペア診断用の状態
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isRankingSheetOpen, setIsRankingSheetOpen] = useState(false);
   const [phase, setPhase] = useState<DiagnosticPhase>('select');
   const [resultData, setResultData] = useState<DiagnosticResult | null>(null);
 
@@ -1212,36 +1354,50 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
 
       {/* Select phase - Content area */}
       {phase === 'select' && (
-        <div className="flex-1 flex flex-col items-center justify-center px-4">
-          {/* Emoji and title */}
-          <img
-            src={diagnostic.image}
-            alt={diagnostic.title}
-            className="w-20 h-20 object-contain mb-4"
-          />
-          <h2 className="text-white font-serif italic font-black text-2xl text-center mb-8">
-            {diagnostic.title}
-          </h2>
-
-          {/* Card placement area */}
-          <div className="flex items-center justify-center gap-6 mb-8">
-            <PersonCard person={MY_PROFILE} />
-            <PersonCard
-              person={selectedFriend}
-              isPlaceholder={!selectedFriend}
-              onClick={() => setIsSheetOpen(true)}
+        <div className="flex-1 flex flex-col px-4">
+          {/* Main content centered */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            {/* Emoji and title */}
+            <img
+              src={diagnostic.image}
+              alt={diagnostic.title}
+              className="w-20 h-20 object-contain mb-4"
             />
+            <h2 className="text-white font-serif italic font-black text-2xl text-center mb-8">
+              {diagnostic.title}
+            </h2>
+
+            {/* Card placement area */}
+            <div className="flex items-center justify-center gap-6 mb-8">
+              <PersonCard person={MY_PROFILE} />
+              <PersonCard
+                person={selectedFriend}
+                isPlaceholder={!selectedFriend}
+                onClick={() => setIsSheetOpen(true)}
+              />
+            </div>
+
+            {/* Diagnose button */}
+            {bothSelected && (
+              <button
+                onClick={handleDiagnose}
+                className="px-8 py-3 bg-white rounded-full font-semibold text-gray-900 shadow-lg hover:bg-gray-100 transition-colors active:scale-95"
+              >
+                Diagnose
+              </button>
+            )}
           </div>
 
-          {/* Diagnose button */}
-          {bothSelected && (
+          {/* Ranking button at bottom */}
+          <div className="pb-8">
             <button
-              onClick={handleDiagnose}
-              className="px-8 py-3 bg-white rounded-full font-semibold text-gray-900 shadow-lg hover:bg-gray-100 transition-colors active:scale-95"
+              onClick={() => setIsRankingSheetOpen(true)}
+              className="w-full flex items-center justify-center gap-2 py-3 bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl text-white font-medium active:scale-[0.98] transition-transform"
             >
-              Diagnose
+              <Trophy size={18} className="text-yellow-300" />
+              <span>Past Results Ranking</span>
             </button>
-          )}
+          </div>
         </div>
       )}
 
@@ -1250,6 +1406,14 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         onSelect={handleFriendSelect}
+      />
+
+      {/* Past ranking sheet */}
+      <PastRankingSheet
+        isOpen={isRankingSheetOpen}
+        onClose={() => setIsRankingSheetOpen(false)}
+        onSelectFriend={handleFriendSelect}
+        diagnosticTitle={diagnostic.title}
       />
     </div>
   );
