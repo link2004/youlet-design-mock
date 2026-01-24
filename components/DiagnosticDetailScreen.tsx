@@ -970,14 +970,42 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick,
 interface GroupFriendSelectSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (friend: FriendProfile) => void;
+  onSelectMultiple: (friends: FriendProfile[]) => void;
   selectedMembers: FriendProfile[];
+  maxMembers: number;
 }
 
-const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen, onClose, onSelect, selectedMembers }) => {
+const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen, onClose, onSelectMultiple, selectedMembers, maxMembers }) => {
+  const [tempSelected, setTempSelected] = useState<FriendProfile[]>([]);
+
+  // シートが閉じたら選択をリセット
+  React.useEffect(() => {
+    if (!isOpen) {
+      setTempSelected([]);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const selectedIds = selectedMembers.map(m => m.id);
+  const alreadySelectedIds = selectedMembers.map(m => m.id);
+  const tempSelectedIds = tempSelected.map(m => m.id);
+  const remainingSlots = maxMembers - selectedMembers.length;
+
+  const toggleSelect = (friend: FriendProfile) => {
+    if (tempSelectedIds.includes(friend.id)) {
+      setTempSelected(tempSelected.filter(f => f.id !== friend.id));
+    } else if (tempSelected.length < remainingSlots) {
+      setTempSelected([...tempSelected, friend]);
+    }
+  };
+
+  const handleConfirm = () => {
+    if (tempSelected.length > 0) {
+      onSelectMultiple(tempSelected);
+      setTempSelected([]);
+      onClose();
+    }
+  };
 
   return (
     <>
@@ -995,38 +1023,71 @@ const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen,
           transform transition-transform duration-300 ease-out
           ${isOpen ? 'translate-y-0' : 'translate-y-full'}
         `}
-        style={{ maxHeight: '60%' }}
+        style={{ maxHeight: '70%' }}
       >
         {/* Drag handle */}
         <div className="flex justify-center py-3">
           <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
         </div>
 
+        {/* Header with confirm button */}
+        <div className="px-4 pb-3 flex items-center justify-between">
+          <span className="text-sm text-neutral-500">
+            {tempSelected.length} / {remainingSlots} selected
+          </span>
+          <button
+            onClick={handleConfirm}
+            disabled={tempSelected.length === 0}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+              tempSelected.length > 0
+                ? 'bg-orange-500 text-white active:bg-orange-600'
+                : 'bg-gray-200 text-gray-400'
+            }`}
+          >
+            Add
+          </button>
+        </div>
+
         {/* Friend grid */}
-        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(60vh - 40px)' }}>
-          <div className="grid grid-cols-3 gap-3">
-            {FRIENDS_LIST.filter(friend => !selectedIds.includes(friend.id)).map((friend) => (
-              <button
-                key={friend.id}
-                onClick={() => onSelect(friend)}
-                className="group"
-              >
-                <div className="w-full aspect-[2/3] rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 border-neutral-200 dark:border-neutral-600 transition-transform group-active:scale-95 flex flex-col">
-                  <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800 rounded-t-[10px] min-h-0 overflow-hidden">
-                    <img
-                      src={friend.image}
-                      alt={friend.name}
-                      className="w-full h-full object-contain"
-                    />
+        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
+          <div className="grid grid-cols-4 gap-2">
+            {FRIENDS_LIST.filter(friend => !alreadySelectedIds.includes(friend.id)).map((friend) => {
+              const isSelected = tempSelectedIds.includes(friend.id);
+              const isDisabled = !isSelected && tempSelected.length >= remainingSlots;
+              return (
+                <button
+                  key={friend.id}
+                  onClick={() => !isDisabled && toggleSelect(friend)}
+                  className={`group relative ${isDisabled ? 'opacity-40' : ''}`}
+                >
+                  <div className={`w-full aspect-[2/3] rounded-xl bg-white dark:bg-neutral-800 shadow-md border-2 transition-all ${
+                    isSelected
+                      ? 'border-orange-500 ring-2 ring-orange-500/30'
+                      : 'border-neutral-200 dark:border-neutral-600'
+                  } group-active:scale-95 flex flex-col`}>
+                    <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800 rounded-t-[10px] min-h-0 overflow-hidden relative">
+                      <img
+                        src={friend.image}
+                        alt={friend.name}
+                        className="w-full h-full object-contain"
+                      />
+                      {isSelected && (
+                        <div className="absolute top-1 right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <div className="px-1 py-1 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600 rounded-b-[10px] shrink-0">
+                      <span className="text-[10px] text-neutral-700 dark:text-neutral-300 font-semibold block text-center truncate">
+                        {friend.name}
+                      </span>
+                    </div>
                   </div>
-                  <div className="px-2 py-1.5 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600 rounded-b-[10px] shrink-0">
-                    <span className="text-[11px] text-neutral-700 dark:text-neutral-300 font-semibold block text-center truncate">
-                      {friend.name}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1414,8 +1475,13 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
             setIsSheetOpen(false);
             setSelectedSlot(null);
           }}
-          onSelect={handleGroupMemberSelect}
+          onSelectMultiple={(friends) => {
+            if (props.onSelectGroupMembers) {
+              props.onSelectGroupMembers([...selectedGroupMembers!, ...friends]);
+            }
+          }}
           selectedMembers={selectedGroupMembers!}
+          maxMembers={8}
         />
 
         {/* Past results sheet */}
