@@ -66,20 +66,20 @@ const App: React.FC = () => {
           />
         );
       case 'friend-detail':
-        if (selectedFriend) {
-          return (
-            <FriendDetailScreen
-              friend={selectedFriend}
-              onBack={handleBackFromFriendDetail}
-            />
-          );
-        }
         return (
-          <FeedScreen
-            currentPage="cards"
-            onNavigate={setCurrentPage}
-            onSelectFriend={handleSelectFriendFromFeed}
-          />
+          <>
+            <FeedScreen
+              currentPage="cards"
+              onNavigate={setCurrentPage}
+              onSelectFriend={handleSelectFriendFromFeed}
+            />
+            {selectedFriend && (
+              <FriendDetailScreen
+                friend={selectedFriend}
+                onBack={handleBackFromFriendDetail}
+              />
+            )}
+          </>
         );
       case 'ranking':
         return (
