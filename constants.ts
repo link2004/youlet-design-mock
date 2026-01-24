@@ -220,6 +220,14 @@ export const AI_CONVERSATION: Array<{
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
 
+// 友達のイベント型
+export interface FriendEvent {
+  id: string;
+  title: string;
+  emoji: string;
+  date: string;
+}
+
 // 友達プロフィール型
 export interface FriendProfile {
   id: number;
@@ -228,6 +236,7 @@ export interface FriendProfile {
   image: string;
   hobbies: string[];
   personality: string[];
+  events: FriendEvent[];
 }
 
 // 友達一覧（交換済みカード）
@@ -238,7 +247,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Momo",
     image: "/images/characters/char16.png",
     hobbies: ["Photography", "Coffee", "Art"],
-    personality: ["Introvert", "Creative"]
+    personality: ["Introvert", "Creative"],
+    events: [
+      { id: 'momo-1', title: 'Found a hidden cafe in Shimokita', emoji: '☕', date: '2 hours ago' },
+      { id: 'momo-2', title: 'Finished a new painting', emoji: '🎨', date: '1 day ago' },
+    ]
   },
   {
     id: 2,
@@ -246,7 +259,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Kento",
     image: "/images/characters/char17.png",
     hobbies: ["Gaming", "Anime", "Music"],
-    personality: ["Extrovert", "Energetic"]
+    personality: ["Extrovert", "Energetic"],
+    events: [
+      { id: 'kento-1', title: 'Finally beat the final boss!', emoji: '🎮', date: '5 hours ago' },
+      { id: 'kento-2', title: 'New anime season is amazing', emoji: '✨', date: '2 days ago' },
+    ]
   },
   {
     id: 3,
@@ -254,7 +271,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Nina",
     image: "/images/characters/char18.png",
     hobbies: ["Reading", "Yoga", "Travel"],
-    personality: ["Calm", "Thoughtful"]
+    personality: ["Calm", "Thoughtful"],
+    events: [
+      { id: 'nina-1', title: 'Morning yoga by the river', emoji: '🧘', date: '3 hours ago' },
+      { id: 'nina-2', title: 'Started a new book', emoji: '📚', date: '1 day ago' },
+    ]
   },
   {
     id: 4,
@@ -262,7 +283,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Ryo",
     image: "/images/characters/char19.png",
     hobbies: ["Cooking", "Movies", "Music"],
-    personality: ["Kind", "Romantic"]
+    personality: ["Kind", "Romantic"],
+    events: [
+      { id: 'ryo-1', title: 'Made homemade pasta today', emoji: '🍝', date: '4 hours ago' },
+      { id: 'ryo-2', title: 'Watched a classic film', emoji: '🎬', date: '2 days ago' },
+    ]
   },
   {
     id: 5,
@@ -270,7 +295,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Sora",
     image: "/images/characters/char20.png",
     hobbies: ["Hiking", "Photography", "Cooking"],
-    personality: ["Adventurous", "Optimist"]
+    personality: ["Adventurous", "Optimist"],
+    events: [
+      { id: 'sora-1', title: 'Climbed Mt. Takao again!', emoji: '⛰️', date: '1 day ago' },
+      { id: 'sora-2', title: 'Captured a beautiful sunset', emoji: '📷', date: '3 days ago' },
+    ]
   },
   {
     id: 6,
@@ -278,7 +307,10 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Leon",
     image: "/images/characters/char21.png",
     hobbies: ["Gaming", "Anime", "Coffee"],
-    personality: ["Introvert", "Curious"]
+    personality: ["Introvert", "Curious"],
+    events: [
+      { id: 'leon-1', title: 'New game release day!', emoji: '🕹️', date: '6 hours ago' },
+    ]
   },
   {
     id: 7,
@@ -286,7 +318,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Akane",
     image: "/images/characters/char22.png",
     hobbies: ["Art", "Music", "Reading"],
-    personality: ["Creative", "Honest"]
+    personality: ["Creative", "Honest"],
+    events: [
+      { id: 'akane-1', title: 'Visited a new art exhibition', emoji: '🖼️', date: '1 day ago' },
+      { id: 'akane-2', title: 'Learning to play guitar', emoji: '🎸', date: '4 days ago' },
+    ]
   },
   {
     id: 8,
@@ -294,7 +330,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Kai",
     image: "/images/characters/char23.png",
     hobbies: ["Travel", "Hiking", "Photography"],
-    personality: ["Adventurous", "Extrovert"]
+    personality: ["Adventurous", "Extrovert"],
+    events: [
+      { id: 'kai-1', title: 'Planning a trip to Kyoto', emoji: '🗾', date: '2 hours ago' },
+      { id: 'kai-2', title: 'Found a secret hiking trail', emoji: '🥾', date: '3 days ago' },
+    ]
   },
   {
     id: 9,
@@ -302,7 +342,10 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Miku",
     image: "/images/characters/char24.png",
     hobbies: ["Movies", "Coffee", "Yoga"],
-    personality: ["Calm", "Kind"]
+    personality: ["Calm", "Kind"],
+    events: [
+      { id: 'miku-1', title: 'Cozy movie night at home', emoji: '🍿', date: '8 hours ago' },
+    ]
   },
   {
     id: 10,
@@ -310,7 +353,11 @@ export const FRIENDS_LIST: FriendProfile[] = [
     name: "Yuto",
     image: "/images/characters/char25.png",
     hobbies: ["Cooking", "Gaming", "Travel"],
-    personality: ["Curious", "Optimist"]
+    personality: ["Curious", "Optimist"],
+    events: [
+      { id: 'yuto-1', title: 'Tried a new ramen recipe', emoji: '🍜', date: '5 hours ago' },
+      { id: 'yuto-2', title: 'Booked flight to Okinawa', emoji: '✈️', date: '2 days ago' },
+    ]
   },
 ];
 
@@ -322,7 +369,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Yuki",
     image: "/images/characters/char16.png",
     hobbies: ["Art", "Photography", "Coffee"],
-    personality: ["Creative", "Calm"]
+    personality: ["Creative", "Calm"],
+    events: []
   },
   {
     id: 102,
@@ -330,7 +378,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Haru",
     image: "/images/characters/char17.png",
     hobbies: ["Music", "Gaming", "Movies"],
-    personality: ["Energetic", "Optimist"]
+    personality: ["Energetic", "Optimist"],
+    events: []
   },
   {
     id: 103,
@@ -338,7 +387,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Ren",
     image: "/images/characters/char18.png",
     hobbies: ["Travel", "Hiking", "Cooking"],
-    personality: ["Adventurous", "Kind"]
+    personality: ["Adventurous", "Kind"],
+    events: []
   },
   {
     id: 104,
@@ -346,7 +396,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Mei",
     image: "/images/characters/char19.png",
     hobbies: ["Yoga", "Reading", "Coffee"],
-    personality: ["Calm", "Thoughtful"]
+    personality: ["Calm", "Thoughtful"],
+    events: []
   },
   {
     id: 105,
@@ -354,7 +405,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Taro",
     image: "/images/characters/char20.png",
     hobbies: ["Gaming", "Anime", "Music"],
-    personality: ["Curious", "Honest"]
+    personality: ["Curious", "Honest"],
+    events: []
   },
   {
     id: 106,
@@ -362,7 +414,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Sakura",
     image: "/images/characters/char21.png",
     hobbies: ["Photography", "Art", "Travel"],
-    personality: ["Creative", "Extrovert"]
+    personality: ["Creative", "Extrovert"],
+    events: []
   },
   {
     id: 107,
@@ -370,7 +423,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Kazu",
     image: "/images/characters/char22.png",
     hobbies: ["Cooking", "Movies", "Gaming"],
-    personality: ["Kind", "Introvert"]
+    personality: ["Kind", "Introvert"],
+    events: []
   },
   {
     id: 108,
@@ -378,7 +432,8 @@ export const FRIENDS_OF_FRIENDS_LIST: FriendProfile[] = [
     name: "Nana",
     image: "/images/characters/char23.png",
     hobbies: ["Reading", "Music", "Yoga"],
-    personality: ["Thoughtful", "Honest"]
+    personality: ["Thoughtful", "Honest"],
+    events: []
   },
 ];
 
