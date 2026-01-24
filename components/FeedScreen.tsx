@@ -5,7 +5,6 @@ import BottomNav from './BottomNav';
 import FriendCard from './FriendCard';
 import FriendsOfFriendsList from './FriendsOfFriendsList';
 import FriendCardPreview from './FriendCardPreview';
-import FriendCardFlipModal from './FriendCardFlipModal';
 import { PageType } from '../App';
 
 interface FeedScreenProps {
@@ -18,7 +17,6 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [previewFriend, setPreviewFriend] = useState<FriendProfile | null>(null);
-  const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewFriendRef = useRef<FriendProfile | null>(null);
 
@@ -120,7 +118,7 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
                 key={friend.id}
                 name={friend.name}
                 image={friend.image}
-                onClick={() => setSelectedFriend(friend)}
+                onClick={() => onSelectFriend(friend)}
               />
             ))}
           </div>
@@ -142,17 +140,6 @@ const FeedScreen: React.FC<FeedScreenProps> = ({ currentPage, onNavigate, onSele
           setPreviewFriend(null);
           setIsSearchFocused(false);
           setSearchQuery('');
-        }}
-      />
-
-      {/* Friend Card Flip Modal */}
-      <FriendCardFlipModal
-        friend={selectedFriend}
-        isOpen={selectedFriend !== null}
-        onClose={() => setSelectedFriend(null)}
-        onViewDetail={(friend) => {
-          setSelectedFriend(null);
-          onSelectFriend(friend);
         }}
       />
     </div>

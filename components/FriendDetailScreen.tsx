@@ -13,6 +13,7 @@ interface FriendDetailScreenProps {
 
 const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(initialSheetOpen);
+  const [isFlipped, setIsFlipped] = useState(false);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -68,26 +69,95 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
 
       {/* Content - Large Card + Name + Button */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8">
-        {/* Large Friend Card */}
-        <div className="w-64 mb-4">
-          <div className="w-full aspect-[2/3] rounded-3xl bg-white shadow-2xl border-2 border-white/80 flex flex-col overflow-hidden">
-            <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-b from-neutral-50 to-neutral-100">
-              <img
-                src={friend.image}
-                alt={friend.name}
-                className="w-full h-full object-contain"
-              />
+        {/* Large Flippable Friend Card */}
+        <div
+          className="w-64 aspect-[2/3] cursor-pointer mb-4"
+          style={{ perspective: '1000px' }}
+          onClick={() => setIsFlipped(!isFlipped)}
+        >
+          <div
+            className="relative w-full h-full transition-transform duration-500"
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            }}
+          >
+            {/* Front - Friend Card */}
+            <div
+              className="absolute inset-0 rounded-3xl bg-white shadow-2xl border-2 border-white/80 flex flex-col overflow-hidden"
+              style={{ backfaceVisibility: 'hidden' }}
+            >
+              <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-b from-neutral-50 to-neutral-100">
+                <img
+                  src={friend.image}
+                  alt={friend.name}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="px-4 py-3 bg-white border-t border-neutral-200">
+                <span className="text-base text-neutral-700 font-semibold block text-center truncate">
+                  {friend.name}
+                </span>
+              </div>
             </div>
-            <div className="px-4 py-3 bg-white border-t border-neutral-200">
-              <span className="text-base text-neutral-700 font-semibold block text-center truncate">
-                {friend.name}
-              </span>
+
+            {/* Back - Events Card */}
+            <div
+              className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl border-2 border-orange-300"
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)',
+              }}
+            >
+              <div className="w-full h-full bg-gradient-to-br from-orange-400 to-pink-500 p-4 flex flex-col">
+                <h3 className="text-white font-serif italic font-bold text-lg mb-3 text-center">
+                  Today's Events
+                </h3>
+
+                <div className="flex-1 overflow-y-auto space-y-2 min-h-0">
+                  {friend.events.length > 0 ? (
+                    friend.events.map((event) => (
+                      <div
+                        key={event.id}
+                        className="bg-white/20 backdrop-blur-sm rounded-xl p-3"
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-2xl flex-shrink-0">{event.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white font-medium text-sm leading-tight">
+                              {event.title}
+                            </p>
+                            <p className="text-white/70 text-xs mt-0.5">
+                              {event.date}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center">
+                      <p className="text-white/70 text-sm text-center">
+                        No events yet
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-white/60 text-xs text-center mt-3 font-medium">
+                  Tap to flip back
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Hint text */}
+        <p className="text-white/70 text-xs mb-2">
+          {isFlipped ? 'Tap card to see front' : 'Tap card to see events'}
+        </p>
+
         {/* Friend Name (below card) */}
-        <h2 className="text-white font-bold text-2xl mb-8">{friend.name}</h2>
+        <h2 className="text-white font-bold text-2xl mb-6">{friend.name}</h2>
 
         {/* Compatibility Button */}
         <button
