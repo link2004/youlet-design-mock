@@ -50,24 +50,29 @@ const DiagnosticTypeSheet: React.FC<DiagnosticTypeSheetProps> = ({ isOpen, onClo
               <button
                 key={diagnostic.id}
                 onClick={() => onSelect(diagnostic)}
-                className="group"
+                className={`
+                  relative w-full aspect-square rounded-2xl shadow-lg overflow-hidden
+                  bg-gradient-to-br ${diagnostic.gradient}
+                  border-2 border-white/30
+                  active:scale-[0.98] transition-transform duration-150
+                  flex flex-col items-start justify-end p-5 gap-3
+                `}
               >
-                <div
-                  className={`
-                    w-full aspect-square rounded-2xl bg-gradient-to-br ${diagnostic.gradient}
-                    shadow-md transition-transform group-active:scale-95
-                    flex flex-col items-center justify-center p-4
-                  `}
-                >
-                  <img
-                    src={diagnostic.image}
-                    alt={diagnostic.title}
-                    className="w-12 h-12 object-contain mb-2"
-                  />
-                  <span className="text-white font-semibold text-sm text-center leading-tight">
-                    {diagnostic.title}
-                  </span>
-                </div>
+                <img
+                  src={diagnostic.image}
+                  alt={diagnostic.title}
+                  className="w-12 h-12 object-contain"
+                />
+                <h3 className="text-white font-serif italic font-black text-sm leading-tight text-left">
+                  {(() => {
+                    const words = diagnostic.title.split(' ');
+                    if (words.length <= 2) {
+                      return <>{words[0]}<br />{words[1]}</>;
+                    }
+                    const lastWord = words.pop();
+                    return <>{words.join(' ')}<br />{lastWord}</>;
+                  })()}
+                </h3>
               </button>
             ))}
           </div>
