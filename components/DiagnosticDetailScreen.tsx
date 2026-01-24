@@ -1068,6 +1068,7 @@ const GroupFriendSelectSheet: React.FC<GroupFriendSelectSheetProps> = ({ isOpen,
 interface GroupPairResult {
   pair: [FriendProfile, FriendProfile];
   percentage: number;
+  reason: string;
 }
 
 interface GroupDiagnosticResult {
@@ -1075,7 +1076,7 @@ interface GroupDiagnosticResult {
 }
 
 // グループ診断結果を生成（トップ3の組み合わせ）
-const generateGroupResult = (members: FriendProfile[], _diagnosticId: string): GroupDiagnosticResult => {
+const generateGroupResult = (members: FriendProfile[], diagnosticId: string): GroupDiagnosticResult => {
   // 全てのペアの組み合わせを生成
   const allPairs: [FriendProfile, FriendProfile][] = [];
   for (let i = 0; i < members.length; i++) {
@@ -1087,7 +1088,38 @@ const generateGroupResult = (members: FriendProfile[], _diagnosticId: string): G
   // シャッフルしてランダムなペアを選択
   const shuffled = allPairs.sort(() => Math.random() - 0.5);
 
-  // トップ3のペアにパーセンテージを割り当て（降順）
+  // 診断タイプ別の理由
+  const reasons: Record<string, string[]> = {
+    dna_soulmates: [
+      'Their energy frequencies resonate at the same wavelength',
+      'A cosmic connection that transcends time and space',
+      'Twin flame energy detected - destined to meet',
+      'Their souls have been connected across multiple lifetimes',
+      'Matching vibration patterns suggest deep spiritual bond',
+      'The universe aligned their paths for a reason',
+    ],
+    chaos_catalyst: [
+      'Combined chaos level exceeds all safety protocols',
+      'These two together could start a revolution... or a fire',
+      'Expect the unexpected when they\'re in the same room',
+      'Warning: Their combined energy is highly volatile',
+      'Together they form an unstoppable force of chaos',
+      'Trouble follows wherever they go as a pair',
+    ],
+    one_night_mistake: [
+      'The chemistry is undeniable... the judgment questionable',
+      'A connection that burns bright but burns fast',
+      'Sparks will fly, regrets may follow',
+      'Their attraction defies all common sense',
+      'A story best left untold at family gatherings',
+      'What happens between them stays between them',
+    ],
+  };
+
+  const reasonList = reasons[diagnosticId] || reasons.dna_soulmates;
+  const shuffledReasons = [...reasonList].sort(() => Math.random() - 0.5);
+
+  // トップ3のペアにパーセンテージと理由を割り当て（降順）
   const percentages = [
     Math.floor(Math.random() * 10) + 90, // 90-99%
     Math.floor(Math.random() * 15) + 75, // 75-89%
@@ -1095,9 +1127,9 @@ const generateGroupResult = (members: FriendProfile[], _diagnosticId: string): G
   ].sort((a, b) => b - a);
 
   const topThree: [GroupPairResult, GroupPairResult, GroupPairResult] = [
-    { pair: shuffled[0], percentage: percentages[0] },
-    { pair: shuffled[1], percentage: percentages[1] },
-    { pair: shuffled[2], percentage: percentages[2] },
+    { pair: shuffled[0], percentage: percentages[0], reason: shuffledReasons[0] },
+    { pair: shuffled[1], percentage: percentages[1], reason: shuffledReasons[1] },
+    { pair: shuffled[2], percentage: percentages[2], reason: shuffledReasons[2] },
   ];
 
   return { topThree };
@@ -1212,6 +1244,7 @@ const GroupResultPhase: React.FC<GroupResultPhaseProps> = ({ result, diagnosticT
               `}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
+              {/* Header row with medal, avatars, names, percentage */}
               <div className="flex items-center gap-3">
                 {/* Rank medal */}
                 <img
@@ -1249,6 +1282,11 @@ const GroupResultPhase: React.FC<GroupResultPhaseProps> = ({ result, diagnosticT
                   </p>
                 </div>
               </div>
+
+              {/* Reason */}
+              <p className="mt-2 text-gray-600 text-xs leading-relaxed pl-[52px]">
+                {item.reason}
+              </p>
             </div>
           ))}
         </div>
