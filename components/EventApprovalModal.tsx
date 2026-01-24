@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, Sparkles, ChevronDown } from 'lucide-react';
+import { X, Check, Sparkles, ChevronDown, Globe, Lock } from 'lucide-react';
 import { AI_SUGGESTED_EVENTS } from '../constants';
 
 interface EventDetails {
@@ -160,9 +160,17 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{event.emoji}</span>
-                    <p className="flex-1 font-medium text-neutral-900 dark:text-white">
-                      {event.title}
-                    </p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-neutral-900 dark:text-white">
+                          {event.title}
+                        </p>
+                        <span className="flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                          <Globe size={10} />
+                          <span>Public</span>
+                        </span>
+                      </div>
+                    </div>
                     <div
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 ${
                         isSelected
@@ -190,8 +198,8 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                     {/* AI-generated description - editable */}
                     <div>
                       <label className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5 flex items-center gap-1.5">
-                        <span>Edit details</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">AI only</span>
+                        <Lock size={12} />
+                        <span>Details</span>
                       </label>
                       <textarea
                         ref={(el) => { textareaRefs.current[event.id] = el; }}
