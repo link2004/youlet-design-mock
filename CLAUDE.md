@@ -40,36 +40,17 @@ npm run preview  # ビルド結果プレビュー
 
 ## 実装済み機能
 
-### AI会話履歴の相互承認フロー
-友達カードの裏面からAI会話履歴を閲覧・共有し、相互承認によってblurが解除される機能。
+### 基本画面
+- Feed画面: 友達カードの一覧表示
+- Ranking画面: ランキング表示
+- DM画面: チャット一覧・個別会話
+- Diagnostic画面: 診断機能
 
-**画面フロー:**
-1. FriendDetailScreen（カード裏面）→「View AI Conversation」ボタン
-2. AIConversationHistoryScreen（自分AIは通常表示、相手AIはblur）
-3. 「Share & Request Approval」→ DM画面へ遷移
-4. DMにウィジェット表示 → 相手が承認 → blur解除アニメーション
-
-**関連コンポーネント:**
-- `AIConversationHistoryScreen.tsx` - AI会話履歴画面
-- `AIConversationEditModal.tsx` - メッセージ編集モーダル
-- `DMConversationApprovalWidget.tsx` - DM内承認ウィジェット
-
-**デモ用機能:** pending_sent状態のウィジェットをタップすると相手の承認をシミュレート可能
-
-### AI会話システムの設計意図
-
-**目的**: 自分のトピック（My Topics）と相手のイベントをAI同士が交換する
-
-**会話の流れ**:
-1. 自分のAIが自分のトピックを紹介
-2. 相手のAIが相手のイベントを紹介
-3. お互いにリアクション（共感・質問・盛り上がり）
-4. バランスよく自然に混ぜる
-
-**表示ルール**:
-- AI会話画面では**自分のトピックのみ表示**（相手のイベントは非表示）
-- 相手のイベントはカード裏面でのみ確認
-- 相手のAI発言はblur（承認後に解除）
+### 削除済み機能（2025-01）
+以下の機能はクリーンアップにより削除:
+- カード裏面（フリップUI）
+- AI会話履歴画面
+- AI会話の承認フロー（blur/承認ウィジェット）
 
 ## Claude Code 設定
 
