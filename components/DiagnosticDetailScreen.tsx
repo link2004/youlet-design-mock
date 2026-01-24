@@ -661,13 +661,13 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Crown size={16} className="text-yellow-500 fill-yellow-500" />;
+        return <img src="/images/rank/1st_3d.png" alt="1st" className="w-6 h-6" />;
       case 2:
-        return <Medal size={16} className="text-gray-400 fill-gray-400" />;
+        return <img src="/images/rank/2nd_3d.png" alt="2nd" className="w-6 h-6" />;
       case 3:
-        return <Medal size={16} className="text-amber-600 fill-amber-600" />;
+        return <img src="/images/rank/3rd_3d.png" alt="3rd" className="w-6 h-6" />;
       default:
-        return <span className="text-neutral-400 font-bold text-xs w-4 text-center">{rank}</span>;
+        return <span className="text-neutral-400 font-bold text-sm w-6 text-center">{rank}</span>;
     }
   };
 
@@ -715,15 +715,7 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
                     onSelectFriend(result.friend);
                     onClose();
                   }}
-                  className={`flex items-center gap-3 p-3 rounded-xl border transition-transform active:scale-[0.98] ${
-                    rank === 1
-                      ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200'
-                      : rank === 2
-                      ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200'
-                      : rank === 3
-                      ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200'
-                      : 'bg-white border-neutral-200'
-                  }`}
+                  className="flex items-center gap-3 p-3 rounded-xl transition-transform active:scale-[0.98]"
                 >
                   {/* Rank */}
                   <div className="w-6 flex justify-center">
@@ -731,11 +723,11 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
                   </div>
 
                   {/* Avatar */}
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-neutral-100 to-neutral-200 overflow-hidden border-2 border-white shadow-sm">
+                  <div className="w-10 h-10 flex items-center justify-center">
                     <img
                       src={result.friend.image}
                       alt={result.friend.name}
-                      className="w-full h-full object-cover"
+                      className="w-10 h-10 object-contain"
                     />
                   </div>
 
