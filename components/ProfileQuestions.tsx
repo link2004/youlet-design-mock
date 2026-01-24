@@ -118,8 +118,8 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
           className={`bg-white dark:bg-neutral-900 rounded-2xl p-6 transition-all duration-200 ${
             isAnimating
               ? slideDirection === 'right'
-                ? '-translate-x-full opacity-0'
-                : 'translate-x-full opacity-0'
+                ? 'translate-x-full opacity-0'
+                : '-translate-x-full opacity-0'
               : 'translate-x-0 opacity-100'
           }`}
         >
@@ -158,14 +158,13 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
         <button
           onClick={goToPrev}
           disabled={currentIndex === 0}
-          className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`p-2 rounded-full transition-colors ${
             currentIndex === 0
               ? 'text-neutral-300 dark:text-neutral-600'
-              : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+              : 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
           }`}
         >
-          <ChevronLeft size={18} />
-          Back
+          <ChevronLeft size={20} />
         </button>
 
         {/* Dots indicator */}
@@ -187,14 +186,13 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
         <button
           onClick={goToNext}
           disabled={currentIndex === totalCount - 1}
-          className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`p-2 rounded-full transition-colors ${
             currentIndex === totalCount - 1
               ? 'text-neutral-300 dark:text-neutral-600'
-              : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+              : 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
           }`}
         >
-          Skip
-          <ChevronRight size={18} />
+          <ChevronRight size={20} />
         </button>
       </div>
     </div>
