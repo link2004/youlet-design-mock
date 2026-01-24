@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, User, Compass } from 'lucide-react';
+import { Layout, User, Compass, Send } from 'lucide-react';
 import { PageType } from '../App';
 
 interface BottomNavProps {
@@ -10,6 +10,7 @@ interface BottomNavProps {
 const NAV_ITEMS: { icon: typeof Layout; label: string; page: PageType }[] = [
   { icon: Layout, label: "Cards", page: 'cards' },
   { icon: Compass, label: "Diagnostic", page: 'diagnostic' },
+  { icon: Send, label: "DM", page: 'dm' },
   { icon: User, label: "Profile", page: 'profile' },
 ];
 

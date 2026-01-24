@@ -554,3 +554,78 @@ export const PROFILE_QUESTIONS: ProfileQuestion[] = [
   { id: 'q19', question: 'I enjoy meeting new people.', category: 'social' },
   { id: 'q20', question: 'I am comfortable being the center of attention.', category: 'social' },
 ];
+
+// DM チャットリスト（友達一覧の画像を使用）
+export const DM_CHATS = [
+  {
+    id: '1',
+    name: 'Momo',
+    avatar: '/images/characters/char16.png',
+    lastMessage: "You should! Want to go on a photo walk sometime?",
+    timestamp: '2m',
+    unread: true,
+    online: true,
+  },
+  {
+    id: '2',
+    name: 'Kento',
+    avatar: '/images/characters/char17.png',
+    lastMessage: "That cafe was amazing! 🍵",
+    timestamp: '15m',
+    unread: true,
+    online: true,
+  },
+  {
+    id: '3',
+    name: 'Nina',
+    avatar: '/images/characters/char18.png',
+    lastMessage: "See you at the gaming event!",
+    timestamp: '1h',
+    unread: false,
+    online: false,
+  },
+  {
+    id: '4',
+    name: 'Ryo',
+    avatar: '/images/characters/char19.png',
+    lastMessage: "The cherry blossoms are so beautiful this year",
+    timestamp: '3h',
+    unread: false,
+    online: true,
+  },
+  {
+    id: '5',
+    name: 'Sora',
+    avatar: '/images/characters/char20.png',
+    lastMessage: "Let me know when you finish that book!",
+    timestamp: '1d',
+    unread: false,
+    online: false,
+  },
+  {
+    id: '6',
+    name: 'Leon',
+    avatar: '/images/characters/char21.png',
+    lastMessage: "Great playlist recommendation 🎵",
+    timestamp: '2d',
+    unread: false,
+    online: false,
+  },
+];
+
+// DM 会話詳細 (Momo との会話)
+export const DM_MESSAGES: Array<{
+  id: string;
+  sender: 'user' | 'other';
+  message: string;
+  timestamp: string;
+}> = [
+  { id: '1', sender: 'other', message: "Hey! Nice to meet you 👋", timestamp: '10:30' },
+  { id: '2', sender: 'user', message: "Hi Momo! Nice to meet you too!", timestamp: '10:32' },
+  { id: '3', sender: 'other', message: "I saw we both love photography!", timestamp: '10:33' },
+  { id: '4', sender: 'user', message: "Yes! I'm really into street photography lately.", timestamp: '10:35' },
+  { id: '5', sender: 'other', message: "That's awesome! Do you have a favorite camera?", timestamp: '10:36' },
+  { id: '6', sender: 'user', message: "I use a Fujifilm X100V. The colors are amazing!", timestamp: '10:38' },
+  { id: '7', sender: 'other', message: "Nice choice! I've been wanting to try Fujifilm.", timestamp: '10:40' },
+  { id: '8', sender: 'user', message: "You should! Want to go on a photo walk sometime?", timestamp: '10:42' },
+];

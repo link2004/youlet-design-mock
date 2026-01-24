@@ -6,9 +6,10 @@ import RankingScreen from './components/RankingScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
 import FriendDetailScreen from './components/FriendDetailScreen';
+import DMScreen from './components/DMScreen';
 import { DiagnosticType, GroupDiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'friend-detail' | 'ranking';
+export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'friend-detail' | 'ranking' | 'dm';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
@@ -139,6 +140,8 @@ const App: React.FC = () => {
           );
         }
         return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} />;
+      case 'dm':
+        return <DMScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
       case 'profile':
       default:
         return <PhoneScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
