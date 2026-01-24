@@ -16,7 +16,7 @@ export const USER_DATA = {
   name: "Riku",
   age: 21,
   location: "Tokyo",
-  avatar: "https://ftrfpbrgnjkqgzaggkdz.supabase.co/storage/v1/object/public/profile-avatar/generated-avatars/310d8ad9-e71a-4552-acf5-860332e691d5/20260121_043652.png"
+  avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_1.png"
 };
 
 export const MY_PROFILE = {
