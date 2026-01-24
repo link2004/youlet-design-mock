@@ -59,11 +59,12 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
       } else {
         next.add(id);
         setExpandedEvent(id);
-        // Initialize details for newly selected event
-        if (!eventDetails[id]) {
+        // Initialize details with AI-generated description
+        const event = AI_SUGGESTED_EVENTS.find(e => e.id === id);
+        if (!eventDetails[id] && event) {
           setEventDetails(prevDetails => ({
             ...prevDetails,
-            [id]: { additionalContext: '' }
+            [id]: { additionalContext: event.description }
           }));
         }
         // Focus the textarea after a short delay
@@ -152,21 +153,16 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                   transitionDelay: `${index * 100}ms`,
                 }}
               >
-                {/* Event Header */}
+                {/* Event Header - Title only */}
                 <button
                   onClick={() => toggleEvent(event.id)}
                   className="w-full text-left p-4"
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-3">
                     <span className="text-2xl">{event.emoji}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-neutral-900 dark:text-white">
-                        {event.title}
-                      </p>
-                      <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5 truncate">
-                        {event.description}
-                      </p>
-                    </div>
+                    <p className="flex-1 font-medium text-neutral-900 dark:text-white">
+                      {event.title}
+                    </p>
                     <div
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 ${
                         isSelected
@@ -191,17 +187,17 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                     {/* Divider */}
                     <div className="border-t border-orange-200 dark:border-orange-800" />
 
-                    {/* Additional Context Input (AI only) */}
+                    {/* AI-generated description - editable */}
                     <div>
                       <label className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5 flex items-center gap-1.5">
-                        <span>Add your story</span>
+                        <span>Edit details</span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">AI only</span>
                       </label>
                       <textarea
                         ref={(el) => { textareaRefs.current[event.id] = el; }}
                         value={details?.additionalContext || ''}
                         onChange={(e) => handleContextChange(event.id, e.target.value)}
-                        placeholder="e.g., Got extended 2 weeks because of this..."
+                        placeholder="Add more context..."
                         className="w-full px-3 py-2 text-sm rounded-xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400/50 resize-none"
                         rows={2}
                       />
@@ -219,7 +215,7 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                     className="w-full py-2 flex items-center justify-center text-orange-500 hover:bg-orange-100/50 dark:hover:bg-orange-900/30 transition-colors"
                   >
                     <ChevronDown size={16} />
-                    <span className="text-xs ml-1">Add details</span>
+                    <span className="text-xs ml-1">Edit details</span>
                   </button>
                 )}
               </div>
