@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const [shouldOpenSheet, setShouldOpenSheet] = useState(false);
   const [diagnosticEntryPoint, setDiagnosticEntryPoint] = useState<'diagnostic' | 'friend-detail' | null>(null);
   const [friendDetailEntryPoint, setFriendDetailEntryPoint] = useState<'cards' | 'ranking' | null>(null);
+  const [rankingEntryPoint, setRankingEntryPoint] = useState<'cards' | 'diagnostic-detail' | null>(null);
 
   const handleSelectDiagnostic = (diagnostic: DiagnosticType) => {
     setDiagnosticEntryPoint('diagnostic');
@@ -57,10 +58,32 @@ const App: React.FC = () => {
   };
 
   const handleSelectFriendFromRanking = (friend: FriendProfile) => {
+    // If ranking was opened from diagnostic-detail, selecting a friend just closes ranking
+    // and returns to diagnostic-detail with that friend selected
+    if (rankingEntryPoint === 'diagnostic-detail') {
+      setSelectedFriend(friend);
+      setRankingEntryPoint(null);
+      setCurrentPage('diagnostic-detail');
+      return;
+    }
     setFriendDetailEntryPoint('ranking');
     setSelectedFriend(friend);
     setShouldOpenSheet(false);
     setCurrentPage('friend-detail');
+  };
+
+  const handleOpenRankingFromDiagnosticDetail = () => {
+    setRankingEntryPoint('diagnostic-detail');
+    setCurrentPage('ranking');
+  };
+
+  const handleBackFromRanking = () => {
+    if (rankingEntryPoint === 'diagnostic-detail') {
+      setRankingEntryPoint(null);
+      setCurrentPage('diagnostic-detail');
+    } else {
+      setCurrentPage('cards');
+    }
   };
 
   const handleBackFromFriendDetail = () => {
@@ -103,7 +126,7 @@ const App: React.FC = () => {
         return (
           <RankingScreen
             onSelectFriend={handleSelectFriendFromRanking}
-            onBack={() => setCurrentPage('cards')}
+            onBack={handleBackFromRanking}
           />
         );
       case 'diagnostic':
@@ -135,6 +158,7 @@ const App: React.FC = () => {
               onBack={handleBackFromDiagnosticDetail}
               selectedFriend={selectedFriend}
               onSelectFriend={setSelectedFriend}
+              onOpenRanking={handleOpenRankingFromDiagnosticDetail}
             />
           );
         }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle } from 'lucide-react';
+import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Trophy } from 'lucide-react';
 import { DiagnosticType, GroupDiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
 
 type DiagnosticPhase = 'select' | 'loading' | 'result';
@@ -53,6 +53,7 @@ interface PairDiagnosticProps {
   onBack: () => void;
   selectedFriend: FriendProfile | null;
   onSelectFriend: (friend: FriendProfile | null) => void;
+  onOpenRanking?: () => void;
   groupDiagnostic?: never;
   selectedGroupMembers?: never;
   onSelectGroupMembers?: never;
@@ -75,6 +76,7 @@ interface FriendSelectSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (friend: FriendProfile) => void;
+  onOpenRanking?: () => void;
 }
 
 // 脈打つハートコンポーネント（診断タイプの画像を使用）
@@ -569,7 +571,7 @@ const ResultPhase: React.FC<ResultPhaseProps> = ({ myProfile, friend, result, di
   );
 };
 
-const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, onSelect }) => {
+const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, onSelect, onOpenRanking }) => {
   if (!isOpen) return null;
 
   return (
@@ -588,7 +590,7 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
           transform transition-transform duration-300 ease-out
           ${isOpen ? 'translate-y-0' : 'translate-y-full'}
         `}
-        style={{ maxHeight: '60%' }}
+        style={{ maxHeight: '70%' }}
       >
         {/* Drag handle */}
         <div className="flex justify-center py-3">
@@ -596,7 +598,7 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
         </div>
 
         {/* Friend grid */}
-        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(60vh - 40px)' }}>
+        <div className="px-4 pb-4 overflow-y-auto" style={{ maxHeight: 'calc(70vh - 100px)' }}>
           <div className="grid grid-cols-3 gap-3">
             {FRIENDS_LIST.map((friend) => (
               <button
@@ -622,6 +624,19 @@ const FriendSelectSheet: React.FC<FriendSelectSheetProps> = ({ isOpen, onClose, 
             ))}
           </div>
         </div>
+
+        {/* Ranking button */}
+        {onOpenRanking && (
+          <div className="px-4 pb-6 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+            <button
+              onClick={onOpenRanking}
+              className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-400 to-amber-400 rounded-xl text-white font-semibold shadow-md active:scale-[0.98] transition-transform"
+            >
+              <Trophy size={18} />
+              <span>Compatibility Ranking</span>
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
@@ -1250,6 +1265,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         onSelect={handleFriendSelect}
+        onOpenRanking={(props as PairDiagnosticProps).onOpenRanking}
       />
     </div>
   );

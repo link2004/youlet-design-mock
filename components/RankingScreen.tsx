@@ -1,11 +1,8 @@
 import React from 'react';
 import { Crown, Medal, Trophy, ChevronLeft } from 'lucide-react';
 import { FRIENDS_LIST, USER_ELEMENTS, FriendProfile } from '../constants';
-import { PageType } from '../App';
 
 interface RankingScreenProps {
-  currentPage: PageType;
-  onNavigate: (page: PageType) => void;
   onSelectFriend: (friend: FriendProfile) => void;
   onBack: () => void;
 }
