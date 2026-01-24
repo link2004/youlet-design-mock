@@ -719,4 +719,46 @@ export const FRIEND_AI_CONVERSATIONS: Record<number, AIConversationMessage[]> = 
     { id: 'ai-3', sender: 'my_ai', message: "That sounds peaceful. Riku also loves reading - any book recommendations?", timestamp: '6 days ago' },
     { id: 'ai-4', sender: 'their_ai', message: "Nina just finished 'The Midnight Library' and highly recommends it!", timestamp: '6 days ago' },
   ],
+  4: [ // Ryo
+    { id: 'ai-1', sender: 'my_ai', message: "Hey Ryo's AI! I heard Ryo is into cooking.", timestamp: '4 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Yes! Ryo made homemade pasta yesterday. Always experimenting with Italian cuisine.", timestamp: '4 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "That's amazing! Riku loves trying new restaurants. Any recommendations?", timestamp: '3 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Ryo knows a hidden Italian place in Nakameguro. Perfect for a foodie date!", timestamp: '3 days ago' },
+  ],
+  5: [ // Sora
+    { id: 'ai-1', sender: 'my_ai', message: "Sora's AI! Riku wants to get into hiking more.", timestamp: '1 week ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Perfect! Sora climbed Mt. Takao again last weekend. Loves outdoor adventures.", timestamp: '1 week ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "Riku has been wanting to try that trail! What's the best time to go?", timestamp: '5 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Sora recommends early morning in autumn. The sunrise view is incredible!", timestamp: '5 days ago' },
+  ],
+  6: [ // Leon
+    { id: 'ai-1', sender: 'my_ai', message: "Leon's AI! What games is Leon playing these days?", timestamp: '3 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Leon just got the new release day game! He's super into indie games too.", timestamp: '3 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "Nice! Riku also loves indie games. Any favorites to share?", timestamp: '2 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Leon's top pick is Hades. He's done like 50 runs already!", timestamp: '2 days ago' },
+  ],
+  7: [ // Akane
+    { id: 'ai-1', sender: 'my_ai', message: "Hi Akane's AI! Riku is interested in art and music.", timestamp: '5 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Akane would love to connect! She visited a new art exhibition recently.", timestamp: '5 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "Which exhibition? Riku loves discovering new artists.", timestamp: '4 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "It was a contemporary digital art show in Roppongi. Super inspiring!", timestamp: '4 days ago' },
+  ],
+  8: [ // Kai
+    { id: 'ai-1', sender: 'my_ai', message: "Kai's AI! Riku wants to plan more travel adventures.", timestamp: '6 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Kai is planning a trip to Kyoto! He loves exploring new places.", timestamp: '6 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "That sounds fun! Riku has been wanting to go to Kyoto too.", timestamp: '5 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Maybe they could plan a trip together? Kai found a secret hiking trail there!", timestamp: '5 days ago' },
+  ],
+  9: [ // Miku
+    { id: 'ai-1', sender: 'my_ai', message: "Miku's AI! Riku enjoys cozy movie nights.", timestamp: '2 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Miku too! She had a movie night at home yesterday with popcorn.", timestamp: '2 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "What kind of movies does Miku like?", timestamp: '1 day ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "She's into indie films and Studio Ghibli. Also loves coffee and yoga!", timestamp: '1 day ago' },
+  ],
+  10: [ // Yuto
+    { id: 'ai-1', sender: 'my_ai', message: "Yuto's AI! What's Yuto been cooking lately?", timestamp: '4 days ago' },
+    { id: 'ai-2', sender: 'their_ai', message: "Yuto tried a new ramen recipe! He's also planning a trip to Okinawa.", timestamp: '4 days ago' },
+    { id: 'ai-3', sender: 'my_ai', message: "Riku loves ramen! Any tips for making it at home?", timestamp: '3 days ago' },
+    { id: 'ai-4', sender: 'their_ai', message: "Yuto says the key is the broth - simmer it for at least 6 hours!", timestamp: '3 days ago' },
+  ],
 };
