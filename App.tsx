@@ -58,9 +58,8 @@ const App: React.FC = () => {
     setCurrentPage('cards');
   };
 
-  const handleDiagnosticFromFriendDetail = () => {
-    // Keep selectedFriend and go to diagnostic-detail with a default diagnostic
-    setSelectedDiagnostic({ id: 'love', title: '恋愛相性', icon: '❤️', description: '二人の恋愛相性を診断' });
+  const handleDiagnosticFromFriendDetail = (diagnostic: DiagnosticType) => {
+    setSelectedDiagnostic(diagnostic);
     setCurrentPage('diagnostic-detail');
   };
 

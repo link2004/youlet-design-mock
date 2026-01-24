@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, MessageCircle, Heart } from 'lucide-react';
-import { FriendProfile } from '../constants';
+import { ChevronLeft, X } from 'lucide-react';
+import { FriendProfile, DiagnosticType, DIAGNOSTIC_TYPES } from '../constants';
 import StatusBar from './StatusBar';
 
 interface FriendDetailScreenProps {
   friend: FriendProfile;
   onBack: () => void;
-  onDiagnostic?: () => void;
+  onDiagnostic?: (diagnostic: DiagnosticType) => void;
   onDM?: () => void;
 }
 
 const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onDiagnostic, onDM }) => {
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     const container = document.getElementById('iphone-modal-portal');
     setPortalContainer(container);
   }, []);
+
+  const handleSelectDiagnostic = (diagnostic: DiagnosticType) => {
+    setIsSheetOpen(false);
+    onDiagnostic?.(diagnostic);
+  };
 
   if (!portalContainer) return null;
 
@@ -60,7 +66,7 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
         {/* Action Buttons */}
         <div className="flex flex-col gap-3 mt-10 w-48">
           <button
-            onClick={onDiagnostic}
+            onClick={() => setIsSheetOpen(true)}
             className="w-full py-3 rounded-full bg-orange-400 shadow-lg active:scale-95 transition-transform"
           >
             <span className="text-base text-white font-bold">Compatibility</span>
@@ -74,6 +80,57 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           </button>
         </div>
       </div>
+
+      {/* Diagnostic Type Selection Sheet */}
+      {isSheetOpen && (
+        <div className="absolute inset-0 z-[100] flex flex-col justify-end">
+          {/* Overlay */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setIsSheetOpen(false)}
+          />
+
+          {/* Sheet */}
+          <div className="relative bg-white rounded-t-3xl px-4 pt-4 pb-8 animate-slide-up">
+            {/* Handle */}
+            <div className="flex justify-center mb-3">
+              <div className="w-10 h-1 bg-gray-300 rounded-full" />
+            </div>
+
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">Select Diagnostic</h3>
+              <button
+                onClick={() => setIsSheetOpen(false)}
+                className="p-1 rounded-full hover:bg-gray-100"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            {/* Diagnostic Options */}
+            <div className="space-y-2">
+              {DIAGNOSTIC_TYPES.map((diagnostic) => (
+                <button
+                  key={diagnostic.id}
+                  onClick={() => handleSelectDiagnostic(diagnostic)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r ${diagnostic.gradient} active:scale-[0.98] transition-transform`}
+                >
+                  <img
+                    src={diagnostic.image}
+                    alt={diagnostic.title}
+                    className="w-10 h-10 object-contain"
+                  />
+                  <div className="flex-1 text-left">
+                    <span className="text-white font-semibold block">{diagnostic.title}</span>
+                    <span className="text-white/80 text-xs">{diagnostic.description}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>,
     portalContainer
   );
