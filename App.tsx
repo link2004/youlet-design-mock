@@ -6,9 +6,10 @@ import RankingScreen from './components/RankingScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
 import DMScreen from './components/DMScreen';
+import FriendDetailScreen from './components/FriendDetailScreen';
 import { DiagnosticType, GroupDiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'dm';
+export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'dm' | 'friend-detail';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
@@ -39,6 +40,21 @@ const App: React.FC = () => {
     setSelectedDiagnostic(null);
   };
 
+  const handleSelectFriendFromFeed = (friend: FriendProfile) => {
+    setSelectedFriend(friend);
+    setCurrentPage('friend-detail');
+  };
+
+  const handleSelectFriendFromRanking = (friend: FriendProfile) => {
+    setSelectedFriend(friend);
+    setCurrentPage('friend-detail');
+  };
+
+  const handleBackFromFriendDetail = () => {
+    setSelectedFriend(null);
+    setCurrentPage('cards');
+  };
+
   const renderScreen = () => {
     switch (currentPage) {
       case 'cards':
@@ -46,12 +62,30 @@ const App: React.FC = () => {
           <FeedScreen
             currentPage="cards"
             onNavigate={setCurrentPage}
+            onSelectFriend={handleSelectFriendFromFeed}
+          />
+        );
+      case 'friend-detail':
+        if (selectedFriend) {
+          return (
+            <FriendDetailScreen
+              friend={selectedFriend}
+              onBack={handleBackFromFriendDetail}
+            />
+          );
+        }
+        return (
+          <FeedScreen
+            currentPage="cards"
+            onNavigate={setCurrentPage}
+            onSelectFriend={handleSelectFriendFromFeed}
           />
         );
       case 'ranking':
         return (
           <RankingScreen
             onBack={() => setCurrentPage('cards')}
+            onSelectFriend={handleSelectFriendFromRanking}
           />
         );
       case 'diagnostic':
