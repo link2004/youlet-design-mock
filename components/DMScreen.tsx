@@ -82,7 +82,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar }) =>
         <img
           src={avatarSrc}
           alt="Avatar"
-          className="w-8 h-8 rounded-full object-cover shrink-0"
+          className="w-8 h-8 object-contain shrink-0"
         />
         {/* メッセージバブル */}
         <div
