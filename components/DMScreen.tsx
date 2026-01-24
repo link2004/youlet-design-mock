@@ -83,6 +83,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chat
   const isUser = message.sender === 'user';
   const isAI = message.isAI;
 
+  // 自分の人間メッセージはアイコン不要
+  const showAvatar = isAI || !isUser;
+
+  // メッセージの横幅（右側のスペースを有効活用）
+  const maxWidth = 'max-w-[85%]';
+
   // アバターを描画
   const renderAvatar = () => {
     if (isAI) {
@@ -102,20 +108,20 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chat
     }
   };
 
-  // AIメッセージはアイコンを常に左に配置
-  // 人間メッセージは自分が右、相手が左
-  const isAvatarLeft = isAI || !isUser;
+  // 自分の人間メッセージは右寄せ（アイコンなし）
+  // それ以外は左にアイコン配置
+  const isUserHumanMessage = isUser && !isAI;
 
   return (
-    <div className={`flex items-end gap-2 ${isAvatarLeft ? 'flex-row' : 'flex-row-reverse'}`}>
-      {renderAvatar()}
+    <div className={`flex items-end gap-2 ${isUserHumanMessage ? 'justify-end' : 'justify-start'}`}>
+      {showAvatar && renderAvatar()}
       {/* メッセージバブル */}
       <div
-        className={`max-w-[70%] px-4 py-2 rounded-2xl ${
+        className={`${maxWidth} px-4 py-2 rounded-2xl ${
           isUser
-            ? 'bg-orange-400 text-white rounded-br-md'
-            : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
-        }`}
+            ? 'bg-orange-400 text-white'
+            : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white'
+        } ${isUserHumanMessage ? 'rounded-br-md' : 'rounded-bl-md'}`}
       >
         <p className="text-sm">{message.message}</p>
         <p className={`text-[10px] mt-1 text-right ${

@@ -10,7 +10,7 @@ const ProfileCardFlip: React.FC = () => {
           <div className="absolute inset-0 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden flex flex-col">
             <div className="flex-1 min-h-0 flex items-center justify-center p-4 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
               <img
-                src={USER_DATA.avatar}
+                src={USER_DATA.characterAvatar}
                 alt="Profile"
                 className="w-full h-full object-contain"
                 onError={(e) => {
