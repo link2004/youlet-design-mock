@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ACTIVITY_LOGS, ActivityLog } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
@@ -17,76 +17,30 @@ const formatShortDate = (dateStr: string): string => {
   return `${months[date.getMonth()]} ${date.getDate()}`;
 };
 
-// 全画面フォトビューアー
+// インスタ風詳細ビューアー
 interface PhotoViewerProps {
-  images: string[];
-  initialIndex: number;
-  title: string;
+  activity: ActivityLog;
   onClose: () => void;
 }
 
-const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, onClose }) => {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // アニメーションのためのマウント後の表示
     requestAnimationFrame(() => {
       setIsVisible(true);
     });
   }, []);
 
-  useEffect(() => {
-    // スクロール位置を初期インデックスに設定
-    if (scrollRef.current && currentIndex > 0) {
-      const items = scrollRef.current.children;
-      if (items[currentIndex]) {
-        const item = items[currentIndex] as HTMLElement;
-        // scroll-snap-align: center なので、アイテムの中心が画面中央に来るようにスクロール
-        const itemLeft = item.offsetLeft;
-        const itemWidth = item.offsetWidth;
-        const containerWidth = scrollRef.current.offsetWidth;
-        scrollRef.current.scrollLeft = itemLeft - (containerWidth - itemWidth) / 2;
-      }
-    }
-  }, []);
-
   const handleScroll = () => {
     if (scrollRef.current) {
-      const items = Array.from(scrollRef.current.children) as HTMLElement[];
-      const containerCenter = scrollRef.current.scrollLeft + scrollRef.current.offsetWidth / 2;
-
-      let closestIndex = 0;
-      let closestDistance = Infinity;
-
-      items.forEach((item, idx) => {
-        const itemCenter = item.offsetLeft + item.offsetWidth / 2;
-        const distance = Math.abs(containerCenter - itemCenter);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = idx;
-        }
-      });
-
-      if (closestIndex !== currentIndex) {
-        setCurrentIndex(closestIndex);
-      }
-    }
-  };
-
-  const goToIndex = (index: number) => {
-    if (scrollRef.current && index >= 0 && index < images.length) {
-      const items = scrollRef.current.children;
-      if (items[index]) {
-        const item = items[index] as HTMLElement;
-        const itemLeft = item.offsetLeft;
-        const itemWidth = item.offsetWidth;
-        const containerWidth = scrollRef.current.offsetWidth;
-        scrollRef.current.scrollTo({
-          left: itemLeft - (containerWidth - itemWidth) / 2,
-          behavior: 'smooth',
-        });
+      const scrollLeft = scrollRef.current.scrollLeft;
+      const itemWidth = scrollRef.current.offsetWidth;
+      const newIndex = Math.round(scrollLeft / itemWidth);
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < activity.images.length) {
+        setCurrentIndex(newIndex);
       }
     }
   };
@@ -96,104 +50,92 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
     setTimeout(onClose, 300);
   };
 
+  // 日付をフォーマット
+  const formatDate = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  };
+
   return (
     <div
-      className={`absolute inset-0 z-50 bg-black/80 backdrop-blur-xl transition-all duration-300 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
+      className={`absolute inset-0 z-50 bg-white dark:bg-neutral-900 transition-all duration-300 flex flex-col ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
+      onClick={handleClose}
     >
       {/* ヘッダー */}
-      <div className="absolute top-0 left-0 right-0 z-10 pt-12 px-4 pb-4">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={handleClose}
-            className="p-2 rounded-full bg-white/10 backdrop-blur-sm"
-          >
-            <X size={24} className="text-white" />
-          </button>
-          <h2 className="text-white font-semibold text-lg">{title}</h2>
-          <div className="w-10" /> {/* スペーサー */}
-        </div>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+        <button
+          onClick={handleClose}
+          className="p-1"
+        >
+          <X size={24} className="text-black dark:text-white" />
+        </button>
+        <h2 className="text-black dark:text-white font-semibold">{activity.title}</h2>
+        <div className="w-8" />
       </div>
 
-      {/* 画像スクロールエリア */}
+      {/* 画像エリア */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        onClick={handleClose}
-        className="h-full w-full overflow-x-auto no-scrollbar flex items-center"
-        style={{
-          scrollSnapType: 'x mandatory',
-        }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full aspect-square overflow-x-auto no-scrollbar flex bg-black"
       >
-        {images.map((img, idx) => {
-          const isFirst = idx === 0;
-          const isLast = idx === images.length - 1;
-          const slideWidth = 75; // percentage of container width
-
-          return (
-            <div
-              key={idx}
-              className="h-full flex-shrink-0 flex items-center justify-center"
-              style={{
-                width: `${slideWidth}%`,
-                scrollSnapAlign: 'center',
-                boxSizing: 'content-box',
-                paddingLeft: isFirst ? `calc(50% - ${slideWidth / 2}%)` : '8px',
-                paddingRight: isLast ? `calc(50% - ${slideWidth / 2}%)` : '8px',
-              }}
-            >
-              <img
-                src={img}
-                alt=""
-                onClick={(e) => e.stopPropagation()}
-                className={`max-h-[70vh] w-full object-contain rounded-2xl transition-transform duration-500 ${
-                  isVisible ? 'scale-100' : 'scale-90'
-                }`}
-              />
-            </div>
-          );
-        })}
+        {activity.images.map((img, idx) => (
+          <div
+            key={idx}
+            className="w-full aspect-square flex-shrink-0"
+          >
+            <img
+              src={img}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
       </div>
 
-      {/* ナビゲーションボタン */}
-      {images.length > 1 && (
-        <>
-          {currentIndex > 0 && (
-            <button
-              onClick={() => goToIndex(currentIndex - 1)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 backdrop-blur-sm transition-transform hover:scale-110"
-            >
-              <ChevronLeft size={28} className="text-white" />
-            </button>
-          )}
-          {currentIndex < images.length - 1 && (
-            <button
-              onClick={() => goToIndex(currentIndex + 1)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 backdrop-blur-sm transition-transform hover:scale-110"
-            >
-              <ChevronRight size={28} className="text-white" />
-            </button>
-          )}
-        </>
-      )}
-
-      {/* インジケーター */}
-      {images.length > 1 && (
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
-          {images.map((_, idx) => (
-            <button
+      {/* ページインジケーター */}
+      {activity.images.length > 1 && (
+        <div className="flex justify-center gap-1.5 py-3">
+          {activity.images.map((_, idx) => (
+            <div
               key={idx}
-              onClick={() => goToIndex(idx)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${
                 idx === currentIndex
-                  ? 'bg-white w-6'
-                  : 'bg-white/40 hover:bg-white/60'
+                  ? 'bg-blue-500'
+                  : 'bg-neutral-300 dark:bg-neutral-600'
               }`}
             />
           ))}
         </div>
       )}
+
+      {/* 詳細情報 */}
+      <div className="flex-1 px-4 py-4 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        {/* 日時 */}
+        <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400 text-sm mb-3">
+          <span>{formatDate(activity.date)}</span>
+          <span>•</span>
+          <span>{activity.time}</span>
+        </div>
+
+        {/* タイトル */}
+        <h3 className="text-xl font-bold text-black dark:text-white mb-2">
+          {activity.title}
+        </h3>
+
+        {/* 説明文（モック） */}
+        <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed">
+          {activity.category === 'school' && '今日も一日お疲れ様でした。授業はなかなか大変だったけど、友達と話せて楽しかった！'}
+          {activity.category === 'work' && 'バイト頑張った！今日は忙しかったけど、なんとか乗り切れた。'}
+          {activity.category === 'leisure' && '最高の一日だった！また行きたいな〜'}
+          {activity.category === 'food' && '美味しかった〜！また来よう。'}
+          {activity.category === 'other' && '充実した時間を過ごせた。'}
+        </p>
+      </div>
     </div>
   );
 };
@@ -203,7 +145,7 @@ interface PhotoStackProps {
   images: string[];
   isLeft: boolean;
   title: string;
-  onImageClick: (index: number) => void;
+  onImageClick: () => void;
 }
 
 const PhotoStack: React.FC<PhotoStackProps> = ({ images, isLeft, title, onImageClick }) => {
@@ -212,7 +154,7 @@ const PhotoStack: React.FC<PhotoStackProps> = ({ images, isLeft, title, onImageC
   if (images.length === 1) {
     return (
       <div
-        onClick={() => onImageClick(0)}
+        onClick={onImageClick}
         className="shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95"
         style={{ transform: `rotate(${baseRotation}deg)` }}
       >
@@ -229,7 +171,7 @@ const PhotoStack: React.FC<PhotoStackProps> = ({ images, isLeft, title, onImageC
   return (
     <div
       className="relative cursor-pointer w-36 h-36 transition-transform duration-300 hover:scale-105 active:scale-95"
-      onClick={() => onImageClick(0)}
+      onClick={onImageClick}
     >
       {images.slice(0, 3).map((img, idx) => (
         <div
@@ -262,7 +204,7 @@ const PhotoStack: React.FC<PhotoStackProps> = ({ images, isLeft, title, onImageC
 interface TimelineItemProps {
   activity: ActivityLog;
   index: number;
-  onImageClick: (images: string[], index: number, title: string) => void;
+  onImageClick: (activity: ActivityLog) => void;
 }
 
 const TimelineItem: React.FC<TimelineItemProps> = ({ activity, index, onImageClick }) => {
@@ -277,7 +219,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ activity, index, onImageCli
             images={activity.images}
             isLeft={true}
             title={activity.title}
-            onImageClick={(imgIndex) => onImageClick(activity.images, imgIndex, activity.title)}
+            onImageClick={() => onImageClick(activity)}
           />
         ) : (
           <div className="text-right pr-1 pt-8">
@@ -308,7 +250,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ activity, index, onImageCli
             images={activity.images}
             isLeft={false}
             title={activity.title}
-            onImageClick={(imgIndex) => onImageClick(activity.images, imgIndex, activity.title)}
+            onImageClick={() => onImageClick(activity)}
           />
         )}
       </div>
@@ -317,18 +259,14 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ activity, index, onImageCli
 };
 
 const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
-  const [viewerData, setViewerData] = useState<{
-    images: string[];
-    index: number;
-    title: string;
-  } | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<ActivityLog | null>(null);
 
-  const openViewer = (images: string[], index: number, title: string) => {
-    setViewerData({ images, index, title });
+  const openViewer = (activity: ActivityLog) => {
+    setSelectedActivity(activity);
   };
 
   const closeViewer = () => {
-    setViewerData(null);
+    setSelectedActivity(null);
   };
 
   return (
@@ -360,12 +298,10 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
 
-      {/* 全画面フォトビューアー */}
-      {viewerData && (
+      {/* インスタ風詳細ビューアー */}
+      {selectedActivity && (
         <PhotoViewer
-          images={viewerData.images}
-          initialIndex={viewerData.index}
-          title={viewerData.title}
+          activity={selectedActivity}
           onClose={closeViewer}
         />
       )}
