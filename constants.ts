@@ -485,6 +485,44 @@ export const ANSWER_OPTIONS = [
 
 export type AnswerValue = typeof ANSWER_OPTIONS[number]['value'];
 
+// AIが提案する直近の出来事（承認待ち）
+export const AI_SUGGESTED_EVENTS: Array<{
+  id: string;
+  title: string;
+  emoji: string;
+  description: string;
+}> = [
+  {
+    id: '1',
+    title: 'Lost my passport',
+    emoji: '😱',
+    description: 'Panicking before the trip...'
+  },
+  {
+    id: '2',
+    title: 'Got a new camera',
+    emoji: '📷',
+    description: 'Finally bought the Fujifilm X-T5!'
+  },
+  {
+    id: '3',
+    title: 'Into cafe hopping lately',
+    emoji: '☕',
+    description: 'Exploring new cafes every weekend'
+  },
+];
+
+// カード裏面に表示される承認済みイベント
+export const CARD_BACK_EVENTS: Array<{
+  id: string;
+  title: string;
+  emoji: string;
+  date: string;
+}> = [
+  { id: 'approved-1', title: 'Got a new camera', emoji: '📷', date: '3 days ago' },
+  { id: 'approved-2', title: 'Into cafe hopping lately', emoji: '☕', date: '1 week ago' },
+];
+
 export const PROFILE_QUESTIONS: ProfileQuestion[] = [
   // Personality - 性格
   { id: 'q1', question: 'I prefer deep conversations over small talk.', category: 'personality' },

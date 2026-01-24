@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, ChevronLeft, Star, Moon, Sun } from 'lucide-react';
-import { USER_DATA, MENU_ITEMS, AnswerValue } from '../constants';
+import { MENU_ITEMS, AnswerValue } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
-import CardEditMode from './CardEditMode';
+import ProfileCardFlip from './ProfileCardFlip';
+import EventApprovalModal from './EventApprovalModal';
 import ProfileQuestions from './ProfileQuestions';
 import { PageType } from '../App';
 
@@ -15,18 +16,30 @@ interface PhoneScreenProps {
 }
 
 const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) => {
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [showSettings, setShowSettings] = React.useState(false);
-  const [showElements, setShowElements] = React.useState(false);
-  const [showStory, setShowStory] = React.useState(false);
-  const [showCardEdit, setShowCardEdit] = React.useState(false);
-  const [questionAnswers, setQuestionAnswers] = React.useState<Record<string, AnswerValue>>({});
+  const [darkMode, setDarkMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showElements, setShowElements] = useState(false);
+  const [showStory, setShowStory] = useState(false);
+  const [showEventApproval, setShowEventApproval] = useState(false);
+  const [hasShownEventApproval, setHasShownEventApproval] = useState(false);
+  const [questionAnswers, setQuestionAnswers] = useState<Record<string, AnswerValue>>({});
 
   const handleAnswerChange = (questionId: string, answer: AnswerValue) => {
     setQuestionAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
-  React.useEffect(() => {
+  // Show event approval modal on first load (simulating app launch)
+  useEffect(() => {
+    if (!hasShownEventApproval) {
+      const timer = setTimeout(() => {
+        setShowEventApproval(true);
+        setHasShownEventApproval(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasShownEventApproval]);
+
+  useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
     } else {
@@ -81,29 +94,8 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               </button>
             </div>
 
-            {/* Profile Card */}
-            <div className="flex flex-col items-center mt-4 mb-6 px-6">
-              <button
-                onClick={() => setShowCardEdit(true)}
-                className="w-64 aspect-[2/3] rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden flex flex-col active:scale-[0.98] transition-transform"
-              >
-                <div className="flex-1 min-h-0 flex items-center justify-center p-4 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
-                  <img
-                    src={USER_DATA.avatar}
-                    alt="Profile"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_15.png";
-                    }}
-                  />
-                </div>
-                <div className="shrink-0 px-4 py-3 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-600">
-                  <div className="text-center">
-                    <span className="text-xl font-serif italic font-bold text-neutral-900 dark:text-white block">{USER_DATA.name}</span>
-                  </div>
-                </div>
-              </button>
-            </div>
+            {/* Profile Card with Flip */}
+            <ProfileCardFlip />
 
             {/* Menu List */}
             <div className="px-6 flex flex-col gap-1 pb-4">
@@ -231,9 +223,15 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
         <StoryView onClose={() => setShowStory(false)} />
       )}
 
-      {/* Card Edit Mode */}
-      {showCardEdit && (
-        <CardEditMode onClose={() => setShowCardEdit(false)} />
+      {/* Event Approval Modal */}
+      {showEventApproval && (
+        <EventApprovalModal
+          onClose={() => setShowEventApproval(false)}
+          onApprove={(eventIds) => {
+            console.log('Approved events:', eventIds);
+            setShowEventApproval(false);
+          }}
+        />
       )}
     </div>
   );
