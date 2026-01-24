@@ -1,6 +1,6 @@
-import React from 'react';
-import { Crown, Medal, Trophy, ChevronLeft } from 'lucide-react';
-import { FRIENDS_LIST, USER_ELEMENTS, FriendProfile } from '../constants';
+import React, { useState } from 'react';
+import { Crown, Medal, ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
+import { FRIENDS_LIST, FriendProfile } from '../constants';
 import { PageType } from '../App';
 
 interface RankingScreenProps {
@@ -10,41 +10,82 @@ interface RankingScreenProps {
   onBack: () => void;
 }
 
-// 相性スコアを計算する関数
-const calculateCompatibilityScore = (friend: FriendProfile): number => {
-  const userHobbies = USER_ELEMENTS.filter(e => e.type === 'hobby').map(e => e.label);
-  const userPersonality = USER_ELEMENTS.filter(e => e.type === 'personality').map(e => e.label);
+// Weekly ranking category definitions
+interface RankingCategory {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  description: string;
+  color: string;
+  bgGradient: string;
+}
 
-  // 趣味の一致数
-  const hobbyMatches = friend.hobbies.filter(h => userHobbies.includes(h)).length;
-  // 性格の一致数
-  const personalityMatches = friend.personality.filter(p => userPersonality.includes(p)).length;
+const RANKING_CATEGORIES: RankingCategory[] = [
+  {
+    id: 'big_change',
+    label: 'Big Changes',
+    icon: <Sparkles size={14} />,
+    description: 'People with major life changes this week',
+    color: 'text-purple-500',
+    bgGradient: 'from-purple-500/10 to-violet-500/10'
+  },
+  {
+    id: 'love',
+    label: 'Romance',
+    icon: <Heart size={14} />,
+    description: 'People with romantic developments',
+    color: 'text-pink-500',
+    bgGradient: 'from-pink-500/10 to-rose-500/10'
+  },
+  {
+    id: 'incident',
+    label: 'Drama',
+    icon: <AlertTriangle size={14} />,
+    description: 'People who experienced something dramatic',
+    color: 'text-orange-500',
+    bgGradient: 'from-orange-500/10 to-amber-500/10'
+  },
+  {
+    id: 'sad',
+    label: 'Sadness',
+    icon: <CloudRain size={14} />,
+    description: 'People going through tough times',
+    color: 'text-blue-500',
+    bgGradient: 'from-blue-500/10 to-cyan-500/10'
+  },
+  {
+    id: 'growth',
+    label: 'Growth',
+    icon: <TrendingUp size={14} />,
+    description: 'People showing remarkable growth',
+    color: 'text-green-500',
+    bgGradient: 'from-green-500/10 to-emerald-500/10'
+  }
+];
 
-  // スコア計算: 趣味 15点/個、性格 10点/個
-  const hobbyScore = hobbyMatches * 15;
-  const personalityScore = personalityMatches * 10;
+// Generate ranking data for each category (shuffle using seed)
+const getWeeklyRanking = (categoryId: string) => {
+  // Sort differently per category (seeded shuffle)
+  const seed = categoryId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
-  return hobbyScore + personalityScore;
-};
+  const shuffled = [...FRIENDS_LIST].sort((a, b) => {
+    const aHash = (a.id * seed) % 100;
+    const bHash = (b.id * seed) % 100;
+    return bHash - aHash;
+  });
 
-// ランキングデータを生成（スコアを98%から始めて順位ごとに減少）
-const getRankedFriends = () => {
-  const sorted = FRIENDS_LIST
-    .map(friend => ({
-      ...friend,
-      rawScore: calculateCompatibilityScore(friend)
-    }))
-    .sort((a, b) => b.rawScore - a.rawScore);
-
-  // 1位を98%として、順位ごとに3〜5%ずつ減少
-  return sorted.map((friend, index) => ({
+  // Generate scores (different range per category)
+  return shuffled.map((friend, index) => ({
     ...friend,
-    score: Math.max(52, 98 - index * 4 - (index % 3))
+    score: Math.max(45, 95 - index * 5 - ((index * seed) % 3)),
+    change: index < 3 ? Math.floor(Math.random() * 5) + 1 : 0 // Show change for top 3
   }));
 };
 
 const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack }) => {
-  const rankedFriends = getRankedFriends();
+  const [activeCategory, setActiveCategory] = useState(RANKING_CATEGORIES[0].id);
+  const currentCategory = RANKING_CATEGORIES.find(c => c.id === activeCategory) || RANKING_CATEGORIES[0];
+  const rankedFriends = getWeeklyRanking(activeCategory);
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -106,16 +147,43 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
           <ChevronLeft size={24} strokeWidth={2} />
         </button>
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-black text-xl tracking-tight text-black dark:text-white flex items-center gap-2">
-          <Trophy size={20} className="text-orange-400" />
-          Compatibility
+          <Sparkles size={20} className="text-orange-400" />
+          Weekly Ranking
         </h1>
         <div className="flex-1" />
       </div>
 
-      {/* Subtitle */}
-      <div className="px-6 py-3">
-        <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">
-          Friends ranked by compatibility with you
+      {/* Subtitle with week info */}
+      <div className="px-6 pt-2 pb-1">
+        <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">
+          Weekly ranking for Jan 20 - Jan 26
+        </p>
+      </div>
+
+      {/* Category Tabs */}
+      <div className="px-4 py-2">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          {RANKING_CATEGORIES.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                activeCategory === category.id
+                  ? `bg-gradient-to-r ${category.bgGradient} ${category.color} border border-current`
+                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-transparent'
+              }`}
+            >
+              {category.icon}
+              {category.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category Description */}
+      <div className="px-6 py-2">
+        <p className={`text-center text-sm font-medium ${currentCategory.color}`}>
+          {currentCategory.description}
         </p>
       </div>
 
@@ -154,10 +222,18 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
                   </p>
                 </div>
 
-                {/* Score */}
+                {/* Score & Change */}
                 <div className="flex flex-col items-end">
-                  <span className="text-lg font-bold text-orange-500">{friend.score}%</span>
-                  <span className="text-[10px] text-neutral-400">match</span>
+                  <span className={`text-lg font-bold ${currentCategory.color}`}>{friend.score}pt</span>
+                  {friend.change > 0 && (
+                    <span className="text-[10px] text-green-500 flex items-center gap-0.5">
+                      <TrendingUp size={10} />
+                      +{friend.change}
+                    </span>
+                  )}
+                  {!friend.change && (
+                    <span className="text-[10px] text-neutral-400">this week</span>
+                  )}
                 </div>
               </button>
             );
