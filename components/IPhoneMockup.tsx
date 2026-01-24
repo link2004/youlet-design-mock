@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface IPhoneMockupProps {
   children: React.ReactNode;
 }
 
 const IPhoneMockup: React.FC<IPhoneMockupProps> = ({ children }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      // Check if viewport width is mobile-sized (less than 768px)
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Mobile view - no mockup frame, full screen
+  if (isMobile) {
+    return (
+      <div className="w-full h-screen bg-cream overflow-hidden">
+        {children}
+      </div>
+    );
+  }
+
+  // Desktop view - with iPhone mockup frame
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-black p-8">
       {/* iPhone Frame */}
