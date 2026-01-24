@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, MessageCircle, Heart } from 'lucide-react';
 import { FriendProfile } from '../constants';
 import StatusBar from './StatusBar';
 
 interface FriendDetailScreenProps {
   friend: FriendProfile;
   onBack: () => void;
+  onDiagnostic?: () => void;
+  onDM?: () => void;
 }
 
-const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack }) => {
+const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onDiagnostic, onDM }) => {
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -26,14 +28,21 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack 
 
       <StatusBar variant="light" className="relative z-10" />
 
-      {/* Header with back button */}
-      <div className="relative z-10 flex items-center px-4 py-2 shrink-0">
+      {/* Header with back button and DM button */}
+      <div className="relative z-10 flex items-center justify-between px-4 py-2 shrink-0">
         <button
           onClick={onBack}
           className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
           aria-label="Back"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+        <button
+          onClick={onDM}
+          className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+          aria-label="DM"
+        >
+          <MessageCircle className="w-6 h-6 text-white" />
         </button>
       </div>
 
@@ -56,9 +65,18 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack 
         </div>
 
         {/* Friend Name (large) */}
-        <h2 className="text-2xl font-serif italic font-bold text-white mb-2">
+        <h2 className="text-2xl font-serif italic font-bold text-white mb-4">
           {friend.name}
         </h2>
+
+        {/* Diagnostic Button */}
+        <button
+          onClick={onDiagnostic}
+          className="flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
+        >
+          <Heart className="w-5 h-5" />
+          <span>相性診断</span>
+        </button>
       </div>
     </div>,
     portalContainer

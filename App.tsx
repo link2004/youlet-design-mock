@@ -58,6 +58,16 @@ const App: React.FC = () => {
     setCurrentPage('cards');
   };
 
+  const handleDiagnosticFromFriendDetail = () => {
+    // Keep selectedFriend and go to diagnostic-detail with a default diagnostic
+    setSelectedDiagnostic({ id: 'love', title: '恋愛相性', icon: '❤️', description: '二人の恋愛相性を診断' });
+    setCurrentPage('diagnostic-detail');
+  };
+
+  const handleDMFromFriendDetail = () => {
+    setCurrentPage('dm');
+  };
+
   const renderScreen = () => {
     switch (currentPage) {
       case 'cards':
@@ -80,6 +90,8 @@ const App: React.FC = () => {
               <FriendDetailScreen
                 friend={selectedFriend}
                 onBack={handleBackFromFriendDetail}
+                onDiagnostic={handleDiagnosticFromFriendDetail}
+                onDM={handleDMFromFriendDetail}
               />
             )}
           </>
