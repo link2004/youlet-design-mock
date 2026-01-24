@@ -84,3 +84,78 @@ export const AI_CONVERSATION: Array<{
   { sender: 'user', message: "Nice choice! I've been wanting to try Fujifilm." },
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
+
+// DM チャットリスト
+export const DM_CHATS = [
+  {
+    id: '1',
+    name: 'Emily',
+    avatar: 'https://ftrfpbrgnjkqgzaggkdz.supabase.co/storage/v1/object/public/profile-avatar/generated-avatars/7e9e5d27-4daa-426f-b4c7-e31e5a2c8045/20260121_043055.png',
+    lastMessage: "You should! Want to go on a photo walk sometime?",
+    timestamp: '2m',
+    unread: true,
+    online: true,
+  },
+  {
+    id: '2',
+    name: 'Yuki',
+    avatar: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_21.png',
+    lastMessage: "That cafe was amazing! 🍵",
+    timestamp: '15m',
+    unread: true,
+    online: true,
+  },
+  {
+    id: '3',
+    name: 'Takeshi',
+    avatar: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_7.png',
+    lastMessage: "See you at the gaming event!",
+    timestamp: '1h',
+    unread: false,
+    online: false,
+  },
+  {
+    id: '4',
+    name: 'Sakura',
+    avatar: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_22.png',
+    lastMessage: "The cherry blossoms are so beautiful this year",
+    timestamp: '3h',
+    unread: false,
+    online: true,
+  },
+  {
+    id: '5',
+    name: 'Kenji',
+    avatar: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_8.png',
+    lastMessage: "Let me know when you finish that book!",
+    timestamp: '1d',
+    unread: false,
+    online: false,
+  },
+  {
+    id: '6',
+    name: 'Mio',
+    avatar: 'https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_23.png',
+    lastMessage: "Great playlist recommendation 🎵",
+    timestamp: '2d',
+    unread: false,
+    online: false,
+  },
+];
+
+// DM 会話詳細 (Emily との会話)
+export const DM_MESSAGES: Array<{
+  id: string;
+  sender: 'user' | 'other';
+  message: string;
+  timestamp: string;
+}> = [
+  { id: '1', sender: 'other', message: "Hey! Nice to meet you 👋", timestamp: '10:30' },
+  { id: '2', sender: 'user', message: "Hi Emily! Nice to meet you too!", timestamp: '10:32' },
+  { id: '3', sender: 'other', message: "I saw we both love photography!", timestamp: '10:33' },
+  { id: '4', sender: 'user', message: "Yes! I'm really into street photography lately.", timestamp: '10:35' },
+  { id: '5', sender: 'other', message: "That's awesome! Do you have a favorite camera?", timestamp: '10:36' },
+  { id: '6', sender: 'user', message: "I use a Fujifilm X100V. The colors are amazing!", timestamp: '10:38' },
+  { id: '7', sender: 'other', message: "Nice choice! I've been wanting to try Fujifilm.", timestamp: '10:40' },
+  { id: '8', sender: 'user', message: "You should! Want to go on a photo walk sometime?", timestamp: '10:42' },
+];

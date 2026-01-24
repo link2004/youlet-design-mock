@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Search, Heart, MessageCircle, User } from 'lucide-react';
+import { Layout, Search, Heart, MessageCircle, Send, User } from 'lucide-react';
 import { PageType } from '../App';
 
 interface BottomNavProps {
@@ -12,6 +12,7 @@ const NAV_ITEMS: { icon: typeof Layout; label: string; page: PageType }[] = [
   { icon: Search, label: "Explorer", page: 'explorer' },
   { icon: Heart, label: "Likes", page: 'heart' },
   { icon: MessageCircle, label: "Chat", page: 'chat' },
+  { icon: Send, label: "DM", page: 'dm' },
   { icon: User, label: "Account", page: 'account' },
 ];
 
