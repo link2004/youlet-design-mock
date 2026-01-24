@@ -57,26 +57,25 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           </div>
         </div>
 
+        {/* Name */}
+        <h2 className="text-white font-serif italic font-black text-2xl mt-4">{friend.name}</h2>
+
         {/* Action Buttons */}
-        <div className="flex items-center gap-8 mt-8">
+        <div className="flex flex-col gap-3 mt-6 w-full max-w-[220px]">
           <button
             onClick={onDM}
-            className="flex flex-col items-center gap-2 group"
+            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 active:scale-95 transition-transform"
           >
-            <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-active:scale-90 transition-transform">
-              <MessageCircle className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-sm text-white/90 font-medium">Message</span>
+            <MessageCircle className="w-6 h-6 text-white" />
+            <span className="text-lg text-white font-bold">Message</span>
           </button>
 
           <button
             onClick={onDiagnostic}
-            className="flex flex-col items-center gap-2 group"
+            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-2xl bg-orange-400 shadow-lg active:scale-95 transition-transform"
           >
-            <div className="w-14 h-14 rounded-full bg-orange-400 flex items-center justify-center group-active:scale-90 transition-transform">
-              <Heart className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-sm text-white/90 font-medium">Compatibility</span>
+            <Heart className="w-6 h-6 text-white" />
+            <span className="text-lg text-white font-bold">Compatibility</span>
           </button>
         </div>
       </div>
