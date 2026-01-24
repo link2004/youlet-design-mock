@@ -226,6 +226,7 @@ export interface FriendEvent {
   title: string;
   emoji: string;
   date: string;
+  description?: string;  // AI会話履歴画面でのみ表示
 }
 
 // 友達プロフィール型
@@ -249,8 +250,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Photography", "Coffee", "Art"],
     personality: ["Introvert", "Creative"],
     events: [
-      { id: 'momo-1', title: 'Found a hidden cafe in Shimokita', emoji: '☕', date: '2 hours ago' },
-      { id: 'momo-2', title: 'Finished a new painting', emoji: '🎨', date: '1 day ago' },
+      { id: 'momo-1', title: 'Found a hidden cafe in Shimokita', emoji: '☕', date: '2 hours ago', description: 'Stumbled upon this cozy underground cafe with amazing jazz music. The owner is super friendly!' },
+      { id: 'momo-2', title: 'Finished a new painting', emoji: '🎨', date: '1 day ago', description: 'Finally completed my abstract landscape series. Feeling accomplished!' },
     ]
   },
   {
@@ -261,8 +262,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Gaming", "Anime", "Music"],
     personality: ["Extrovert", "Energetic"],
     events: [
-      { id: 'kento-1', title: 'Finally beat the final boss!', emoji: '🎮', date: '5 hours ago' },
-      { id: 'kento-2', title: 'New anime season is amazing', emoji: '✨', date: '2 days ago' },
+      { id: 'kento-1', title: 'Finally beat the final boss!', emoji: '🎮', date: '5 hours ago', description: 'After 50+ attempts, I finally did it! The secret was to use the ice element combo.' },
+      { id: 'kento-2', title: 'New anime season is amazing', emoji: '✨', date: '2 days ago', description: 'The new season of my favorite anime just dropped. The animation quality is insane!' },
     ]
   },
   {
@@ -273,8 +274,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Reading", "Yoga", "Travel"],
     personality: ["Calm", "Thoughtful"],
     events: [
-      { id: 'nina-1', title: 'Morning yoga by the river', emoji: '🧘', date: '3 hours ago' },
-      { id: 'nina-2', title: 'Started a new book', emoji: '📚', date: '1 day ago' },
+      { id: 'nina-1', title: 'Morning yoga by the river', emoji: '🧘', date: '3 hours ago', description: 'The sunrise was beautiful today. Perfect way to start the morning.' },
+      { id: 'nina-2', title: 'Started a new book', emoji: '📚', date: '1 day ago', description: 'Reading "The Midnight Library" by Matt Haig. Already hooked!' },
     ]
   },
   {
@@ -285,8 +286,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Cooking", "Movies", "Music"],
     personality: ["Kind", "Romantic"],
     events: [
-      { id: 'ryo-1', title: 'Made homemade pasta today', emoji: '🍝', date: '4 hours ago' },
-      { id: 'ryo-2', title: 'Watched a classic film', emoji: '🎬', date: '2 days ago' },
+      { id: 'ryo-1', title: 'Made homemade pasta today', emoji: '🍝', date: '4 hours ago', description: 'Tried making carbonara from scratch. The key is tempering the eggs slowly!' },
+      { id: 'ryo-2', title: 'Watched a classic film', emoji: '🎬', date: '2 days ago', description: 'Finally watched Cinema Paradiso. Cried at the ending.' },
     ]
   },
   {
@@ -297,8 +298,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Hiking", "Photography", "Cooking"],
     personality: ["Adventurous", "Optimist"],
     events: [
-      { id: 'sora-1', title: 'Climbed Mt. Takao again!', emoji: '⛰️', date: '1 day ago' },
-      { id: 'sora-2', title: 'Captured a beautiful sunset', emoji: '📷', date: '3 days ago' },
+      { id: 'sora-1', title: 'Climbed Mt. Takao again!', emoji: '⛰️', date: '1 day ago', description: 'Took the challenging trail this time. The view from the top was worth every step!' },
+      { id: 'sora-2', title: 'Captured a beautiful sunset', emoji: '📷', date: '3 days ago', description: 'Golden hour at the beach. Got some amazing shots for my portfolio.' },
     ]
   },
   {
@@ -309,7 +310,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Gaming", "Anime", "Coffee"],
     personality: ["Introvert", "Curious"],
     events: [
-      { id: 'leon-1', title: 'New game release day!', emoji: '🕹️', date: '6 hours ago' },
+      { id: 'leon-1', title: 'New game release day!', emoji: '🕹️', date: '6 hours ago', description: 'Picked up the collector\'s edition. Already 10 hours in!' },
     ]
   },
   {
@@ -320,8 +321,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Art", "Music", "Reading"],
     personality: ["Creative", "Honest"],
     events: [
-      { id: 'akane-1', title: 'Visited a new art exhibition', emoji: '🖼️', date: '1 day ago' },
-      { id: 'akane-2', title: 'Learning to play guitar', emoji: '🎸', date: '4 days ago' },
+      { id: 'akane-1', title: 'Visited a new art exhibition', emoji: '🖼️', date: '1 day ago', description: 'Saw some incredible digital art pieces at the Roppongi gallery. Super inspiring!' },
+      { id: 'akane-2', title: 'Learning to play guitar', emoji: '🎸', date: '4 days ago', description: 'Just started lessons. My fingers hurt but I can play a basic chord now!' },
     ]
   },
   {
@@ -332,8 +333,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Travel", "Hiking", "Photography"],
     personality: ["Adventurous", "Extrovert"],
     events: [
-      { id: 'kai-1', title: 'Planning a trip to Kyoto', emoji: '🗾', date: '2 hours ago' },
-      { id: 'kai-2', title: 'Found a secret hiking trail', emoji: '🥾', date: '3 days ago' },
+      { id: 'kai-1', title: 'Planning a trip to Kyoto', emoji: '🗾', date: '2 hours ago', description: 'Researching temples and hidden spots. Can\'t wait for the autumn leaves!' },
+      { id: 'kai-2', title: 'Found a secret hiking trail', emoji: '🥾', date: '3 days ago', description: 'Discovered this unmarked path that leads to an amazing waterfall.' },
     ]
   },
   {
@@ -344,7 +345,7 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Movies", "Coffee", "Yoga"],
     personality: ["Calm", "Kind"],
     events: [
-      { id: 'miku-1', title: 'Cozy movie night at home', emoji: '🍿', date: '8 hours ago' },
+      { id: 'miku-1', title: 'Cozy movie night at home', emoji: '🍿', date: '8 hours ago', description: 'Watched three Studio Ghibli films in a row. Perfect rainy day activity!' },
     ]
   },
   {
@@ -355,8 +356,8 @@ export const FRIENDS_LIST: FriendProfile[] = [
     hobbies: ["Cooking", "Gaming", "Travel"],
     personality: ["Curious", "Optimist"],
     events: [
-      { id: 'yuto-1', title: 'Tried a new ramen recipe', emoji: '🍜', date: '5 hours ago' },
-      { id: 'yuto-2', title: 'Booked flight to Okinawa', emoji: '✈️', date: '2 days ago' },
+      { id: 'yuto-1', title: 'Tried a new ramen recipe', emoji: '🍜', date: '5 hours ago', description: 'Made tonkotsu broth from scratch. Simmered it for 12 hours!' },
+      { id: 'yuto-2', title: 'Booked flight to Okinawa', emoji: '✈️', date: '2 days ago', description: 'First time visiting! Planning to explore the beaches and try local food.' },
     ]
   },
 ];

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, Lock, Pencil, Trash2, Send } from 'lucide-react';
-import { FriendProfile, AIConversationMessage, FRIEND_AI_CONVERSATIONS, ApprovalStatus } from '../constants';
+import { ChevronLeft, Lock, Pencil, Trash2, Send, Edit3 } from 'lucide-react';
+import { FriendProfile, FriendEvent, AIConversationMessage, FRIEND_AI_CONVERSATIONS, ApprovalStatus } from '../constants';
 import AIConversationEditModal from './AIConversationEditModal';
+import CardBackEditModal from './CardBackEditModal';
 
 interface AIConversationHistoryScreenProps {
   friend: FriendProfile;
@@ -21,6 +22,8 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
   const [messages, setMessages] = useState<AIConversationMessage[]>([]);
   const [editingMessage, setEditingMessage] = useState<AIConversationMessage | null>(null);
   const [showContent, setShowContent] = useState(false);
+  const [events, setEvents] = useState<FriendEvent[]>(friend.events);
+  const [showCardBackEditModal, setShowCardBackEditModal] = useState(false);
 
   useEffect(() => {
     const container = document.getElementById('iphone-modal-portal');
@@ -105,6 +108,31 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
 
       {/* Messages */}
       <div className="relative z-10 flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
+        {/* Event Details Section */}
+        {events.length > 0 && (
+          <div className="mb-4 bg-neutral-100 dark:bg-neutral-800/50 rounded-2xl p-4">
+            <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-3">
+              Today's Events
+            </h3>
+            <div className="space-y-3">
+              {events.map((event) => (
+                <div key={event.id} className="flex gap-3">
+                  <span className="text-xl flex-shrink-0">{event.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-black dark:text-white">{event.title}</p>
+                    {event.description && (
+                      <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5 leading-relaxed">
+                        {event.description}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-neutral-500 mt-1">{event.date}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col gap-3">
           {messages.map((msg, index) => {
             const isMyAI = msg.sender === 'my_ai';
@@ -192,16 +220,25 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
         )}
       </div>
 
-      {/* Footer - Send Approval Button */}
+      {/* Footer - Send Approval Button + Edit Button */}
       {approvalStatus === 'none' && (
         <div className="relative z-10 px-4 py-4 border-t border-neutral-200 dark:border-neutral-800 bg-cream dark:bg-black">
-          <button
-            onClick={onSendApproval}
-            className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold rounded-xl shadow-lg active:scale-[0.98] transition-transform"
-          >
-            <Send size={18} />
-            Share & Request Approval
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCardBackEditModal(true)}
+              className="px-4 py-3 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <Edit3 size={18} />
+              Edit
+            </button>
+            <button
+              onClick={onSendApproval}
+              className="flex-1 flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold rounded-xl shadow-lg active:scale-[0.98] transition-transform"
+            >
+              <Send size={18} />
+              Share & Request Approval
+            </button>
+          </div>
           <p className="text-center text-xs text-neutral-500 mt-2">
             Share this conversation with {friend.name} to unlock their AI's messages
           </p>
@@ -210,17 +247,35 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
 
       {approvalStatus === 'pending_sent' && (
         <div className="relative z-10 px-4 py-4 border-t border-neutral-200 dark:border-neutral-800 bg-cream dark:bg-black">
-          <div className="w-full py-3 bg-neutral-200 dark:bg-neutral-700 text-neutral-500 font-medium rounded-xl text-center">
-            Waiting for {friend.name}'s approval...
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCardBackEditModal(true)}
+              className="px-4 py-3 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <Edit3 size={18} />
+              Edit
+            </button>
+            <div className="flex-1 py-3 bg-neutral-200 dark:bg-neutral-700 text-neutral-500 font-medium rounded-xl text-center">
+              Waiting for {friend.name}'s approval...
+            </div>
           </div>
         </div>
       )}
 
       {approvalStatus === 'approved' && (
         <div className="relative z-10 px-4 py-4 border-t border-neutral-200 dark:border-neutral-800 bg-cream dark:bg-black">
-          <div className="w-full py-3 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 font-medium rounded-xl text-center flex items-center justify-center gap-2">
-            <Lock size={16} className="inline" />
-            Mutually Approved - Full conversation unlocked!
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCardBackEditModal(true)}
+              className="px-4 py-3 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <Edit3 size={18} />
+              Edit
+            </button>
+            <div className="flex-1 py-3 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 font-medium rounded-xl text-center flex items-center justify-center gap-2">
+              <Lock size={16} className="inline" />
+              Mutually Approved - Full conversation unlocked!
+            </div>
           </div>
         </div>
       )}
@@ -232,6 +287,18 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
           onClose={() => setEditingMessage(null)}
           onSave={handleEditSave}
           onDelete={handleDelete}
+        />
+      )}
+
+      {/* Card Back Edit Modal */}
+      {showCardBackEditModal && (
+        <CardBackEditModal
+          events={events}
+          onClose={() => setShowCardBackEditModal(false)}
+          onSave={(newEvents) => {
+            setEvents(newEvents);
+            setShowCardBackEditModal(false);
+          }}
         />
       )}
     </div>,
