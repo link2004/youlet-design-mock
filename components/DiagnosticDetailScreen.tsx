@@ -1285,15 +1285,22 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
     <div className={`relative w-full h-full font-sans overflow-hidden flex flex-col bg-gradient-to-br ${diagnostic.gradient}`}>
       <StatusBar variant="light" />
 
-      {/* Header with back button - only show in select phase */}
+      {/* Header with back button and ranking icon - only show in select phase */}
       {phase === 'select' && (
-        <div className="relative flex items-center px-4 py-2 shrink-0 z-40">
+        <div className="relative flex items-center justify-between px-4 py-2 shrink-0 z-40">
           <button
             onClick={onBack}
             className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
             aria-label="Back"
           >
             <ChevronLeft className="w-6 h-6 text-white" />
+          </button>
+          <button
+            onClick={() => setIsRankingSheetOpen(true)}
+            className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+            aria-label="Past Results Ranking"
+          >
+            <Trophy className="w-5 h-5 text-white" />
           </button>
         </div>
       )}
@@ -1351,16 +1358,6 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
             )}
           </div>
 
-          {/* Ranking button at bottom */}
-          <div className="pb-8">
-            <button
-              onClick={() => setIsRankingSheetOpen(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl text-white font-medium active:scale-[0.98] transition-transform"
-            >
-              <Trophy size={18} className="text-yellow-300" />
-              <span>Past Results Ranking</span>
-            </button>
-          </div>
         </div>
       )}
 
