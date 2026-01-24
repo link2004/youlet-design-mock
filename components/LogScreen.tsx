@@ -39,22 +39,27 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
 
   useEffect(() => {
     // スクロール位置を初期インデックスに設定
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft = currentIndex * scrollRef.current.offsetWidth;
+    if (scrollRef.current && scrollRef.current.children[0]) {
+      const itemWidth = (scrollRef.current.children[0] as HTMLElement).offsetWidth + 12; // gap included
+      scrollRef.current.scrollLeft = currentIndex * itemWidth;
     }
   }, []);
 
   const handleScroll = () => {
-    if (scrollRef.current) {
-      const newIndex = Math.round(scrollRef.current.scrollLeft / scrollRef.current.offsetWidth);
-      setCurrentIndex(newIndex);
+    if (scrollRef.current && scrollRef.current.children[0]) {
+      const itemWidth = (scrollRef.current.children[0] as HTMLElement).offsetWidth + 12;
+      const newIndex = Math.round(scrollRef.current.scrollLeft / itemWidth);
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
+        setCurrentIndex(newIndex);
+      }
     }
   };
 
   const goToIndex = (index: number) => {
-    if (scrollRef.current && index >= 0 && index < images.length) {
+    if (scrollRef.current && scrollRef.current.children[0] && index >= 0 && index < images.length) {
+      const itemWidth = (scrollRef.current.children[0] as HTMLElement).offsetWidth + 12;
       scrollRef.current.scrollTo({
-        left: index * scrollRef.current.offsetWidth,
+        left: index * itemWidth,
         behavior: 'smooth',
       });
     }
@@ -72,7 +77,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
       }`}
     >
       {/* ヘッダー */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-4">
+      <div className="absolute top-0 left-0 right-0 z-10 pt-12 px-4 pb-4">
         <div className="flex items-center justify-between">
           <button
             onClick={handleClose}
@@ -90,19 +95,25 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
         ref={scrollRef}
         onScroll={handleScroll}
         onClick={handleClose}
-        className="h-full w-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
-        style={{ scrollSnapType: 'x mandatory' }}
+        className="h-full w-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar items-center"
+        style={{
+          scrollSnapType: 'x mandatory',
+          gap: '16px',
+          paddingLeft: '30px',
+          paddingRight: '30px',
+        }}
       >
         {images.map((img, idx) => (
           <div
             key={idx}
-            className="h-full w-full flex-shrink-0 flex items-center justify-center snap-center"
+            className="h-full flex-shrink-0 flex items-center justify-center snap-center"
+            style={{ width: 'calc(100% - 76px)' }}
           >
             <img
               src={img}
               alt=""
               onClick={(e) => e.stopPropagation()}
-              className={`max-h-[80vh] max-w-[90vw] object-contain rounded-lg transition-transform duration-500 ${
+              className={`max-h-[70vh] w-full object-contain rounded-2xl transition-transform duration-500 ${
                 isVisible ? 'scale-100' : 'scale-90'
               }`}
             />
