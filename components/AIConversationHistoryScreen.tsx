@@ -98,7 +98,7 @@ const AIConversationHistoryScreen: React.FC<AIConversationHistoryScreenProps> = 
         {myEvents.length > 0 && (
           <div className="mb-4 bg-neutral-100 dark:bg-neutral-800/50 rounded-2xl p-4">
             <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-3">
-              My Events
+              My Topics
             </h3>
             <div className="space-y-3">
               {myEvents.map((event) => (
