@@ -102,8 +102,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chat
     }
   };
 
+  // AIメッセージはアイコンを常に左に配置
+  // 人間メッセージは自分が右、相手が左
+  const isAvatarLeft = isAI || !isUser;
+
   return (
-    <div className={`flex items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+    <div className={`flex items-end gap-2 ${isAvatarLeft ? 'flex-row' : 'flex-row-reverse'}`}>
       {renderAvatar()}
       {/* メッセージバブル */}
       <div
