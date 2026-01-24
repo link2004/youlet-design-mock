@@ -40,21 +40,19 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack 
       {/* Content - Large Card + Name */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8">
         {/* Large Friend Card */}
-        <div className="w-64 aspect-[2/3] mb-4">
-          <div className="relative w-full h-full">
-            <div className="absolute inset-0 rounded-3xl bg-white shadow-2xl border-2 border-white/80 flex flex-col overflow-hidden">
-              <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-b from-neutral-50 to-neutral-100">
-                <img
-                  src={friend.image}
-                  alt={friend.name}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="px-4 py-3 bg-white border-t border-neutral-200">
-                <span className="text-base text-neutral-700 font-semibold block text-center truncate">
-                  {friend.name}
-                </span>
-              </div>
+        <div className="w-64 mb-4">
+          <div className="rounded-3xl bg-white shadow-2xl border-2 border-white/80 overflow-hidden">
+            <div className="aspect-[2/3] flex items-center justify-center p-6 bg-gradient-to-b from-neutral-50 to-neutral-100">
+              <img
+                src={friend.image}
+                alt={friend.name}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="px-4 py-3 bg-white border-t border-neutral-200">
+              <span className="text-base text-neutral-700 font-semibold block text-center truncate">
+                {friend.name}
+              </span>
             </div>
           </div>
         </div>
