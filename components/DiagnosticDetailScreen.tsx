@@ -1115,15 +1115,15 @@ const GroupLoadingPhase: React.FC<GroupLoadingPhaseProps> = ({ members, diagnost
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4">
       {/* 脈打つ画像 */}
-      <div className="mb-8">
+      <div className="mb-6">
         <PulsingHeart imageSrc={diagnosticImage} />
       </div>
 
-      {/* メンバーカード（4つまで表示） */}
-      <div className="flex items-center justify-center gap-2 mb-8 flex-wrap max-w-[280px]">
-        {members.slice(0, 4).map((member) => (
-          <div key={member.id} className="w-14">
-            <div className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+      {/* メンバーカード（全員表示） */}
+      <div className="w-full max-w-[280px] mb-6">
+        <div className="grid grid-cols-4 gap-2">
+          {members.slice(0, 4).map((member) => (
+            <div key={member.id} className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
               <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
                 <img src={member.image} alt={member.name} className="w-full h-full object-contain" />
               </div>
@@ -1131,11 +1131,20 @@ const GroupLoadingPhase: React.FC<GroupLoadingPhaseProps> = ({ members, diagnost
                 <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{member.name}</span>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         {members.length > 4 && (
-          <div className="w-14 flex items-center justify-center">
-            <span className="text-white/80 text-sm font-semibold">+{members.length - 4}</span>
+          <div className="grid grid-cols-4 gap-2 mt-2">
+            {members.slice(4, 8).map((member) => (
+              <div key={member.id} className="w-full aspect-[2/3] rounded-lg bg-white shadow border border-white/80 flex flex-col">
+                <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[6px] overflow-hidden">
+                  <img src={member.image} alt={member.name} className="w-full h-full object-contain" />
+                </div>
+                <div className="px-1 py-0.5 bg-white border-t border-neutral-200 rounded-b-[6px]">
+                  <span className="text-[8px] text-neutral-700 font-semibold block text-center truncate">{member.name}</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
