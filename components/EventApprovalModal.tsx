@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Check, Sparkles, ChevronDown, Globe, Lock } from 'lucide-react';
-import { AI_SUGGESTED_EVENTS } from '../constants';
+// Empty events array (AI_SUGGESTED_EVENTS was removed from constants)
+const AI_SUGGESTED_EVENTS: Array<{ id: string; title: string; emoji: string; description: string; }> = [];
 
 interface EventDetails {
   additionalContext: string;

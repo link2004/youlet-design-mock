@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { USER_DATA, CARD_BACK_EVENTS } from '../constants';
+import { USER_DATA } from '../constants';
+
+// Empty events array (CARD_BACK_EVENTS was removed from constants)
+const CARD_BACK_EVENTS: Array<{ id: string; title: string; emoji: string; date: string; }> = [];
 
 const ProfileCardFlip: React.FC = () => {
   const [isFlipped, setIsFlipped] = useState(false);
