@@ -104,7 +104,7 @@ const FriendCardFlipModal: React.FC<FriendCardFlipModalProps> = ({
               </div>
             </div>
 
-            {/* Back - Hobbies & Personality */}
+            {/* Back - Events Card */}
             <div
               className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg border-2 border-orange-300 dark:border-orange-600"
               style={{
@@ -114,39 +114,36 @@ const FriendCardFlipModal: React.FC<FriendCardFlipModalProps> = ({
             >
               <div className="w-full h-full bg-gradient-to-br from-orange-400 to-pink-500 p-4 flex flex-col">
                 <h3 className="text-white font-serif italic font-bold text-lg mb-3 text-center">
-                  {friend.name}'s Profile
+                  Today's Events
                 </h3>
 
-                <div className="flex-1 overflow-y-auto space-y-3 min-h-0">
-                  {/* Hobbies */}
-                  <div>
-                    <p className="text-white/80 text-xs font-semibold mb-1.5">Hobbies</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {friend.hobbies.map((hobby) => (
-                        <span
-                          key={hobby}
-                          className="bg-white/20 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full"
-                        >
-                          {hobby}
-                        </span>
-                      ))}
+                <div className="flex-1 overflow-y-auto space-y-2 min-h-0">
+                  {friend.events.length > 0 ? (
+                    friend.events.map((event) => (
+                      <div
+                        key={event.id}
+                        className="bg-white/20 backdrop-blur-sm rounded-xl p-3"
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-2xl flex-shrink-0">{event.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white font-medium text-sm leading-tight">
+                              {event.title}
+                            </p>
+                            <p className="text-white/70 text-xs mt-0.5">
+                              {event.date}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center">
+                      <p className="text-white/70 text-sm text-center">
+                        No events yet
+                      </p>
                     </div>
-                  </div>
-
-                  {/* Personality */}
-                  <div>
-                    <p className="text-white/80 text-xs font-semibold mb-1.5">Personality</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {friend.personality.map((trait) => (
-                        <span
-                          key={trait}
-                          className="bg-white/20 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full"
-                        >
-                          {trait}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 <p className="text-white/60 text-xs text-center mt-3 font-medium">
@@ -159,7 +156,7 @@ const FriendCardFlipModal: React.FC<FriendCardFlipModalProps> = ({
 
         {/* Hint text */}
         <p className="text-white/70 text-xs mt-3">
-          {isFlipped ? 'Tap card to see front' : 'Tap card to see profile'}
+          {isFlipped ? 'Tap card to see front' : 'Tap card to see events'}
         </p>
 
         {/* View Detail Button */}
