@@ -674,7 +674,7 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
 
   const getRankIcon = (rank: number) => {
     if (sortMode === 'time') {
-      return <span className="text-neutral-400 font-bold text-sm w-6 text-center">{rank}</span>;
+      return null;
     }
     switch (rank) {
       case 1:
@@ -759,10 +759,12 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
                   }}
                   className="flex items-center gap-3 p-3 rounded-xl transition-transform active:scale-[0.98]"
                 >
-                  {/* Rank */}
-                  <div className="w-6 flex justify-center">
-                    {getRankIcon(rank)}
-                  </div>
+                  {/* Rank - only show in compatibility mode */}
+                  {sortMode === 'compatibility' && (
+                    <div className="w-6 flex justify-center">
+                      {getRankIcon(rank)}
+                    </div>
+                  )}
 
                   {/* Avatar */}
                   <div className="w-10 h-10 flex items-center justify-center">
