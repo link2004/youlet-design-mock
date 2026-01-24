@@ -99,62 +99,49 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
               </button>
             </div>
 
-            {/* Promo Cards - Horizontal Scroll with Snap */}
-            <div
-              className="mb-8 flex gap-3 overflow-x-auto no-scrollbar"
-              style={{
-                scrollSnapType: 'x mandatory',
-                scrollBehavior: 'auto',
-                paddingLeft: 'calc(50% - 128px)',
-                paddingRight: 'calc(50% - 128px)'
-              }}
-            >
+            {/* Menu List */}
+            <div className="px-6 flex flex-col gap-1 pb-4">
+              {MENU_ITEMS.map((item, idx) => (
+                <MenuItem key={idx} {...item} />
+              ))}
+            </div>
+
+            {/* Promo Cards - Bottom Section */}
+            <div className="px-6 pb-6 grid grid-cols-2 gap-3">
               <button
                 onClick={() => setShowStory(true)}
-                className="w-64 bg-gradient-to-r from-blue-500 to-red-500 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
-                style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
+                className="bg-gradient-to-r from-blue-500 to-red-500 py-5 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
               >
-                <div className="absolute -right-4 -top-4 text-white/10 transform rotate-12">
-                  <Star size={80} fill="currentColor" />
+                <div className="absolute -right-2 -top-2 text-white/10 transform rotate-12">
+                  <Star size={48} fill="currentColor" />
                 </div>
-                <div className="absolute left-10 bottom-0 text-white/10 transform -rotate-12">
-                  <Star size={40} fill="currentColor" />
+                <div className="absolute left-2 bottom-0 text-white/10 transform -rotate-12">
+                  <Star size={24} fill="currentColor" />
                 </div>
-                <span className="relative z-10 text-white font-serif italic font-bold text-base tracking-wide text-center leading-relaxed">
+                <span className="relative z-10 text-white font-serif italic font-bold text-sm tracking-wide text-center leading-snug">
                   Read Your Story
                 </span>
               </button>
               <button
                 onClick={() => setShowElements(true)}
-                className="w-64 py-6 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-6 flex-shrink-0"
+                className="py-5 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
                 style={{
-                  scrollSnapAlign: 'center',
-                  scrollSnapStop: 'always',
                   background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)'
                 }}
               >
                 {/* Stars */}
                 <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute w-1 h-1 bg-white/80 rounded-full blur-[1px] top-3 left-8" />
-                  <div className="absolute w-1.5 h-1.5 bg-white/60 rounded-full blur-[2px] top-6 right-12" />
-                  <div className="absolute w-1 h-1 bg-white/70 rounded-full blur-[1px] top-10 left-16" />
-                  <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full blur-[1px] top-4 right-6" />
-                  <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[2px] bottom-4 left-10" />
-                  <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full blur-[1px] bottom-6 right-8" />
-                  <div className="absolute w-1.5 h-1.5 bg-white/50 rounded-full blur-[2px] top-8 left-6" />
-                  <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px] bottom-3 right-16" />
+                  <div className="absolute w-1 h-1 bg-white/80 rounded-full blur-[1px] top-3 left-4" />
+                  <div className="absolute w-1.5 h-1.5 bg-white/60 rounded-full blur-[2px] top-5 right-6" />
+                  <div className="absolute w-1 h-1 bg-white/70 rounded-full blur-[1px] top-8 left-8" />
+                  <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full blur-[1px] top-4 right-3" />
+                  <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[2px] bottom-3 left-5" />
+                  <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full blur-[1px] bottom-5 right-4" />
                 </div>
-                <span className="relative z-10 text-white font-serif italic font-bold text-base tracking-wide text-center leading-relaxed">
+                <span className="relative z-10 text-white font-serif italic font-bold text-sm tracking-wide text-center leading-snug">
                   Your Elements
                 </span>
               </button>
-            </div>
-
-            {/* Menu List */}
-            <div className="px-6 flex flex-col gap-1 pb-6">
-              {MENU_ITEMS.map((item, idx) => (
-                <MenuItem key={idx} {...item} />
-              ))}
             </div>
           </div>
         </div>
