@@ -5,6 +5,7 @@ import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
+import ProfileQuestions from './ProfileQuestions';
 import { PageType } from '../App';
 
 interface PhoneScreenProps {
@@ -17,6 +18,11 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   const [showSettings, setShowSettings] = React.useState(false);
   const [showElements, setShowElements] = React.useState(false);
   const [showStory, setShowStory] = React.useState(false);
+  const [questionAnswers, setQuestionAnswers] = React.useState<Record<string, string>>({});
+
+  const handleAnswerChange = (questionId: string, answer: string) => {
+    setQuestionAnswers(prev => ({ ...prev, [questionId]: answer }));
+  };
 
   React.useEffect(() => {
     if (darkMode) {
@@ -157,6 +163,12 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 <MenuItem key={idx} {...item} />
               ))}
             </div>
+
+            {/* AI Learning Questions */}
+            <ProfileQuestions
+              answers={questionAnswers}
+              onAnswerChange={handleAnswerChange}
+            />
           </div>
         </div>
 

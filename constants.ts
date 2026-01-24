@@ -84,3 +84,135 @@ export const AI_CONVERSATION: Array<{
   { sender: 'user', message: "Nice choice! I've been wanting to try Fujifilm." },
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
+
+// AI学習用質問
+export interface ProfileQuestion {
+  id: string;
+  question: string;
+  category: 'personality' | 'lifestyle' | 'values' | 'preferences' | 'social';
+  placeholder: string;
+}
+
+export const PROFILE_QUESTIONS: ProfileQuestion[] = [
+  // Personality
+  {
+    id: 'q1',
+    question: 'How do you usually spend your weekends?',
+    category: 'lifestyle',
+    placeholder: 'e.g., Relaxing at home, exploring cafes...'
+  },
+  {
+    id: 'q2',
+    question: 'What makes you laugh the most?',
+    category: 'personality',
+    placeholder: 'e.g., Witty humor, silly jokes...'
+  },
+  {
+    id: 'q3',
+    question: 'Describe your ideal first date.',
+    category: 'preferences',
+    placeholder: 'e.g., A cozy dinner, a walk in the park...'
+  },
+  {
+    id: 'q4',
+    question: 'What are you most passionate about?',
+    category: 'values',
+    placeholder: 'e.g., Music, helping others...'
+  },
+  {
+    id: 'q5',
+    question: 'How do you handle stress?',
+    category: 'personality',
+    placeholder: 'e.g., Exercise, meditation, talking to friends...'
+  },
+  {
+    id: 'q6',
+    question: 'What\'s your love language?',
+    category: 'preferences',
+    placeholder: 'e.g., Words of affirmation, quality time...'
+  },
+  {
+    id: 'q7',
+    question: 'Are you more of a morning person or night owl?',
+    category: 'lifestyle',
+    placeholder: 'e.g., Early bird, definitely a night owl...'
+  },
+  {
+    id: 'q8',
+    question: 'What\'s a skill you\'d love to learn?',
+    category: 'values',
+    placeholder: 'e.g., Playing guitar, cooking...'
+  },
+  {
+    id: 'q9',
+    question: 'How do you prefer to communicate?',
+    category: 'social',
+    placeholder: 'e.g., Texting, video calls, in-person...'
+  },
+  {
+    id: 'q10',
+    question: 'What does friendship mean to you?',
+    category: 'values',
+    placeholder: 'e.g., Trust, being there for each other...'
+  },
+  {
+    id: 'q11',
+    question: 'Describe a perfect day off.',
+    category: 'lifestyle',
+    placeholder: 'e.g., Sleeping in, brunch, movie marathon...'
+  },
+  {
+    id: 'q12',
+    question: 'What\'s your biggest pet peeve?',
+    category: 'personality',
+    placeholder: 'e.g., Being late, dishonesty...'
+  },
+  {
+    id: 'q13',
+    question: 'Where do you see yourself in 5 years?',
+    category: 'values',
+    placeholder: 'e.g., Traveling the world, building a career...'
+  },
+  {
+    id: 'q14',
+    question: 'What\'s your favorite way to show affection?',
+    category: 'preferences',
+    placeholder: 'e.g., Giving gifts, spending quality time...'
+  },
+  {
+    id: 'q15',
+    question: 'How adventurous are you with food?',
+    category: 'lifestyle',
+    placeholder: 'e.g., Love trying new things, prefer familiar...'
+  },
+  {
+    id: 'q16',
+    question: 'What\'s a deal-breaker for you in relationships?',
+    category: 'values',
+    placeholder: 'e.g., Lack of communication, disrespect...'
+  },
+  {
+    id: 'q17',
+    question: 'How do you like to meet new people?',
+    category: 'social',
+    placeholder: 'e.g., Through friends, at events...'
+  },
+  {
+    id: 'q18',
+    question: 'What\'s something you\'re proud of?',
+    category: 'personality',
+    placeholder: 'e.g., My creativity, overcoming challenges...'
+  },
+  {
+    id: 'q19',
+    question: 'Do you prefer quiet nights in or going out?',
+    category: 'social',
+    placeholder: 'e.g., Cozy nights at home, clubbing...'
+  },
+  {
+    id: 'q20',
+    question: 'What do you value most in a partner?',
+    category: 'preferences',
+    placeholder: 'e.g., Kindness, sense of humor, ambition...'
+  },
+];
