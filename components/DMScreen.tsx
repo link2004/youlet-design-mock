@@ -63,51 +63,51 @@ interface ChatDetailProps {
   onBack: () => void;
 }
 
+// 頭文字アバターコンポーネント
+const InitialAvatar: React.FC<{ name: string }> = ({ name }) => (
+  <div className="w-8 h-8 rounded-full bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center shrink-0">
+    <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+      {name.charAt(0).toUpperCase()}
+    </span>
+  </div>
+);
+
 // メッセージバブルコンポーネント
 interface MessageBubbleProps {
   message: DMMessage;
-  chatAvatar: string;  // 相手のアバター
+  chatAvatar: string;  // 相手のキャラクターアバター
+  chatName: string;    // 相手の名前
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar }) => {
+const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chatName }) => {
   const isUser = message.sender === 'user';
+  const isAI = message.isAI;
 
-  // AIメッセージの場合はアバターを表示
-  if (message.isAI) {
-    const avatarSrc = isUser ? USER_DATA.avatar : chatAvatar;
-
-    return (
-      <div className={`flex items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        {/* アバター */}
+  // アバターを描画
+  const renderAvatar = () => {
+    if (isAI) {
+      // AIメッセージ → キャラクター画像
+      const avatarSrc = isUser ? USER_DATA.characterAvatar : chatAvatar;
+      return (
         <img
           src={avatarSrc}
           alt="Avatar"
           className="w-8 h-8 object-contain shrink-0"
         />
-        {/* メッセージバブル */}
-        <div
-          className={`max-w-[70%] px-4 py-2 rounded-2xl ${
-            isUser
-              ? 'bg-orange-400 text-white rounded-br-md'
-              : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
-          }`}
-        >
-          <p className="text-sm">{message.message}</p>
-          <p className={`text-[10px] mt-1 text-right ${
-            isUser ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
-          }`}>
-            {message.timestamp}
-          </p>
-        </div>
-      </div>
-    );
-  }
+      );
+    } else {
+      // 人間メッセージ → 頭文字アバター
+      const name = isUser ? USER_DATA.name : chatName;
+      return <InitialAvatar name={name} />;
+    }
+  };
 
-  // 通常のメッセージ（アバターなし）
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+      {renderAvatar()}
+      {/* メッセージバブル */}
       <div
-        className={`max-w-[75%] px-4 py-2 rounded-2xl ${
+        className={`max-w-[70%] px-4 py-2 rounded-2xl ${
           isUser
             ? 'bg-orange-400 text-white rounded-br-md'
             : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
@@ -167,7 +167,7 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
       <div className="flex-1 overflow-y-auto py-4 no-scrollbar">
         <div className="flex flex-col gap-3 px-4">
           {messages.map((msg) => (
-            <MessageBubble key={msg.id} message={msg} chatAvatar={chat.avatar} />
+            <MessageBubble key={msg.id} message={msg} chatAvatar={chat.avatar} chatName={chat.name} />
           ))}
         </div>
 

@@ -16,7 +16,8 @@ export const USER_DATA = {
   name: "Riku",
   age: 21,
   location: "Tokyo",
-  avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_1.png"
+  avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_1.png",  // 人間用アイコン
+  characterAvatar: "/images/characters/char_me.png",  // AIキャラクター用
 };
 
 export const MY_PROFILE = {
