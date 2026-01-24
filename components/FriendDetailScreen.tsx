@@ -9,12 +9,13 @@ interface FriendDetailScreenProps {
   onBack: () => void;
   onSelectDiagnostic: (diagnostic: DiagnosticType) => void;
   initialSheetOpen?: boolean;
+  initialFlipped?: boolean;
   onViewAIConversation?: () => void;
 }
 
-const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false, onViewAIConversation }) => {
+const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false, initialFlipped = false, onViewAIConversation }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(initialSheetOpen);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(initialFlipped);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {

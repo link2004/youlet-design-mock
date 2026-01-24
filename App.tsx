@@ -178,6 +178,7 @@ const App: React.FC = () => {
                 onBack={handleBackFromFriendDetail}
                 onSelectDiagnostic={handleSelectDiagnosticFromFriendDetail}
                 initialSheetOpen={shouldOpenSheet}
+                initialFlipped={friendDetailEntryPoint === 'ranking'}
                 onViewAIConversation={() => handleViewAIConversation()}
               />
             )}

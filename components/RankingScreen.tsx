@@ -212,13 +212,13 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
                   />
                 </div>
 
-                {/* Name & Info */}
-                <div className="flex-1 text-left">
+                {/* Name & Episode */}
+                <div className="flex-1 text-left min-w-0">
                   <p className="font-semibold text-neutral-900 dark:text-white text-base">
                     {friend.name}
                   </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {friend.hobbies.slice(0, 2).join(', ')}
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                    {friend.events[0]?.emoji} {friend.events[0]?.title || 'No recent events'}
                   </p>
                 </div>
 
