@@ -38,6 +38,24 @@ npm run preview  # ビルド結果プレビュー
 
 - アクセントカラー: オレンジ (`text-orange-400`, `bg-orange-400`)
 
+## 実装済み機能
+
+### AI会話履歴の相互承認フロー
+友達カードの裏面からAI会話履歴を閲覧・共有し、相互承認によってblurが解除される機能。
+
+**画面フロー:**
+1. FriendDetailScreen（カード裏面）→「View AI Conversation」ボタン
+2. AIConversationHistoryScreen（自分AIは通常表示、相手AIはblur）
+3. 「Share & Request Approval」→ DM画面へ遷移
+4. DMにウィジェット表示 → 相手が承認 → blur解除アニメーション
+
+**関連コンポーネント:**
+- `AIConversationHistoryScreen.tsx` - AI会話履歴画面
+- `AIConversationEditModal.tsx` - メッセージ編集モーダル
+- `DMConversationApprovalWidget.tsx` - DM内承認ウィジェット
+
+**デモ用機能:** pending_sent状態のウィジェットをタップすると相手の承認をシミュレート可能
+
 ## Claude Code 設定
 
 - agent-browser: headless モードで使用する
