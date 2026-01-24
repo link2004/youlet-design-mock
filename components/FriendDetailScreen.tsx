@@ -28,21 +28,14 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
 
       <StatusBar variant="light" className="relative z-10" />
 
-      {/* Header with back button and DM button */}
-      <div className="relative z-10 flex items-center justify-between px-4 py-2 shrink-0">
+      {/* Header with back button */}
+      <div className="relative z-10 flex items-center px-4 py-2 shrink-0">
         <button
           onClick={onBack}
           className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
           aria-label="Back"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
-        </button>
-        <button
-          onClick={onDM}
-          className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
-          aria-label="DM"
-        >
-          <MessageCircle className="w-6 h-6 text-white" />
         </button>
       </div>
 
@@ -69,14 +62,26 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           {friend.name}
         </h2>
 
-        {/* Diagnostic Button */}
-        <button
-          onClick={onDiagnostic}
-          className="flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
-        >
-          <Heart className="w-5 h-5" />
-          <span>Compatibility</span>
-        </button>
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-3">
+          {/* Message Button */}
+          <button
+            onClick={onDM}
+            className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-neutral-100 text-neutral-800 font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span>Message</span>
+          </button>
+
+          {/* Compatibility Button */}
+          <button
+            onClick={onDiagnostic}
+            className="flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
+          >
+            <Heart className="w-5 h-5" />
+            <span>Compatibility</span>
+          </button>
+        </div>
       </div>
     </div>,
     portalContainer
