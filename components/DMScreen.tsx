@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera } from 'lucide-react';
-import { DM_CHATS, DM_MESSAGES, USER_DATA } from '../constants';
+import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera, Bot } from 'lucide-react';
+import { DM_CHATS, DM_MESSAGES_BY_CHAT, USER_DATA, DMChat, DMMessage } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import { PageType } from '../App';
@@ -12,7 +12,7 @@ interface DMScreenProps {
 }
 
 interface ChatItemProps {
-  chat: typeof DM_CHATS[0];
+  chat: DMChat;
   onClick: () => void;
 }
 
@@ -59,13 +59,33 @@ const ChatItem: React.FC<ChatItemProps> = ({ chat, onClick }) => (
 );
 
 interface ChatDetailProps {
-  chat: typeof DM_CHATS[0];
+  chat: DMChat;
   onBack: () => void;
 }
+
+// AIメッセージのバブルコンポーネント（通常のメッセージとほぼ同じ、小さいAIマークのみ）
+const AIMessageBubble: React.FC<{ message: DMMessage }> = ({ message }) => (
+  <div className="flex justify-start">
+    <div className="max-w-[75%] px-4 py-2 rounded-2xl rounded-bl-md bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white">
+      <p className="text-sm">{message.message}</p>
+      <div className="flex items-center justify-between mt-1">
+        {/* 小さいAIマーク */}
+        <div className="flex items-center gap-1">
+          <Bot size={12} className="text-purple-500" />
+          <span className="text-[10px] text-purple-500">AI</span>
+        </div>
+        <p className="text-[10px] text-neutral-500 dark:text-neutral-400">
+          {message.timestamp}
+        </p>
+      </div>
+    </div>
+  </div>
+);
 
 const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messages = DM_MESSAGES_BY_CHAT[chat.id] || [];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -103,28 +123,35 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto py-4 no-scrollbar">
-        <div className="flex flex-col gap-2 px-4">
-          {DM_MESSAGES.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
+        <div className="flex flex-col gap-3 px-4">
+          {messages.map((msg) => {
+            // AIメッセージの場合
+            if (msg.sender === 'ai') {
+              return <AIMessageBubble key={msg.id} message={msg} />;
+            }
+            // 通常のメッセージ
+            return (
               <div
-                className={`max-w-[75%] px-4 py-2 rounded-2xl ${
-                  msg.sender === 'user'
-                    ? 'bg-orange-400 text-white rounded-br-md'
-                    : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
-                }`}
+                key={msg.id}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <p className="text-sm">{msg.message}</p>
-                <p className={`text-[10px] mt-1 ${
-                  msg.sender === 'user' ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
-                }`}>
-                  {msg.timestamp}
-                </p>
+                <div
+                  className={`max-w-[75%] px-4 py-2 rounded-2xl ${
+                    msg.sender === 'user'
+                      ? 'bg-orange-400 text-white rounded-br-md'
+                      : 'bg-neutral-200 dark:bg-neutral-700 text-black dark:text-white rounded-bl-md'
+                  }`}
+                >
+                  <p className="text-sm">{msg.message}</p>
+                  <p className={`text-[10px] mt-1 ${
+                    msg.sender === 'user' ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
+                  }`}>
+                    {msg.timestamp}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div ref={messagesEndRef} />
@@ -168,7 +195,7 @@ const DMScreen: React.FC<DMScreenProps> = ({
   initialChatId,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedChat, setSelectedChat] = useState<typeof DM_CHATS[0] | null>(null);
+  const [selectedChat, setSelectedChat] = useState<DMChat | null>(null);
 
   // Open chat when initialChatId is provided
   useEffect(() => {
