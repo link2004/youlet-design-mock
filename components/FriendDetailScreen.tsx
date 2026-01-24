@@ -58,17 +58,17 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 mt-6">
+        <div className="flex flex-col gap-3 mt-6 w-48">
           <button
             onClick={onDiagnostic}
-            className="py-3 px-5 rounded-full bg-orange-400 shadow-lg active:scale-95 transition-transform"
+            className="w-full py-3 rounded-full bg-orange-400 shadow-lg active:scale-95 transition-transform"
           >
             <span className="text-base text-white font-bold">Compatibility</span>
           </button>
 
           <button
             onClick={onDM}
-            className="py-3 px-5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 active:scale-95 transition-transform"
+            className="w-full py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 active:scale-95 transition-transform"
           >
             <span className="text-base text-white font-bold">Message</span>
           </button>
