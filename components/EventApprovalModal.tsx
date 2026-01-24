@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, Sparkles, ChevronDown, Eye, EyeOff } from 'lucide-react';
+import { X, Check, Sparkles, ChevronDown } from 'lucide-react';
 import { AI_SUGGESTED_EVENTS } from '../constants';
 
 interface EventDetails {
   additionalContext: string;
-  isPublic: boolean;
 }
 
 interface EventApprovalModalProps {
@@ -64,7 +63,7 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
         if (!eventDetails[id]) {
           setEventDetails(prevDetails => ({
             ...prevDetails,
-            [id]: { additionalContext: '', isPublic: true }
+            [id]: { additionalContext: '' }
           }));
         }
         // Focus the textarea after a short delay
@@ -80,13 +79,6 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
     setEventDetails(prev => ({
       ...prev,
       [id]: { ...prev[id], additionalContext: value }
-    }));
-  };
-
-  const togglePublic = (id: string) => {
-    setEventDetails(prev => ({
-      ...prev,
-      [id]: { ...prev[id], isPublic: !prev[id]?.isPublic }
     }));
   };
 
@@ -199,10 +191,11 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                     {/* Divider */}
                     <div className="border-t border-orange-200 dark:border-orange-800" />
 
-                    {/* Additional Context Input */}
+                    {/* Additional Context Input (AI only) */}
                     <div>
-                      <label className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5 block">
-                        Add your story (optional)
+                      <label className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5 flex items-center gap-1.5">
+                        <span>Add your story</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">AI only</span>
                       </label>
                       <textarea
                         ref={(el) => { textareaRefs.current[event.id] = el; }}
@@ -213,31 +206,6 @@ const EventApprovalModal: React.FC<EventApprovalModalProps> = ({ onClose, onAppr
                         rows={2}
                       />
                     </div>
-
-                    {/* Public/Private Toggle */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        togglePublic(event.id);
-                      }}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                        details?.isPublic
-                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                          : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400'
-                      }`}
-                    >
-                      {details?.isPublic ? (
-                        <>
-                          <Eye size={14} />
-                          <span>Visible on card</span>
-                        </>
-                      ) : (
-                        <>
-                          <EyeOff size={14} />
-                          <span>Private (AI only)</span>
-                        </>
-                      )}
-                    </button>
                   </div>
                 </div>
 
