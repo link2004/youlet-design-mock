@@ -1,10 +1,10 @@
 import React from 'react';
-import { ChevronDown, ChevronUp, Check, Sparkles } from 'lucide-react';
-import { PROFILE_QUESTIONS, ProfileQuestion } from '../constants';
+import { Sparkles } from 'lucide-react';
+import { PROFILE_QUESTIONS, ANSWER_OPTIONS, ProfileQuestion, AnswerValue } from '../constants';
 
 interface ProfileQuestionsProps {
-  answers: Record<string, string>;
-  onAnswerChange: (questionId: string, answer: string) => void;
+  answers: Record<string, AnswerValue>;
+  onAnswerChange: (questionId: string, answer: AnswerValue) => void;
 }
 
 const categoryColors: Record<ProfileQuestion['category'], string> = {
@@ -24,9 +24,7 @@ const categoryLabels: Record<ProfileQuestion['category'], string> = {
 };
 
 const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerChange }) => {
-  const [expandedId, setExpandedId] = React.useState<string | null>(null);
-
-  const answeredCount = Object.values(answers).filter(a => a.trim().length > 0).length;
+  const answeredCount = Object.keys(answers).length;
   const totalCount = PROFILE_QUESTIONS.length;
   const progressPercent = (answeredCount / totalCount) * 100;
 
@@ -62,64 +60,56 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
       </div>
 
       {/* Questions List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {PROFILE_QUESTIONS.map((q) => {
-          const isExpanded = expandedId === q.id;
-          const hasAnswer = answers[q.id]?.trim().length > 0;
+          const selectedAnswer = answers[q.id];
 
           return (
             <div
               key={q.id}
-              className={`bg-white dark:bg-neutral-900 rounded-xl overflow-hidden transition-all duration-200 ${
-                isExpanded ? 'ring-2 ring-orange-400' : ''
-              }`}
+              className="bg-white dark:bg-neutral-900 rounded-xl p-4"
             >
-              {/* Question Header */}
-              <button
-                onClick={() => setExpandedId(isExpanded ? null : q.id)}
-                className="w-full flex items-start gap-3 p-4 text-left"
+              {/* Category Tag */}
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full font-medium ${categoryColors[q.category]}`}
               >
-                <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                    hasAnswer
-                      ? 'bg-green-500 text-white'
-                      : 'bg-neutral-200 dark:bg-neutral-700'
-                  }`}
-                >
-                  {hasAnswer && <Check size={12} strokeWidth={3} />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-900 dark:text-white leading-snug">
-                    {q.question}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${categoryColors[q.category]}`}
-                    >
-                      {categoryLabels[q.category]}
-                    </span>
-                    {hasAnswer && (
-                      <span className="text-xs text-neutral-400 dark:text-neutral-500 truncate">
-                        {answers[q.id]}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="text-neutral-400 flex-shrink-0">
-                  {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                </div>
-              </button>
+                {categoryLabels[q.category]}
+              </span>
 
-              {/* Answer Input */}
-              {isExpanded && (
-                <div className="px-4 pb-4">
-                  <textarea
-                    value={answers[q.id] || ''}
-                    onChange={(e) => onAnswerChange(q.id, e.target.value)}
-                    placeholder={q.placeholder}
-                    rows={3}
-                    className="w-full bg-neutral-50 dark:bg-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 resize-none focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
-                  />
+              {/* Question */}
+              <p className="text-sm font-medium text-neutral-900 dark:text-white mt-2 mb-3">
+                {q.question}
+              </p>
+
+              {/* Answer Options */}
+              <div className="flex gap-2">
+                {ANSWER_OPTIONS.map((option) => {
+                  const isSelected = selectedAnswer === option.value;
+                  const isPositive = option.value === 'strongly_agree' || option.value === 'agree';
+
+                  return (
+                    <button
+                      key={option.value}
+                      onClick={() => onAnswerChange(q.id, option.value)}
+                      className={`flex-1 py-2 px-1 rounded-lg text-xs font-medium transition-all ${
+                        isSelected
+                          ? isPositive
+                            ? 'bg-orange-400 text-white'
+                            : 'bg-neutral-600 text-white dark:bg-neutral-500'
+                          : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                      }`}
+                    >
+                      <span className="block">{option.short}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Legend for first question only */}
+              {q.id === 'q1' && (
+                <div className="flex justify-between mt-2 text-[10px] text-neutral-400 dark:text-neutral-500">
+                  <span>Strongly Agree</span>
+                  <span>Strongly Disagree</span>
                 </div>
               )}
             </div>

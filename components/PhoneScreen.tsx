@@ -1,6 +1,6 @@
 import React from 'react';
 import { Settings, ChevronLeft, Star, Moon, Sun } from 'lucide-react';
-import { USER_DATA, MENU_ITEMS } from '../constants';
+import { USER_DATA, MENU_ITEMS, AnswerValue } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import ElementsBubbles from './ElementsBubbles';
@@ -18,9 +18,9 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   const [showSettings, setShowSettings] = React.useState(false);
   const [showElements, setShowElements] = React.useState(false);
   const [showStory, setShowStory] = React.useState(false);
-  const [questionAnswers, setQuestionAnswers] = React.useState<Record<string, string>>({});
+  const [questionAnswers, setQuestionAnswers] = React.useState<Record<string, AnswerValue>>({});
 
-  const handleAnswerChange = (questionId: string, answer: string) => {
+  const handleAnswerChange = (questionId: string, answer: AnswerValue) => {
     setQuestionAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
