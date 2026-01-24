@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Crown, Medal } from 'lucide-react';
+import { ChevronLeft, Plus, Heart, Sparkles, AlertTriangle, X, Share2, Link, MessageCircle, Crown, Medal, Menu } from 'lucide-react';
 import { DiagnosticType, GroupDiagnosticType, FRIENDS_LIST, MY_PROFILE, FriendProfile } from '../constants';
 import StatusBar from './StatusBar';
 
@@ -758,6 +758,88 @@ const PastRankingSheet: React.FC<PastRankingSheetProps> = ({ isOpen, onClose, on
   );
 };
 
+// グループ診断用のシンプルなPast Resultsシート
+interface GroupPastResultsSheetProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+// グループ診断の過去結果モックデータ
+const generateGroupPastResults = () => {
+  const shuffled = [...FRIENDS_LIST].sort(() => Math.random() - 0.5);
+  // 3回分の過去診断（各4-6人）
+  return [
+    shuffled.slice(0, 4),
+    shuffled.slice(2, 7),
+    shuffled.slice(4, 8),
+  ];
+};
+
+const GroupPastResultsSheet: React.FC<GroupPastResultsSheetProps> = ({ isOpen, onClose }) => {
+  const [pastGroups] = useState(() => generateGroupPastResults());
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/50 z-40 transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      {/* Sheet */}
+      <div
+        className={`
+          absolute bottom-0 left-0 right-0 z-50
+          bg-white dark:bg-gray-900 rounded-t-3xl
+          transform transition-transform duration-300 ease-out
+          ${isOpen ? 'translate-y-0' : 'translate-y-full'}
+        `}
+        style={{ maxHeight: '50%' }}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center py-3">
+          <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+        </div>
+
+        {/* Header */}
+        <div className="px-4 pb-3">
+          <h3 className="font-bold text-neutral-900 dark:text-white text-base text-center">Past Results</h3>
+        </div>
+
+        {/* Past groups list */}
+        <div className="px-4 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 80px)' }}>
+          <div className="flex flex-col gap-4">
+            {pastGroups.map((group, index) => (
+              <button
+                key={index}
+                className="flex items-center gap-1 p-3 rounded-xl active:bg-gray-100 transition-colors"
+              >
+                {group.map((friend, friendIndex) => (
+                  <img
+                    key={friend.id}
+                    src={friend.image}
+                    alt={friend.name}
+                    className="w-10 h-10 object-contain"
+                    style={{ marginLeft: friendIndex > 0 ? '-8px' : '0' }}
+                  />
+                ))}
+              </button>
+            ))}
+          </div>
+
+          {pastGroups.length === 0 && (
+            <div className="text-center py-8 text-neutral-400">
+              <p>No past results yet</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
 interface PersonCardProps {
   person: FriendProfile | typeof MY_PROFILE | null;
   isPlaceholder?: boolean;
@@ -1100,6 +1182,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
   // グループ診断用の状態
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [groupResultData, setGroupResultData] = useState<GroupDiagnosticResult | null>(null);
+  const [isGroupPastResultsOpen, setIsGroupPastResultsOpen] = useState(false);
 
   // ペア診断のハンドラー
   const handleFriendSelect = (friend: FriendProfile) => {
@@ -1152,15 +1235,22 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
       <div className={`relative w-full h-full font-sans overflow-hidden flex flex-col bg-gradient-to-br ${groupDiagnostic!.gradient}`}>
         <StatusBar variant="light" />
 
-        {/* Header with back button - only show in select phase */}
+        {/* Header with back button and menu - only show in select phase */}
         {phase === 'select' && (
-          <div className="relative flex items-center px-4 py-2 shrink-0 z-40">
+          <div className="relative flex items-center justify-between px-4 py-2 shrink-0 z-40">
             <button
               onClick={onBack}
               className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
               aria-label="Back"
             >
               <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
+            <button
+              onClick={() => setIsGroupPastResultsOpen(true)}
+              className="p-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+              aria-label="Past Results"
+            >
+              <Menu className="w-5 h-5 text-white" />
             </button>
           </div>
         )}
@@ -1261,6 +1351,12 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
           }}
           onSelect={handleGroupMemberSelect}
           selectedMembers={selectedGroupMembers!}
+        />
+
+        {/* Past results sheet */}
+        <GroupPastResultsSheet
+          isOpen={isGroupPastResultsOpen}
+          onClose={() => setIsGroupPastResultsOpen(false)}
         />
       </div>
     );
