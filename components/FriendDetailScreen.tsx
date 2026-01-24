@@ -9,19 +9,29 @@ interface FriendDetailScreenProps {
   onBack: () => void;
   onSelectDiagnostic: (diagnostic: DiagnosticType) => void;
   initialSheetOpen?: boolean;
-  initialFlipped?: boolean;
+  autoFlip?: boolean;
   onViewAIConversation?: () => void;
 }
 
-const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false, initialFlipped = false, onViewAIConversation }) => {
+const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onSelectDiagnostic, initialSheetOpen = false, autoFlip = false, onViewAIConversation }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(initialSheetOpen);
-  const [isFlipped, setIsFlipped] = useState(initialFlipped);
+  const [isFlipped, setIsFlipped] = useState(false);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const container = document.getElementById('iphone-modal-portal');
     setPortalContainer(container);
   }, []);
+
+  // Auto flip after a short delay when autoFlip is true
+  useEffect(() => {
+    if (autoFlip) {
+      const timer = setTimeout(() => {
+        setIsFlipped(true);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [autoFlip]);
 
   const handleDiagnosticSelect = (diagnostic: DiagnosticType) => {
     setIsSheetOpen(false);
