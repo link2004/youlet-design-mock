@@ -39,10 +39,10 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
         </button>
       </div>
 
-      {/* Content - Large Card + Name */}
+      {/* Content - Card + Actions */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8">
-        {/* Large Friend Card - 2:3 ratio for entire card */}
-        <div style={{ width: '220px', height: '330px' }} className="rounded-3xl bg-white shadow-2xl border-2 border-white/80 overflow-hidden flex flex-col mb-4">
+        {/* Large Friend Card - Original Design */}
+        <div style={{ width: '220px', height: '330px' }} className="rounded-3xl bg-white shadow-2xl border-2 border-white/80 overflow-hidden flex flex-col">
           <div className="flex-1 min-h-0 flex items-center justify-center p-6 bg-gradient-to-b from-neutral-50 to-neutral-100">
             <img
               src={friend.image}
@@ -57,29 +57,26 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           </div>
         </div>
 
-        {/* Friend Name (large) */}
-        <h2 className="text-2xl font-serif italic font-bold text-white mb-4">
-          {friend.name}
-        </h2>
-
         {/* Action Buttons */}
-        <div className="flex flex-col gap-3">
-          {/* Message Button */}
+        <div className="flex items-center gap-8 mt-8">
           <button
             onClick={onDM}
-            className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-neutral-100 text-neutral-800 font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
+            className="flex flex-col items-center gap-2 group"
           >
-            <MessageCircle className="w-5 h-5" />
-            <span>Message</span>
+            <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-active:scale-90 transition-transform">
+              <MessageCircle className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm text-white/90 font-medium">Message</span>
           </button>
 
-          {/* Compatibility Button */}
           <button
             onClick={onDiagnostic}
-            className="flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors active:scale-95 shadow-lg"
+            className="flex flex-col items-center gap-2 group"
           >
-            <Heart className="w-5 h-5" />
-            <span>Compatibility</span>
+            <div className="w-14 h-14 rounded-full bg-orange-400 flex items-center justify-center group-active:scale-90 transition-transform">
+              <Heart className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm text-white/90 font-medium">Compatibility</span>
           </button>
         </div>
       </div>
