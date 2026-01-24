@@ -1,32 +1,56 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
-import { PROFILE_QUESTIONS, ANSWER_OPTIONS, ProfileQuestion, AnswerValue } from '../constants';
+import { PROFILE_QUESTIONS, ANSWER_OPTIONS, AnswerValue } from '../constants';
 
 interface ProfileQuestionsProps {
   answers: Record<string, AnswerValue>;
   onAnswerChange: (questionId: string, answer: AnswerValue) => void;
 }
 
-const categoryColors: Record<ProfileQuestion['category'], string> = {
-  personality: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
-  lifestyle: 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400',
-  values: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-  preferences: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
-  social: 'bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400',
-};
-
-const categoryLabels: Record<ProfileQuestion['category'], string> = {
-  personality: 'Personality',
-  lifestyle: 'Lifestyle',
-  values: 'Values',
-  preferences: 'Preferences',
-  social: 'Social',
-};
-
 const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerChange }) => {
   const answeredCount = Object.keys(answers).length;
   const totalCount = PROFILE_QUESTIONS.length;
   const progressPercent = (answeredCount / totalCount) * 100;
+
+  const getCircleStyle = (position: number, isSelected: boolean) => {
+    // Position 1-2: Disagree (cyan/light blue)
+    // Position 3: Neutral (gray)
+    // Position 4-5: Agree (orange)
+    if (!isSelected) {
+      return 'bg-neutral-200 dark:bg-neutral-700';
+    }
+
+    switch (position) {
+      case 1:
+        return 'bg-cyan-400';
+      case 2:
+        return 'bg-cyan-300';
+      case 3:
+        return 'bg-neutral-400 dark:bg-neutral-500';
+      case 4:
+        return 'bg-orange-300';
+      case 5:
+        return 'bg-orange-400';
+      default:
+        return 'bg-neutral-200';
+    }
+  };
+
+  const getCircleSize = (position: number) => {
+    // Outer circles are larger
+    switch (position) {
+      case 1:
+      case 5:
+        return 'w-10 h-10';
+      case 2:
+      case 4:
+        return 'w-8 h-8';
+      case 3:
+        return 'w-7 h-7';
+      default:
+        return 'w-8 h-8';
+    }
+  };
 
   return (
     <div className="px-6 pb-8">
@@ -60,56 +84,39 @@ const ProfileQuestions: React.FC<ProfileQuestionsProps> = ({ answers, onAnswerCh
       </div>
 
       {/* Questions List */}
-      <div className="space-y-4">
-        {PROFILE_QUESTIONS.map((q) => {
+      <div className="space-y-6">
+        {PROFILE_QUESTIONS.map((q, index) => {
           const selectedAnswer = answers[q.id];
 
           return (
-            <div
-              key={q.id}
-              className="bg-white dark:bg-neutral-900 rounded-xl p-4"
-            >
-              {/* Category Tag */}
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full font-medium ${categoryColors[q.category]}`}
-              >
-                {categoryLabels[q.category]}
-              </span>
-
+            <div key={q.id} className="bg-white dark:bg-neutral-900 rounded-xl p-4">
               {/* Question */}
-              <p className="text-sm font-medium text-neutral-900 dark:text-white mt-2 mb-3">
+              <p className="text-sm font-medium text-neutral-900 dark:text-white mb-4 text-center">
                 {q.question}
               </p>
 
-              {/* Answer Options */}
-              <div className="flex gap-2">
+              {/* Answer Circles */}
+              <div className="flex items-center justify-center gap-3">
                 {ANSWER_OPTIONS.map((option) => {
                   const isSelected = selectedAnswer === option.value;
-                  const isPositive = option.value === 'strongly_agree' || option.value === 'agree';
 
                   return (
                     <button
                       key={option.value}
                       onClick={() => onAnswerChange(q.id, option.value)}
-                      className={`flex-1 py-2 px-1 rounded-lg text-xs font-medium transition-all ${
-                        isSelected
-                          ? isPositive
-                            ? 'bg-orange-400 text-white'
-                            : 'bg-neutral-600 text-white dark:bg-neutral-500'
-                          : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                      className={`${getCircleSize(option.position)} ${getCircleStyle(option.position, isSelected)} rounded-full transition-all duration-200 hover:scale-110 active:scale-95 ${
+                        isSelected ? 'ring-2 ring-offset-2 ring-neutral-400 dark:ring-offset-neutral-900' : ''
                       }`}
-                    >
-                      <span className="block">{option.short}</span>
-                    </button>
+                    />
                   );
                 })}
               </div>
 
               {/* Legend for first question only */}
-              {q.id === 'q1' && (
-                <div className="flex justify-between mt-2 text-[10px] text-neutral-400 dark:text-neutral-500">
-                  <span>Strongly Agree</span>
-                  <span>Strongly Disagree</span>
+              {index === 0 && (
+                <div className="flex justify-between mt-3 text-xs text-neutral-400 dark:text-neutral-500">
+                  <span>Disagree</span>
+                  <span>Agree</span>
                 </div>
               )}
             </div>

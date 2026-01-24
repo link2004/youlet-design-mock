@@ -92,12 +92,13 @@ export interface ProfileQuestion {
   category: 'personality' | 'lifestyle' | 'values' | 'preferences' | 'social';
 }
 
-// 回答選択肢
+// 回答選択肢（5段階）
 export const ANSWER_OPTIONS = [
-  { value: 'strongly_agree', label: 'Strongly Agree', short: '++' },
-  { value: 'agree', label: 'Agree', short: '+' },
-  { value: 'disagree', label: 'Disagree', short: '-' },
-  { value: 'strongly_disagree', label: 'Strongly Disagree', short: '--' },
+  { value: 'strongly_disagree', position: 1 },
+  { value: 'disagree', position: 2 },
+  { value: 'neutral', position: 3 },
+  { value: 'agree', position: 4 },
+  { value: 'strongly_agree', position: 5 },
 ] as const;
 
 export type AnswerValue = typeof ANSWER_OPTIONS[number]['value'];
