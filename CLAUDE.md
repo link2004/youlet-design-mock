@@ -38,6 +38,14 @@ npm run preview  # ビルド結果プレビュー
 
 - アクセントカラー: オレンジ (`text-orange-400`, `bg-orange-400`)
 
+### 絵文字・アイコン
+
+- **FluentUI Emoji (3D)**: 絵文字アイコンには [microsoft/fluentui-emoji](https://github.com/microsoft/fluentui-emoji) の **3D版** を使用する
+  - 保存先: `public/images/`
+  - ダウンロード元: `https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/{EmojiName}/3D/{emoji_name}_3d.png`
+  - 例: トロフィー → `assets/Trophy/3D/trophy_3d.png`
+- lucide-react: UIアイコン（矢印、メニューなど）に使用
+
 ## 実装済み機能
 
 ### 基本画面

@@ -1297,10 +1297,10 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
           </button>
           <button
             onClick={() => setIsRankingSheetOpen(true)}
-            className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors active:scale-95"
+            className="p-1.5 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors active:scale-95"
             aria-label="Past Results Ranking"
           >
-            <Trophy className="w-5 h-5 text-white" />
+            <img src="/images/crown_3d.png" alt="Ranking" className="w-5 h-5" />
           </button>
         </div>
       )}
