@@ -897,10 +897,8 @@ interface PersonCardProps {
 }
 
 const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick, size = 'normal' }) => {
-  // 2:3 aspect ratio with explicit dimensions
-  const cardStyle = size === 'small'
-    ? { width: '64px', height: '96px' }  // 64:96 = 2:3
-    : { width: '96px', height: '144px' }; // 96:144 = 2:3
+  // Use aspect-ratio to maintain 2:3 ratio, with width classes for sizing
+  const sizeClasses = size === 'small' ? 'w-full' : 'w-24'; // w-24 = 96px for normal
   const plusSize = size === 'small' ? 'w-6 h-6' : 'w-8 h-8';
   const textSize = size === 'small' ? 'text-[9px]' : 'text-[11px]';
 
@@ -908,8 +906,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick,
     return (
       <button
         onClick={onClick}
-        style={cardStyle}
-        className="group"
+        className={`${sizeClasses} aspect-[2/3] group`}
       >
         <div className="w-full h-full rounded-xl border-2 border-dashed border-white/50 bg-white/10 backdrop-blur-sm transition-transform group-active:scale-95 flex flex-col">
           <div className="flex-1 flex items-center justify-center min-h-0">
@@ -927,7 +924,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick,
 
   if (onClick) {
     return (
-      <button onClick={onClick} style={cardStyle} className="group">
+      <button onClick={onClick} className={`${sizeClasses} aspect-[2/3] group`}>
         <div className="w-full h-full rounded-xl bg-white shadow-md border-2 border-neutral-200 flex flex-col transition-transform group-active:scale-95">
           <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[10px] min-h-0 overflow-hidden">
             <img
@@ -947,7 +944,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, isPlaceholder, onClick,
   }
 
   return (
-    <div style={cardStyle}>
+    <div className={`${sizeClasses} aspect-[2/3]`}>
       <div className="w-full h-full rounded-xl bg-white shadow-md border-2 border-neutral-200 flex flex-col">
         <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-b from-neutral-50 to-neutral-100 rounded-t-[10px] min-h-0 overflow-hidden">
           <img
