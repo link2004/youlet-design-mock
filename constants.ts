@@ -84,3 +84,207 @@ export const AI_CONVERSATION: Array<{
   { sender: 'user', message: "Nice choice! I've been wanting to try Fujifilm." },
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
+
+// 週間ランキングカテゴリ
+export type RankingCategory = 'changes' | 'romance' | 'events' | 'emotions';
+
+export const RANKING_CATEGORIES: { id: RankingCategory; label: string; emoji: string }[] = [
+  { id: 'changes', label: '大きな変化', emoji: '🔄' },
+  { id: 'romance', label: '恋愛の動き', emoji: '💕' },
+  { id: 'events', label: '事件あり', emoji: '⚡' },
+  { id: 'emotions', label: '感情の波', emoji: '🌊' },
+];
+
+// ランキングユーザーデータ
+export interface RankingUser {
+  id: string;
+  name: string;
+  avatar: string;
+  summary: string;
+  score: number;
+  trend: 'up' | 'down' | 'new';
+  previousRank?: number;
+}
+
+export const WEEKLY_RANKINGS: Record<RankingCategory, RankingUser[]> = {
+  changes: [
+    {
+      id: '1',
+      name: 'Yuki',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Yuki',
+      summary: '転職して新しい街に引っ越した',
+      score: 98,
+      trend: 'new',
+    },
+    {
+      id: '2',
+      name: 'Takeshi',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Takeshi',
+      summary: '長年の夢だった起業を実現',
+      score: 92,
+      trend: 'up',
+      previousRank: 5,
+    },
+    {
+      id: '3',
+      name: 'Mika',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mika',
+      summary: '海外留学を決意、来月出発',
+      score: 87,
+      trend: 'up',
+      previousRank: 8,
+    },
+    {
+      id: '4',
+      name: 'Kento',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kento',
+      summary: '新しい趣味のバンド活動を開始',
+      score: 82,
+      trend: 'down',
+      previousRank: 2,
+    },
+    {
+      id: '5',
+      name: 'Saki',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Saki',
+      summary: '資格試験に合格、キャリアアップ',
+      score: 78,
+      trend: 'new',
+    },
+  ],
+  romance: [
+    {
+      id: '6',
+      name: 'Haruka',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Haruka',
+      summary: '3年付き合った彼と婚約',
+      score: 99,
+      trend: 'new',
+    },
+    {
+      id: '7',
+      name: 'Sota',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sota',
+      summary: '片思いの相手に告白成功',
+      score: 94,
+      trend: 'up',
+      previousRank: 4,
+    },
+    {
+      id: '8',
+      name: 'Rin',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rin',
+      summary: 'マッチングアプリで運命の出会い',
+      score: 88,
+      trend: 'new',
+    },
+    {
+      id: '9',
+      name: 'Daiki',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daiki',
+      summary: '遠距離恋愛を乗り越えて同棲開始',
+      score: 85,
+      trend: 'up',
+      previousRank: 6,
+    },
+    {
+      id: '10',
+      name: 'Ayaka',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ayaka',
+      summary: '復縁して再スタート',
+      score: 79,
+      trend: 'down',
+      previousRank: 1,
+    },
+  ],
+  events: [
+    {
+      id: '11',
+      name: 'Ryo',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ryo',
+      summary: '財布を落としたが親切な人が届けてくれた',
+      score: 95,
+      trend: 'new',
+    },
+    {
+      id: '12',
+      name: 'Nana',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nana',
+      summary: '突然の雨でびしょ濡れに、でも素敵な出会い',
+      score: 90,
+      trend: 'up',
+      previousRank: 3,
+    },
+    {
+      id: '13',
+      name: 'Yuto',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Yuto',
+      summary: '電車で有名人に遭遇',
+      score: 84,
+      trend: 'new',
+    },
+    {
+      id: '14',
+      name: 'Mai',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mai',
+      summary: '懸賞で海外旅行が当選',
+      score: 80,
+      trend: 'up',
+      previousRank: 7,
+    },
+    {
+      id: '15',
+      name: 'Kenji',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kenji',
+      summary: '10年ぶりに幼馴染と再会',
+      score: 75,
+      trend: 'down',
+      previousRank: 2,
+    },
+  ],
+  emotions: [
+    {
+      id: '16',
+      name: 'Aoi',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aoi',
+      summary: 'ペットとの別れを経験',
+      score: 97,
+      trend: 'new',
+    },
+    {
+      id: '17',
+      name: 'Tsubasa',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Tsubasa',
+      summary: '親友の結婚式で感動の涙',
+      score: 91,
+      trend: 'up',
+      previousRank: 4,
+    },
+    {
+      id: '18',
+      name: 'Hana',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hana',
+      summary: '仕事のプレッシャーで限界寸前',
+      score: 86,
+      trend: 'new',
+    },
+    {
+      id: '19',
+      name: 'Shun',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shun',
+      summary: '夢を諦めかけたが仲間に励まされた',
+      score: 83,
+      trend: 'up',
+      previousRank: 9,
+    },
+    {
+      id: '20',
+      name: 'Emi',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emi',
+      summary: '家族との和解で心が軽くなった',
+      score: 77,
+      trend: 'down',
+      previousRank: 1,
+    },
+  ],
+};
