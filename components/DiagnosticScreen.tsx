@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DIAGNOSTIC_TYPES, DiagnosticType, GROUP_DIAGNOSTIC_TYPES, GroupDiagnosticType } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
@@ -11,6 +11,8 @@ interface DiagnosticScreenProps {
   onNavigate: (page: PageType) => void;
   onSelectDiagnostic: (diagnostic: DiagnosticType) => void;
   onSelectGroupDiagnostic: (diagnostic: GroupDiagnosticType) => void;
+  activeTab: TabType;
+  onTabChange: (tab: TabType) => void;
 }
 
 interface DiagnosticCardProps {
@@ -91,8 +93,7 @@ const GroupDiagnosticCard: React.FC<GroupDiagnosticCardProps> = ({ diagnostic, o
   );
 };
 
-const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavigate, onSelectDiagnostic, onSelectGroupDiagnostic }) => {
-  const [activeTab, setActiveTab] = useState<TabType>('pair');
+const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavigate, onSelectDiagnostic, onSelectGroupDiagnostic, activeTab, onTabChange }) => {
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
@@ -109,7 +110,7 @@ const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavi
       <div className="px-4 pb-3 shrink-0">
         <div className="flex bg-gray-200/70 dark:bg-gray-800/70 rounded-xl p-1">
           <button
-            onClick={() => setActiveTab('pair')}
+            onClick={() => onTabChange('pair')}
             className={`flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
               activeTab === 'pair'
                 ? 'bg-white dark:bg-gray-700 text-black dark:text-white shadow-sm'
@@ -119,7 +120,7 @@ const DiagnosticScreen: React.FC<DiagnosticScreenProps> = ({ currentPage, onNavi
             Pair
           </button>
           <button
-            onClick={() => setActiveTab('group')}
+            onClick={() => onTabChange('group')}
             className={`flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
               activeTab === 'group'
                 ? 'bg-white dark:bg-gray-700 text-black dark:text-white shadow-sm'

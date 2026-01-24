@@ -11,12 +11,15 @@ import { DiagnosticType, GroupDiagnosticType, FriendProfile } from './constants'
 
 export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'dm' | 'friend-detail';
 
+type DiagnosticTabType = 'pair' | 'group';
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('profile');
   const [selectedDiagnostic, setSelectedDiagnostic] = useState<DiagnosticType | null>(null);
   const [selectedGroupDiagnostic, setSelectedGroupDiagnostic] = useState<GroupDiagnosticType | null>(null);
   const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
   const [selectedGroupMembers, setSelectedGroupMembers] = useState<FriendProfile[]>([]);
+  const [diagnosticTab, setDiagnosticTab] = useState<DiagnosticTabType>('pair');
 
   const handleSelectDiagnostic = (diagnostic: DiagnosticType) => {
     setSelectedDiagnostic(diagnostic);
@@ -95,6 +98,8 @@ const App: React.FC = () => {
             onNavigate={setCurrentPage}
             onSelectDiagnostic={handleSelectDiagnostic}
             onSelectGroupDiagnostic={handleSelectGroupDiagnostic}
+            activeTab={diagnosticTab}
+            onTabChange={setDiagnosticTab}
           />
         );
       case 'group-diagnostic-detail':
@@ -108,7 +113,7 @@ const App: React.FC = () => {
             />
           );
         }
-        return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} onSelectGroupDiagnostic={handleSelectGroupDiagnostic} />;
+        return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} onSelectGroupDiagnostic={handleSelectGroupDiagnostic} activeTab={diagnosticTab} onTabChange={setDiagnosticTab} />;
       case 'diagnostic-detail':
         if (selectedDiagnostic) {
           return (
@@ -120,7 +125,7 @@ const App: React.FC = () => {
             />
           );
         }
-        return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} />;
+        return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} onSelectGroupDiagnostic={handleSelectGroupDiagnostic} activeTab={diagnosticTab} onTabChange={setDiagnosticTab} />;
       case 'dm':
         return (
           <DMScreen
