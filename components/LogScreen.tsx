@@ -39,22 +39,28 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
 
   useEffect(() => {
     // スクロール位置を初期インデックスに設定
-    if (scrollRef.current && scrollRef.current.children[currentIndex]) {
-      const item = scrollRef.current.children[currentIndex] as HTMLElement;
-      const itemCenter = item.offsetLeft + item.offsetWidth / 2;
-      const containerCenter = scrollRef.current.offsetWidth / 2;
-      scrollRef.current.scrollLeft = itemCenter - containerCenter;
+    if (scrollRef.current && currentIndex > 0) {
+      const items = scrollRef.current.children;
+      if (items[currentIndex]) {
+        const item = items[currentIndex] as HTMLElement;
+        // scroll-snap-align: center なので、アイテムの中心が画面中央に来るようにスクロール
+        const itemLeft = item.offsetLeft;
+        const itemWidth = item.offsetWidth;
+        const containerWidth = scrollRef.current.offsetWidth;
+        scrollRef.current.scrollLeft = itemLeft - (containerWidth - itemWidth) / 2;
+      }
     }
   }, []);
 
   const handleScroll = () => {
     if (scrollRef.current) {
+      const items = Array.from(scrollRef.current.children) as HTMLElement[];
       const containerCenter = scrollRef.current.scrollLeft + scrollRef.current.offsetWidth / 2;
+
       let closestIndex = 0;
       let closestDistance = Infinity;
 
-      Array.from(scrollRef.current.children).forEach((child, idx) => {
-        const item = child as HTMLElement;
+      items.forEach((item, idx) => {
         const itemCenter = item.offsetLeft + item.offsetWidth / 2;
         const distance = Math.abs(containerCenter - itemCenter);
         if (distance < closestDistance) {
@@ -70,14 +76,18 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
   };
 
   const goToIndex = (index: number) => {
-    if (scrollRef.current && scrollRef.current.children[index] && index >= 0 && index < images.length) {
-      const item = scrollRef.current.children[index] as HTMLElement;
-      const itemCenter = item.offsetLeft + item.offsetWidth / 2;
-      const containerCenter = scrollRef.current.offsetWidth / 2;
-      scrollRef.current.scrollTo({
-        left: itemCenter - containerCenter,
-        behavior: 'smooth',
-      });
+    if (scrollRef.current && index >= 0 && index < images.length) {
+      const items = scrollRef.current.children;
+      if (items[index]) {
+        const item = items[index] as HTMLElement;
+        const itemLeft = item.offsetLeft;
+        const itemWidth = item.offsetWidth;
+        const containerWidth = scrollRef.current.offsetWidth;
+        scrollRef.current.scrollTo({
+          left: itemLeft - (containerWidth - itemWidth) / 2,
+          behavior: 'smooth',
+        });
+      }
     }
   };
 
@@ -111,32 +121,39 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ images, initialIndex, title, 
         ref={scrollRef}
         onScroll={handleScroll}
         onClick={handleClose}
-        className="h-full w-full overflow-x-auto no-scrollbar flex items-center gap-4"
+        className="h-full w-full overflow-x-auto no-scrollbar flex items-center"
         style={{
           scrollSnapType: 'x mandatory',
-          paddingLeft: 'calc(50% - 40%)',
-          paddingRight: 'calc(50% - 40%)',
         }}
       >
-        {images.map((img, idx) => (
-          <div
-            key={idx}
-            className="h-full flex-shrink-0 flex items-center justify-center"
-            style={{
-              width: '80%',
-              scrollSnapAlign: 'center',
-            }}
-          >
-            <img
-              src={img}
-              alt=""
-              onClick={(e) => e.stopPropagation()}
-              className={`max-h-[70vh] w-full object-contain rounded-2xl transition-transform duration-500 ${
-                isVisible ? 'scale-100' : 'scale-90'
-              }`}
-            />
-          </div>
-        ))}
+        {images.map((img, idx) => {
+          const isFirst = idx === 0;
+          const isLast = idx === images.length - 1;
+          const slideWidth = 75; // percentage of container width
+
+          return (
+            <div
+              key={idx}
+              className="h-full flex-shrink-0 flex items-center justify-center"
+              style={{
+                width: `${slideWidth}%`,
+                scrollSnapAlign: 'center',
+                boxSizing: 'content-box',
+                paddingLeft: isFirst ? `calc(50% - ${slideWidth / 2}%)` : '8px',
+                paddingRight: isLast ? `calc(50% - ${slideWidth / 2}%)` : '8px',
+              }}
+            >
+              <img
+                src={img}
+                alt=""
+                onClick={(e) => e.stopPropagation()}
+                className={`max-h-[70vh] w-full object-contain rounded-2xl transition-transform duration-500 ${
+                  isVisible ? 'scale-100' : 'scale-90'
+                }`}
+              />
+            </div>
+          );
+        })}
       </div>
 
       {/* ナビゲーションボタン */}
