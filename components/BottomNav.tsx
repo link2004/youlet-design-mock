@@ -16,7 +16,10 @@ const NAV_ITEMS: { icon: typeof Layout; label: string; page: PageType }[] = [
 
 const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate }) => {
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
+    <div
+      className="absolute left-1/2 -translate-x-1/2 z-30"
+      style={{ bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem))' }}
+    >
       <div
         className="flex items-center gap-6 px-6 py-3 bg-neutral-300/60 dark:bg-neutral-700/60 rounded-full shadow-lg"
         style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}

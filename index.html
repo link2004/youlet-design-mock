@@ -39,6 +39,15 @@
       body {
         background-color: #f3f3f3; /* Outer background for desktop view */
       }
+      /* PWA safe area support */
+      @supports (padding-bottom: env(safe-area-inset-bottom)) {
+        .safe-area-bottom {
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+        .safe-area-bottom-margin {
+          margin-bottom: env(safe-area-inset-bottom);
+        }
+      }
       /* Hide scrollbar for Chrome, Safari and Opera */
       .no-scrollbar::-webkit-scrollbar {
           display: none;

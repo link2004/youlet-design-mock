@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useMobile } from '../contexts/MobileContext';
 
 interface IPhoneMockupProps {
   children: React.ReactNode;
 }
 
 const IPhoneMockup: React.FC<IPhoneMockupProps> = ({ children }) => {
-  const [isMobile, setIsMobile] = useState(false);
+  const { isMobile } = useMobile();
 
-  useEffect(() => {
-    const checkMobile = () => {
-      // Check if viewport width is mobile-sized (less than 768px)
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Mobile view - no mockup frame, full screen
+  // Mobile view - no mockup frame, full screen with safe area support
   if (isMobile) {
     return (
-      <div className="w-full h-screen bg-cream overflow-hidden">
+      <div
+        className="w-full bg-cream overflow-hidden"
+        style={{
+          height: '100dvh',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          paddingLeft: 'env(safe-area-inset-left, 0px)',
+          paddingRight: 'env(safe-area-inset-right, 0px)',
+        }}
+      >
         {children}
       </div>
     );

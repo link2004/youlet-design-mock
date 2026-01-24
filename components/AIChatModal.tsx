@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { MATCH_CANDIDATE, AI_CONVERSATION, USER_DATA } from '../constants';
+import StatusBar from './StatusBar';
 
 interface AIChatModalProps {
   onClose: () => void;
@@ -20,28 +21,7 @@ const AIChatModal: React.FC<AIChatModalProps> = ({ onClose }) => {
 
   return (
     <div className="absolute inset-0 bg-cream dark:bg-neutral-900 z-40 flex flex-col animate-slide-up">
-      {/* Status Bar */}
-      <div className="flex justify-between items-center px-6 pt-[18px] pb-2 text-black dark:text-white font-semibold text-sm shrink-0 bg-white dark:bg-neutral-800">
-        <span className="w-12">13:42</span>
-        <div className="flex-1" />
-        <div className="flex items-center gap-1.5 w-20 justify-end">
-          <div className="flex items-end gap-[2px] h-3">
-            <div className="w-[3px] h-[4px] bg-black dark:bg-white rounded-[1px]" />
-            <div className="w-[3px] h-[6px] bg-black dark:bg-white rounded-[1px]" />
-            <div className="w-[3px] h-[8px] bg-black dark:bg-white rounded-[1px]" />
-            <div className="w-[3px] h-[11px] bg-black dark:bg-white rounded-[1px]" />
-          </div>
-          <svg className="w-4 h-3 text-black dark:text-white" viewBox="0 0 16 12" fill="currentColor">
-            <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM3.5 7.5c2.5-2.5 6.5-2.5 9 0l-1 1c-1.9-1.9-5.1-1.9-7 0l-1-1zM1 5c3.9-3.9 10.1-3.9 14 0l-1 1c-3.3-3.3-8.7-3.3-12 0L1 5z"/>
-          </svg>
-          <div className="flex items-center gap-0.5">
-            <div className="w-6 h-[11px] border-[1.5px] border-black dark:border-white rounded-[3px] relative flex items-center p-[1.5px]">
-              <div className="h-full bg-black dark:bg-white rounded-[1px]" style={{ width: '80%' }} />
-            </div>
-            <div className="w-[3px] h-[5px] bg-black dark:bg-white rounded-r-[1px] -ml-[1px]" />
-          </div>
-        </div>
-      </div>
+      <StatusBar className="bg-white dark:bg-neutral-800" />
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
