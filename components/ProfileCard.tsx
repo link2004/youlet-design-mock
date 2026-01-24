@@ -1,13 +1,14 @@
 import React from 'react';
-import { MapPin, X } from 'lucide-react';
+import { MapPin, X, Trophy } from 'lucide-react';
 import { MATCH_CANDIDATE, SHARED_INTERESTS } from '../constants';
 
 interface ProfileCardProps {
   onAccept: () => void;
   onClose: () => void;
+  onRankingClick: () => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose, onRankingClick }) => {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-40 bg-black/50 animate-fade-in">
       <div className="relative bg-white dark:bg-neutral-800 rounded-3xl p-6 mx-6 shadow-2xl max-w-[280px] w-full animate-scale-in">
@@ -76,6 +77,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onAccept, onClose }) => {
         >
           View AI-Chat History 💬
         </button>
+
+        {/* Ranking Icon */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={onRankingClick}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+          >
+            <Trophy className="w-4 h-4" />
+            <span>Past Rankings</span>
+          </button>
+        </div>
       </div>
     </div>
   );

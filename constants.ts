@@ -84,3 +84,52 @@ export const AI_CONVERSATION: Array<{
   { sender: 'user', message: "Nice choice! I've been wanting to try Fujifilm." },
   { sender: 'match', message: "You should! Want to go on a photo walk sometime?" },
 ];
+
+// 過去の相性診断結果
+export const PAST_COMPATIBILITY_RESULTS = [
+  {
+    id: 1,
+    name: "Yuki",
+    age: 22,
+    avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_12.png",
+    compatibilityScore: 92,
+    sharedInterests: 4,
+    date: "2026-01-20",
+  },
+  {
+    id: 2,
+    name: "Hana",
+    age: 24,
+    avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_8.png",
+    compatibilityScore: 87,
+    sharedInterests: 3,
+    date: "2026-01-18",
+  },
+  {
+    id: 3,
+    name: "Sora",
+    age: 21,
+    avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_5.png",
+    compatibilityScore: 85,
+    sharedInterests: 3,
+    date: "2026-01-15",
+  },
+  {
+    id: 4,
+    name: "Mei",
+    age: 23,
+    avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_3.png",
+    compatibilityScore: 78,
+    sharedInterests: 2,
+    date: "2026-01-12",
+  },
+  {
+    id: 5,
+    name: "Rina",
+    age: 20,
+    avatar: "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_1.png",
+    compatibilityScore: 72,
+    sharedInterests: 2,
+    date: "2026-01-10",
+  },
+];

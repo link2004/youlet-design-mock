@@ -3,6 +3,7 @@ import { USER_DATA, MATCH_CANDIDATE, SHARED_INTERESTS } from '../constants';
 import BottomNav from './BottomNav';
 import ProfileCard from './ProfileCard';
 import AIChatModal from './AIChatModal';
+import CompatibilityRankingModal from './CompatibilityRankingModal';
 import { PageType } from '../App';
 
 const DIALOGUE_LINES = [
@@ -33,6 +34,7 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
   const [isTyping, setIsTyping] = useState(true);
   const [matchingState, setMatchingState] = useState<MatchingState>('idle');
   const [dialogueCount, setDialogueCount] = useState(0);
+  const [showRanking, setShowRanking] = useState(false);
 
   // Trigger notification after 3 dialogue lines
   useEffect(() => {
@@ -112,6 +114,14 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
 
   const handleChatClose = () => {
     setMatchingState('completed');
+  };
+
+  const handleRankingOpen = () => {
+    setShowRanking(true);
+  };
+
+  const handleRankingClose = () => {
+    setShowRanking(false);
   };
 
   // Reset after completed state
@@ -229,7 +239,12 @@ const HeartScreen: React.FC<HeartScreenProps> = ({ currentPage, onNavigate }) =>
 
       {/* Profile Card Overlay */}
       {matchingState === 'showingCard' && (
-        <ProfileCard onAccept={handleAccept} onClose={handleDecline} />
+        <ProfileCard onAccept={handleAccept} onClose={handleDecline} onRankingClick={handleRankingOpen} />
+      )}
+
+      {/* Compatibility Ranking Modal */}
+      {showRanking && (
+        <CompatibilityRankingModal onClose={handleRankingClose} />
       )}
 
       {/* AI Chat Modal */}
