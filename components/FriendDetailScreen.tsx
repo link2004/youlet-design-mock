@@ -61,20 +61,20 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
         <h2 className="text-white font-serif italic font-black text-2xl mt-4">{friend.name}</h2>
 
         {/* Action Buttons */}
-        <div className="flex flex-col gap-3 mt-6 w-full max-w-[220px]">
+        <div className="flex flex-col gap-3 mt-6 w-full max-w-[260px]">
           <button
             onClick={onDM}
-            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 active:scale-95 transition-transform"
+            className="flex items-center gap-4 w-full py-4 px-8 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 active:scale-95 transition-transform"
           >
-            <MessageCircle className="w-6 h-6 text-white" />
+            <MessageCircle className="w-6 h-6 text-white shrink-0" />
             <span className="text-lg text-white font-bold">Message</span>
           </button>
 
           <button
             onClick={onDiagnostic}
-            className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-2xl bg-orange-400 shadow-lg active:scale-95 transition-transform"
+            className="flex items-center gap-4 w-full py-4 px-8 rounded-2xl bg-orange-400 shadow-lg active:scale-95 transition-transform"
           >
-            <Heart className="w-6 h-6 text-white" />
+            <Heart className="w-6 h-6 text-white shrink-0" />
             <span className="text-lg text-white font-bold">Compatibility</span>
           </button>
         </div>
