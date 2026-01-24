@@ -523,56 +523,6 @@ export const GROUP_DIAGNOSTIC_TYPES: GroupDiagnosticType[] = [
   },
 ];
 
-// AI学習用質問（MBTI形式の5択）
-export interface ProfileQuestion {
-  id: string;
-  question: string;
-  category: 'personality' | 'lifestyle' | 'values' | 'preferences' | 'social';
-}
-
-// 回答選択肢（5段階）
-export const ANSWER_OPTIONS = [
-  { value: 'strongly_disagree', position: 1 },
-  { value: 'disagree', position: 2 },
-  { value: 'neutral', position: 3 },
-  { value: 'agree', position: 4 },
-  { value: 'strongly_agree', position: 5 },
-] as const;
-
-export type AnswerValue = typeof ANSWER_OPTIONS[number]['value'];
-
-export const PROFILE_QUESTIONS: ProfileQuestion[] = [
-  // Personality - 性格
-  { id: 'q1', question: 'I prefer deep conversations over small talk.', category: 'personality' },
-  { id: 'q2', question: 'I often think about the meaning of life.', category: 'personality' },
-  { id: 'q3', question: 'I am usually the one to start conversations.', category: 'personality' },
-  { id: 'q4', question: 'I stay calm under pressure.', category: 'personality' },
-
-  // Lifestyle - ライフスタイル
-  { id: 'q5', question: 'I am more of a night owl than a morning person.', category: 'lifestyle' },
-  { id: 'q6', question: 'I prefer staying home over going out.', category: 'lifestyle' },
-  { id: 'q7', question: 'I like to plan things in advance.', category: 'lifestyle' },
-  { id: 'q8', question: 'I enjoy trying new foods and cuisines.', category: 'lifestyle' },
-
-  // Values - 価値観
-  { id: 'q9', question: 'Honesty is more important than kindness.', category: 'values' },
-  { id: 'q10', question: 'Career success matters a lot to me.', category: 'values' },
-  { id: 'q11', question: 'I believe in love at first sight.', category: 'values' },
-  { id: 'q12', question: 'Family is my top priority.', category: 'values' },
-
-  // Preferences - 好み
-  { id: 'q13', question: 'I prefer texting over phone calls.', category: 'preferences' },
-  { id: 'q14', question: 'I like receiving gifts as a sign of affection.', category: 'preferences' },
-  { id: 'q15', question: 'Quality time together is important to me.', category: 'preferences' },
-  { id: 'q16', question: 'I enjoy spontaneous adventures.', category: 'preferences' },
-
-  // Social - 社交
-  { id: 'q17', question: 'I feel energized after social gatherings.', category: 'social' },
-  { id: 'q18', question: 'I have a small but close circle of friends.', category: 'social' },
-  { id: 'q19', question: 'I enjoy meeting new people.', category: 'social' },
-  { id: 'q20', question: 'I am comfortable being the center of attention.', category: 'social' },
-];
-
 // DM チャットリスト（友達一覧の画像を使用）
 export const DM_CHATS = [
   {

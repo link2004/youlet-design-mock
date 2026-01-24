@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Settings, ChevronLeft, Star, Moon, Sun } from 'lucide-react';
-import { MENU_ITEMS, AnswerValue } from '../constants';
+import { MENU_ITEMS } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
 import ProfileCardFlip from './ProfileCardFlip';
-import ProfileQuestions from './ProfileQuestions';
 import { PageType } from '../App';
 
 interface PhoneScreenProps {
@@ -20,11 +19,6 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   const [showSettings, setShowSettings] = useState(false);
   const [showElements, setShowElements] = useState(false);
   const [showStory, setShowStory] = useState(false);
-  const [questionAnswers, setQuestionAnswers] = useState<Record<string, AnswerValue>>({});
-
-  const handleAnswerChange = (questionId: string, answer: AnswerValue) => {
-    setQuestionAnswers(prev => ({ ...prev, [questionId]: answer }));
-  };
 
   useEffect(() => {
     if (darkMode) {
@@ -104,12 +98,6 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 </span>
               </button>
             </div>
-
-            {/* AI Learning Questions */}
-            <ProfileQuestions
-              answers={questionAnswers}
-              onAnswerChange={handleAnswerChange}
-            />
           </div>
         </div>
 
