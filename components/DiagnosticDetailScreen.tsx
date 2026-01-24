@@ -1386,14 +1386,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
                           key={index}
                           person={selectedGroupMembers![index] || null}
                           isPlaceholder={!selectedGroupMembers![index]}
-                          onClick={() => {
-                            if (selectedGroupMembers![index]) {
-                              handleRemoveGroupMember(index);
-                            } else if (selectedGroupMembers!.length < 8) {
-                              setSelectedSlot(index);
-                              setIsSheetOpen(true);
-                            }
-                          }}
+                          onClick={() => setIsSheetOpen(true)}
                           size="small"
                         />
                       ))}
@@ -1405,14 +1398,7 @@ const DiagnosticDetailScreen: React.FC<DiagnosticDetailScreenProps> = (props) =>
                             key={index}
                             person={selectedGroupMembers![index] || null}
                             isPlaceholder={!selectedGroupMembers![index]}
-                            onClick={() => {
-                              if (selectedGroupMembers![index]) {
-                                handleRemoveGroupMember(index);
-                              } else if (selectedGroupMembers!.length < 8) {
-                                setSelectedSlot(index);
-                                setIsSheetOpen(true);
-                              }
-                            }}
+                            onClick={() => setIsSheetOpen(true)}
                             size="small"
                           />
                         ))}
