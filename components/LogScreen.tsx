@@ -38,6 +38,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
   const [text, setText] = useState(initialText);
   const [images, setImages] = useState(activity.images);
   const [actionSheetTarget, setActionSheetTarget] = useState<number | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -62,13 +63,23 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
     setActionSheetTarget(idx);
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteRequest = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleDeleteConfirm = () => {
     if (actionSheetTarget === null) return;
     const newImages = images.filter((_, i) => i !== actionSheetTarget);
     setImages(newImages);
     if (currentIndex >= newImages.length && newImages.length > 0) {
       setCurrentIndex(newImages.length - 1);
     }
+    setShowConfirmDialog(false);
+    setActionSheetTarget(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowConfirmDialog(false);
     setActionSheetTarget(null);
   };
 
@@ -157,7 +168,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
       </div>
 
       {/* Swift風アクションシート */}
-      {actionSheetTarget !== null && (
+      {actionSheetTarget !== null && !showConfirmDialog && (
         <div
           className="absolute inset-0 z-60 flex items-end justify-center"
           onClick={() => setActionSheetTarget(null)}
@@ -167,13 +178,13 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
 
           {/* アクションシート */}
           <div
-            className="relative w-full px-2 pb-2 animate-slide-up"
+            className="relative w-full px-2 pb-2"
             onClick={(e) => e.stopPropagation()}
           >
             {/* メインアクション */}
             <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-hidden mb-2">
               <button
-                onClick={handleDeleteImage}
+                onClick={handleDeleteRequest}
                 className="w-full py-4 text-red-500 text-lg font-normal active:bg-neutral-200 dark:active:bg-neutral-700"
               >
                 写真を削除
@@ -187,6 +198,49 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
                 className="w-full py-4 text-blue-500 text-lg font-semibold active:bg-neutral-100 dark:active:bg-neutral-700"
               >
                 キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 確認ダイアログ */}
+      {showConfirmDialog && (
+        <div
+          className="absolute inset-0 z-60 flex items-center justify-center"
+          onClick={handleDeleteCancel}
+        >
+          {/* 背景オーバーレイ */}
+          <div className="absolute inset-0 bg-black/40" />
+
+          {/* ダイアログ */}
+          <div
+            className="relative bg-white dark:bg-neutral-800 rounded-2xl w-72 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* タイトルとメッセージ */}
+            <div className="px-4 pt-5 pb-4 text-center">
+              <h3 className="text-black dark:text-white font-semibold text-lg mb-1">
+                写真を削除
+              </h3>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+                この写真を削除してもよろしいですか？
+              </p>
+            </div>
+
+            {/* ボタン */}
+            <div className="border-t border-neutral-200 dark:border-neutral-700 flex">
+              <button
+                onClick={handleDeleteCancel}
+                className="flex-1 py-3 text-blue-500 text-lg font-normal border-r border-neutral-200 dark:border-neutral-700 active:bg-neutral-100 dark:active:bg-neutral-700"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                className="flex-1 py-3 text-red-500 text-lg font-semibold active:bg-neutral-100 dark:active:bg-neutral-700"
+              >
+                削除
               </button>
             </div>
           </div>
