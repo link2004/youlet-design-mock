@@ -233,7 +233,7 @@ const DiaryEntry: React.FC<DiaryEntryProps> = ({ date, activities, onImageClick 
     <div className="mb-6">
       {/* 日付バッジ */}
       <div className="mb-3">
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-xs">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-neutral-200 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 text-xs">
           {formatDate(date)}
         </span>
       </div>
