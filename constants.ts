@@ -771,14 +771,12 @@ export interface ActivityLog {
 export const ACTIVITY_LOGS: ActivityLog[] = [
   // January 2026
   { id: '1', date: '2026-01-25', title: '学校', time: '9:00-15:00', category: 'school', images: [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop',
     'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&h=300&fit=crop',
   ] },
   { id: '2', date: '2026-01-25', title: 'バイト', time: '17:00-21:00', category: 'work', images: [
     'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=300&h=300&fit=crop',
   ] },
   { id: '3', date: '2026-01-24', title: 'ディズニー', time: '10:00-22:00', category: 'leisure', images: [
-    'https://images.unsplash.com/photo-1605167952379-c6d95b04a1ee?w=300&h=300&fit=crop',
     'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=300&h=300&fit=crop',
     'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&h=300&fit=crop',
   ] },
@@ -803,7 +801,7 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
     'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop',
   ] },
   { id: '10', date: '2026-01-20', title: '学校', time: '9:00-15:00', category: 'school', images: [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=300&h=300&fit=crop',
   ] },
   { id: '11', date: '2026-01-19', title: '買い物', time: '13:00-17:00', category: 'leisure', images: [
     'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop',
@@ -864,7 +862,7 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
     'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&h=300&fit=crop',
   ] },
   { id: '28', date: '2025-12-22', title: '学校', time: '9:00-12:00', category: 'school', images: [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=300&h=300&fit=crop',
   ] },
   { id: '29', date: '2025-12-20', title: '忘年会', time: '18:00-22:00', category: 'leisure', images: [
     'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop',
@@ -922,7 +920,7 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
     'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=300&fit=crop',
   ] },
   { id: '46', date: '2025-11-20', title: '学校', time: '9:00-15:00', category: 'school', images: [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=300&h=300&fit=crop',
   ] },
   { id: '47', date: '2025-11-19', title: 'カフェ巡り', time: '14:00-18:00', category: 'food', images: [
     'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=300&h=300&fit=crop',
