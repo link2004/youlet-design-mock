@@ -301,16 +301,23 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
+  const sensitivityConfig = SENSITIVITY_CONFIG[activity.sensitivity as keyof typeof SENSITIVITY_CONFIG];
+
   return (
     <div
       className="border-b border-neutral-200 dark:border-neutral-800 pb-4 mb-4 cursor-pointer active:bg-neutral-100 dark:active:bg-neutral-800 -mx-4 px-4 transition-colors"
       onClick={() => onClick(activity)}
     >
-      {/* 日付 */}
-      <div className="mb-1">
+      {/* 日付とsensitivityラベル */}
+      <div className="flex items-center gap-2 mb-1">
         <span className="text-sm text-neutral-500 dark:text-neutral-400">
           {formatDateShort(activity.date)}
         </span>
+        {sensitivityConfig && (
+          <span className={`text-xs px-2 py-0.5 rounded-full ${sensitivityConfig.labelColor}`}>
+            {sensitivityConfig.label}
+          </span>
+        )}
       </div>
 
       {/* タイトル */}
@@ -365,25 +372,28 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
   );
 };
 
-// イベントバーの色パレット
-const EVENT_COLORS = [
-  'bg-orange-400',
-  'bg-blue-400',
-  'bg-green-400',
-  'bg-red-400',
-  'bg-purple-400',
-  'bg-teal-400',
-  'bg-pink-400',
-  'bg-indigo-400',
-];
+// sensitivityに基づく色とラベル
+const SENSITIVITY_CONFIG = {
+  public: {
+    color: 'bg-green-500',
+    label: '公開OK',
+    labelColor: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  },
+  private: {
+    color: 'bg-blue-500',
+    label: 'プライベート',
+    labelColor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  },
+  sensitive: {
+    color: 'bg-red-500',
+    label: 'センシティブ',
+    labelColor: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  },
+};
 
-// アクティビティIDから色を決定（擬似的なランダム）
-const getEventColor = (activityId: string): string => {
-  let hash = 0;
-  for (let i = 0; i < activityId.length; i++) {
-    hash = activityId.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return EVENT_COLORS[Math.abs(hash) % EVENT_COLORS.length];
+// sensitivityから色を取得
+const getEventColor = (sensitivity: string): string => {
+  return SENSITIVITY_CONFIG[sensitivity as keyof typeof SENSITIVITY_CONFIG]?.color || 'bg-gray-400';
 };
 
 // カレンダー用のヘルパー関数
@@ -565,7 +575,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ activities, onDateClick }) 
                 {visibleActivities.map((activity) => (
                   <div
                     key={activity.id}
-                    className={`${getEventColor(activity.id)} text-white text-[8px] px-1 py-0.5 rounded truncate text-left w-full`}
+                    className={`${getEventColor(activity.sensitivity)} text-white text-[8px] px-1 py-0.5 rounded truncate text-left w-full`}
                     title={activity.title}
                   >
                     {activity.title}

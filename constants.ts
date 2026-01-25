@@ -758,6 +758,8 @@ export const DM_MESSAGES_BY_CHAT: Record<string, DMMessage[]> = {
 };
 
 // 行動ログ型（JSONデータ形式に対応）
+export type Sensitivity = 'public' | 'private' | 'sensitive';
+
 export interface ActivityLog {
   id: string;
   user_id: string;
@@ -773,5 +775,6 @@ export interface ActivityLog {
   analysis_version: number;
   created_at: string;
   updated_at: string;
+  sensitivity: Sensitivity;
 }
 
