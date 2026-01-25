@@ -17,12 +17,13 @@ const formatDateLong = (dateStr: string): string => {
   return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
-// 日付を短い形式でフォーマット（例: "25 Jan" - 投稿カード用）
+// 日付を短い形式でフォーマット（例: "Aug 3, 2025" - 投稿カード用）
 const formatDateShort = (dateStr: string): string => {
   const date = new Date(dateStr);
   const day = date.getDate();
+  const year = date.getFullYear();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${day} ${months[date.getMonth()]}`;
+  return `${months[date.getMonth()]} ${day}, ${year}`;
 };
 
 // インスタ風詳細ビューアー
