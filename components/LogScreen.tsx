@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { X, Calendar, List, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { X, Calendar, List, ChevronLeft } from 'lucide-react';
 import { ActivityLog } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
@@ -426,12 +426,12 @@ const groupActivitiesByDate = (activities: DisplayActivity[]): Map<string, Displ
 interface CalendarViewProps {
   activities: DisplayActivity[];
   onDateClick: (date: string) => void;
+  currentYear: number;
+  currentMonth: number;
 }
 
-const CalendarView: React.FC<CalendarViewProps> = ({ activities, onDateClick }) => {
+const CalendarView: React.FC<CalendarViewProps> = ({ activities, onDateClick, currentYear, currentMonth }) => {
   const today = new Date();
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
 
   // アクティビティを日付でグループ化
   const activitiesByDate = useMemo(() => groupActivitiesByDate(activities), [activities]);
@@ -444,24 +444,6 @@ const CalendarView: React.FC<CalendarViewProps> = ({ activities, onDateClick }) 
 
   // 6週間分のセルを生成
   const totalCells = 42; // 6週 x 7日
-
-  const goToPrevMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-    }
-  };
-
-  const goToNextMonth = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-    }
-  };
 
   const isToday = (day: number): boolean => {
     return (
@@ -480,27 +462,6 @@ const CalendarView: React.FC<CalendarViewProps> = ({ activities, onDateClick }) 
 
   return (
     <div className="flex flex-col h-full">
-      {/* カレンダーヘッダー */}
-      <div className="flex items-center justify-between px-4 py-3">
-        <span className="text-black dark:text-white font-semibold text-lg">
-          {formatMonthYear(currentYear, currentMonth)}
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={goToPrevMonth}
-            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700"
-          >
-            <ChevronLeft size={20} className="text-black dark:text-white" />
-          </button>
-          <button
-            onClick={goToNextMonth}
-            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700"
-          >
-            <ChevronRight size={20} className="text-black dark:text-white" />
-          </button>
-        </div>
-      </div>
-
       {/* 曜日ヘッダー */}
       <div className="grid grid-cols-7 border-b border-neutral-200 dark:border-neutral-800">
         {weekDays.map((day, idx) => (
@@ -602,7 +563,60 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
   const [selectedActivity, setSelectedActivity] = useState<DisplayActivity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [scrollToDate, setScrollToDate] = useState<string | null>(null);
+
+  // 月の状態を管理
+  const today = new Date();
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+
+  // スワイプ用のref
+  const headerRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const listContainerRef = useRef<HTMLDivElement>(null);
+  const dateRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  const goToPrevMonth = useCallback(() => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  }, [currentMonth, currentYear]);
+
+  const goToNextMonth = useCallback(() => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  }, [currentMonth, currentYear]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    const diff = touchStartX.current - touchEndX.current;
+    const threshold = 50; // スワイプと判定する最小距離
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        // 左にスワイプ → 次の月
+        goToNextMonth();
+      } else {
+        // 右にスワイプ → 前の月
+        goToPrevMonth();
+      }
+    }
+  }, [goToNextMonth, goToPrevMonth]);
 
   // JSONファイルを読み込む
   useEffect(() => {
@@ -646,46 +660,75 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
 
   const toggleViewMode = () => {
     setViewMode(prev => prev === 'list' ? 'calendar' : 'list');
-    setSelectedDate(null); // ビュー切り替え時に日付選択をリセット
   };
 
   const handleDateClick = (date: string) => {
-    setSelectedDate(date);
+    // リスト表示に切り替えて、その日付までスクロール
+    setViewMode('list');
+    setScrollToDate(date);
   };
 
-  const handleBackFromDate = () => {
-    setSelectedDate(null);
-  };
+  // スクロール処理
+  useEffect(() => {
+    if (scrollToDate && viewMode === 'list' && !isLoading) {
+      // 少し遅延させてDOMが更新されるのを待つ
+      const timer = setTimeout(() => {
+        const targetRef = dateRefs.current.get(scrollToDate);
+        if (targetRef) {
+          targetRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        setScrollToDate(null);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [scrollToDate, viewMode, isLoading]);
 
-  // 選択された日付のアクティビティをフィルタリング
-  const selectedDateActivities = useMemo(() => {
-    if (!selectedDate) return [];
-    return activities.filter(a => a.date === selectedDate);
-  }, [activities, selectedDate]);
+  // 日付ごとにアクティビティをグループ化
+  const activitiesByDate = useMemo(() => {
+    const groups: { date: string; activities: DisplayActivity[] }[] = [];
+    const dateMap = new Map<string, DisplayActivity[]>();
+
+    activities.forEach(activity => {
+      const existing = dateMap.get(activity.date) || [];
+      existing.push(activity);
+      dateMap.set(activity.date, existing);
+    });
+
+    // 日付順にソート（新しい順）
+    const sortedDates = Array.from(dateMap.keys()).sort((a, b) => b.localeCompare(a));
+    sortedDates.forEach(date => {
+      groups.push({ date, activities: dateMap.get(date)! });
+    });
+
+    return groups;
+  }, [activities]);
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       <StatusBar />
 
-      {/* ヘッダー with ビュー切り替えボタン */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-200 dark:border-neutral-800">
+      {/* ヘッダー - 月表示（スワイプ対応） */}
+      <div
+        ref={headerRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 select-none"
+      >
+        <div className="w-10" /> {/* 左スペーサー */}
+        <span className="text-black dark:text-white font-semibold text-lg">
+          {formatMonthYear(currentYear, currentMonth)}
+        </span>
         <button
           onClick={toggleViewMode}
-          className="flex items-center gap-2 p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 transition-colors"
         >
           {viewMode === 'list' ? (
             <Calendar size={20} className="text-orange-400" />
           ) : (
             <List size={20} className="text-orange-400" />
           )}
-          <span className="text-sm text-black dark:text-white">
-            {viewMode === 'list' ? 'Calendar' : 'List'}
-          </span>
         </button>
-        <span className="text-sm font-medium text-black dark:text-white">
-          Activity Log
-        </span>
-        <div className="w-20" /> {/* スペーサー */}
       </div>
 
       {/* コンテンツエリア */}
@@ -694,55 +737,45 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
           <span className="text-neutral-500 dark:text-neutral-400">読み込み中...</span>
         </div>
       ) : viewMode === 'list' ? (
-        /* リストビュー */
-        <div className="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-3">
-          {activities.map(activity => (
-            <PostCard
-              key={activity.id}
-              activity={activity}
-              onClick={openEditor}
-            />
-          ))}
-        </div>
-      ) : selectedDate ? (
-        /* カレンダーから日付選択後のリストビュー */
-        <div className="flex-1 flex flex-col overflow-hidden pb-24">
-          {/* 日付ヘッダー with 戻るボタン */}
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
-            <button
-              onClick={handleBackFromDate}
-              className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700"
+        /* リストビュー - 日付ごとにグループ化 */
+        <div ref={listContainerRef} className="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-3">
+          {activitiesByDate.map(({ date, activities: dateActivities }) => (
+            <div
+              key={date}
+              ref={(el) => {
+                if (el) dateRefs.current.set(date, el);
+              }}
             >
-              <ChevronLeft size={24} className="text-black dark:text-white" />
-            </button>
-            <span className="text-black dark:text-white font-semibold">
-              {formatDateLong(selectedDate)}
-            </span>
-          </div>
-
-          {/* その日のアクティビティリスト */}
-          <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-3">
-            {selectedDateActivities.length > 0 ? (
-              selectedDateActivities.map(activity => (
+              {/* 日付ヘッダー */}
+              <div className="sticky top-0 bg-cream dark:bg-black py-2 -mx-4 px-4 z-10">
+                <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                  {formatDateLong(date)}
+                </span>
+              </div>
+              {/* その日のアクティビティ */}
+              {dateActivities.map(activity => (
                 <PostCard
                   key={activity.id}
                   activity={activity}
                   onClick={openEditor}
                 />
-              ))
-            ) : (
-              <div className="flex items-center justify-center h-32 text-neutral-500 dark:text-neutral-400">
-                この日の記録はありません
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ))}
         </div>
       ) : (
         /* カレンダービュー */
-        <div className="flex-1 overflow-hidden pb-24">
+        <div
+          className="flex-1 overflow-hidden pb-24"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <CalendarView
             activities={activities}
             onDateClick={handleDateClick}
+            currentYear={currentYear}
+            currentMonth={currentMonth}
           />
         </div>
       )}
