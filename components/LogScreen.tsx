@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { X, Calendar, List, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ActivityLog } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
@@ -360,10 +360,236 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
   );
 };
 
+// イベントバーの色パレット
+const EVENT_COLORS = [
+  'bg-orange-400',
+  'bg-blue-400',
+  'bg-green-400',
+  'bg-red-400',
+  'bg-purple-400',
+  'bg-teal-400',
+  'bg-pink-400',
+  'bg-indigo-400',
+];
+
+// アクティビティIDから色を決定（擬似的なランダム）
+const getEventColor = (activityId: string): string => {
+  let hash = 0;
+  for (let i = 0; i < activityId.length; i++) {
+    hash = activityId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return EVENT_COLORS[Math.abs(hash) % EVENT_COLORS.length];
+};
+
+// カレンダー用のヘルパー関数
+const getDaysInMonth = (year: number, month: number): number => {
+  return new Date(year, month + 1, 0).getDate();
+};
+
+const getFirstDayOfMonth = (year: number, month: number): number => {
+  return new Date(year, month, 1).getDay();
+};
+
+const formatMonthYear = (year: number, month: number): string => {
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return `${months[month]} ${year}`;
+};
+
+// 日付をキーとしてアクティビティをグループ化
+const groupActivitiesByDate = (activities: DisplayActivity[]): Map<string, DisplayActivity[]> => {
+  const map = new Map<string, DisplayActivity[]>();
+  activities.forEach(activity => {
+    const dateKey = activity.date; // "2026-01-15" format
+    const existing = map.get(dateKey) || [];
+    existing.push(activity);
+    map.set(dateKey, existing);
+  });
+  return map;
+};
+
+// カレンダービューコンポーネント
+interface CalendarViewProps {
+  activities: DisplayActivity[];
+  onEventClick: (activity: DisplayActivity) => void;
+}
+
+const CalendarView: React.FC<CalendarViewProps> = ({ activities, onEventClick }) => {
+  const today = new Date();
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+
+  // アクティビティを日付でグループ化
+  const activitiesByDate = useMemo(() => groupActivitiesByDate(activities), [activities]);
+
+  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+  const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
+
+  // 前月の日数（カレンダーの前半を埋めるため）
+  const prevMonthDays = getDaysInMonth(currentYear, currentMonth - 1);
+
+  // 6週間分のセルを生成
+  const totalCells = 42; // 6週 x 7日
+
+  const goToPrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const goToNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
+  const isToday = (day: number): boolean => {
+    return (
+      day === today.getDate() &&
+      currentMonth === today.getMonth() &&
+      currentYear === today.getFullYear()
+    );
+  };
+
+  // 日付文字列を生成（例: "2026-01-05"）
+  const formatDateKey = (year: number, month: number, day: number): string => {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };
+
+  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* カレンダーヘッダー */}
+      <div className="flex items-center justify-between px-4 py-3">
+        <span className="text-black dark:text-white font-semibold text-lg">
+          {formatMonthYear(currentYear, currentMonth)}
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={goToPrevMonth}
+            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700"
+          >
+            <ChevronLeft size={20} className="text-black dark:text-white" />
+          </button>
+          <button
+            onClick={goToNextMonth}
+            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700"
+          >
+            <ChevronRight size={20} className="text-black dark:text-white" />
+          </button>
+        </div>
+      </div>
+
+      {/* 曜日ヘッダー */}
+      <div className="grid grid-cols-7 border-b border-neutral-200 dark:border-neutral-800">
+        {weekDays.map((day, idx) => (
+          <div
+            key={day}
+            className={`py-2 text-center text-xs font-medium ${
+              idx === 0 ? 'text-red-400' : idx === 6 ? 'text-blue-400' : 'text-neutral-500 dark:text-neutral-400'
+            }`}
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* カレンダーグリッド */}
+      <div className="flex-1 grid grid-cols-7 grid-rows-6">
+        {Array.from({ length: totalCells }, (_, cellIndex) => {
+          let day: number;
+          let isCurrentMonth = true;
+          let cellYear = currentYear;
+          let cellMonth = currentMonth;
+
+          if (cellIndex < firstDay) {
+            // 前月の日
+            day = prevMonthDays - firstDay + cellIndex + 1;
+            isCurrentMonth = false;
+            cellMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            cellYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+          } else if (cellIndex >= firstDay + daysInMonth) {
+            // 次月の日
+            day = cellIndex - firstDay - daysInMonth + 1;
+            isCurrentMonth = false;
+            cellMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+            cellYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+          } else {
+            // 今月の日
+            day = cellIndex - firstDay + 1;
+          }
+
+          const dateKey = formatDateKey(cellYear, cellMonth, day);
+          const dayActivities = activitiesByDate.get(dateKey) || [];
+          const maxVisibleEvents = 3;
+          const visibleActivities = dayActivities.slice(0, maxVisibleEvents);
+          const remainingCount = dayActivities.length - maxVisibleEvents;
+          const dayOfWeek = cellIndex % 7;
+
+          return (
+            <div
+              key={cellIndex}
+              className={`border-b border-r border-neutral-100 dark:border-neutral-800 p-0.5 min-h-[60px] ${
+                !isCurrentMonth ? 'bg-neutral-50 dark:bg-neutral-900/50' : ''
+              }`}
+            >
+              {/* 日付 */}
+              <div className="flex justify-center mb-0.5">
+                <span
+                  className={`text-xs w-5 h-5 flex items-center justify-center ${
+                    isToday(day) && isCurrentMonth
+                      ? 'bg-orange-400 text-white rounded-full font-semibold'
+                      : isCurrentMonth
+                      ? dayOfWeek === 0 ? 'text-red-400' : dayOfWeek === 6 ? 'text-blue-400' : 'text-black dark:text-white'
+                      : 'text-neutral-300 dark:text-neutral-600'
+                  }`}
+                >
+                  {day}
+                </span>
+              </div>
+
+              {/* イベントバー */}
+              <div className="flex flex-col gap-0.5">
+                {visibleActivities.map((activity, idx) => (
+                  <button
+                    key={activity.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEventClick(activity);
+                    }}
+                    className={`${getEventColor(activity.id)} text-white text-[8px] px-1 py-0.5 rounded truncate text-left w-full hover:opacity-80 active:opacity-60`}
+                    title={activity.title}
+                  >
+                    {activity.title}
+                  </button>
+                ))}
+                {remainingCount > 0 && (
+                  <span className="text-[8px] text-neutral-500 dark:text-neutral-400 px-1">
+                    +{remainingCount}
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+type ViewMode = 'list' | 'calendar';
+
 const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
   const [activities, setActivities] = useState<DisplayActivity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<DisplayActivity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   // JSONファイルを読み込む
   useEffect(() => {
@@ -405,26 +631,60 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
     setSelectedActivity(null);
   };
 
+  const toggleViewMode = () => {
+    setViewMode(prev => prev === 'list' ? 'calendar' : 'list');
+  };
+
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       <StatusBar />
 
-      {/* 投稿一覧 */}
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-3">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <span className="text-neutral-500 dark:text-neutral-400">読み込み中...</span>
-          </div>
-        ) : (
-          activities.map(activity => (
+      {/* ヘッダー with ビュー切り替えボタン */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-200 dark:border-neutral-800">
+        <button
+          onClick={toggleViewMode}
+          className="flex items-center gap-2 p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 transition-colors"
+        >
+          {viewMode === 'list' ? (
+            <Calendar size={20} className="text-orange-400" />
+          ) : (
+            <List size={20} className="text-orange-400" />
+          )}
+          <span className="text-sm text-black dark:text-white">
+            {viewMode === 'list' ? 'Calendar' : 'List'}
+          </span>
+        </button>
+        <span className="text-sm font-medium text-black dark:text-white">
+          Activity Log
+        </span>
+        <div className="w-20" /> {/* スペーサー */}
+      </div>
+
+      {/* コンテンツエリア */}
+      {isLoading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <span className="text-neutral-500 dark:text-neutral-400">読み込み中...</span>
+        </div>
+      ) : viewMode === 'list' ? (
+        /* リストビュー */
+        <div className="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-3">
+          {activities.map(activity => (
             <PostCard
               key={activity.id}
               activity={activity}
               onClick={openEditor}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        /* カレンダービュー */
+        <div className="flex-1 overflow-hidden pb-24">
+          <CalendarView
+            activities={activities}
+            onEventClick={openEditor}
+          />
+        </div>
+      )}
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
 
