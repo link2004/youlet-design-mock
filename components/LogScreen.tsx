@@ -36,6 +36,7 @@ interface PostEditorProps {
 const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [text, setText] = useState(initialText);
+  const [images, setImages] = useState(activity.images);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -50,9 +51,17 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
       const scrollLeft = scrollRef.current.scrollLeft;
       const itemWidth = scrollRef.current.offsetWidth;
       const newIndex = Math.round(scrollLeft / itemWidth);
-      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < activity.images.length) {
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
         setCurrentIndex(newIndex);
       }
+    }
+  };
+
+  const handleDeleteImage = (idx: number) => {
+    const newImages = images.filter((_, i) => i !== idx);
+    setImages(newImages);
+    if (currentIndex >= newImages.length && newImages.length > 0) {
+      setCurrentIndex(newImages.length - 1);
     }
   };
 
@@ -80,18 +89,18 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
       </div>
 
       {/* 画像エリア */}
-      {activity.images.length > 0 && (
+      {images.length > 0 && (
         <>
           <div
             ref={scrollRef}
             onScroll={handleScroll}
-            className="w-full aspect-square overflow-x-auto no-scrollbar flex bg-black"
+            className="w-full aspect-square overflow-x-auto no-scrollbar flex bg-black relative"
             style={{ scrollSnapType: 'x mandatory' }}
           >
-            {activity.images.map((img, idx) => (
+            {images.map((img, idx) => (
               <div
                 key={idx}
-                className="w-full aspect-square flex-shrink-0"
+                className="w-full aspect-square flex-shrink-0 relative"
                 style={{ scrollSnapAlign: 'start' }}
               >
                 <img
@@ -99,14 +108,21 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
                   alt=""
                   className="w-full h-full object-cover"
                 />
+                {/* 削除ボタン */}
+                <button
+                  onClick={() => handleDeleteImage(idx)}
+                  className="absolute top-3 right-3 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center active:bg-black/80"
+                >
+                  <X size={18} className="text-white" />
+                </button>
               </div>
             ))}
           </div>
 
           {/* ページインジケーター */}
-          {activity.images.length > 1 && (
+          {images.length > 1 && (
             <div className="flex justify-center gap-1.5 py-3">
-              {activity.images.map((_, idx) => (
+              {images.map((_, idx) => (
                 <div
                   key={idx}
                   className={`w-1.5 h-1.5 rounded-full transition-colors ${
