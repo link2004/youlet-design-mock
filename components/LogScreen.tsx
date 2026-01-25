@@ -37,6 +37,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [text, setText] = useState(initialText);
   const [images, setImages] = useState(activity.images);
+  const [actionSheetTarget, setActionSheetTarget] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -57,12 +58,18 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
     }
   };
 
-  const handleDeleteImage = (idx: number) => {
-    const newImages = images.filter((_, i) => i !== idx);
+  const handleImageTap = (idx: number) => {
+    setActionSheetTarget(idx);
+  };
+
+  const handleDeleteImage = () => {
+    if (actionSheetTarget === null) return;
+    const newImages = images.filter((_, i) => i !== actionSheetTarget);
     setImages(newImages);
     if (currentIndex >= newImages.length && newImages.length > 0) {
       setCurrentIndex(newImages.length - 1);
     }
+    setActionSheetTarget(null);
   };
 
   const handleClose = () => {
@@ -77,7 +84,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
       }`}
     >
       {/* ヘッダー */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="flex items-center justify-between px-4 py-3 pt-12 border-b border-neutral-200 dark:border-neutral-800">
         <button
           onClick={handleClose}
           className="p-1"
@@ -100,21 +107,15 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
             {images.map((img, idx) => (
               <div
                 key={idx}
-                className="w-full aspect-square flex-shrink-0 relative"
+                className="w-full aspect-square flex-shrink-0 relative cursor-pointer"
                 style={{ scrollSnapAlign: 'start' }}
+                onClick={() => handleImageTap(idx)}
               >
                 <img
                   src={img}
                   alt=""
                   className="w-full h-full object-cover"
                 />
-                {/* 削除ボタン */}
-                <button
-                  onClick={() => handleDeleteImage(idx)}
-                  className="absolute top-3 right-3 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center active:bg-black/80"
-                >
-                  <X size={18} className="text-white" />
-                </button>
               </div>
             ))}
           </div>
@@ -154,6 +155,43 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
           placeholder="投稿内容を入力..."
         />
       </div>
+
+      {/* Swift風アクションシート */}
+      {actionSheetTarget !== null && (
+        <div
+          className="absolute inset-0 z-60 flex items-end justify-center"
+          onClick={() => setActionSheetTarget(null)}
+        >
+          {/* 背景オーバーレイ */}
+          <div className="absolute inset-0 bg-black/40" />
+
+          {/* アクションシート */}
+          <div
+            className="relative w-full px-2 pb-2 animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* メインアクション */}
+            <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-hidden mb-2">
+              <button
+                onClick={handleDeleteImage}
+                className="w-full py-4 text-red-500 text-lg font-normal active:bg-neutral-200 dark:active:bg-neutral-700"
+              >
+                写真を削除
+              </button>
+            </div>
+
+            {/* キャンセル */}
+            <div className="bg-white dark:bg-neutral-800 rounded-xl overflow-hidden">
+              <button
+                onClick={() => setActionSheetTarget(null)}
+                className="w-full py-4 text-blue-500 text-lg font-semibold active:bg-neutral-100 dark:active:bg-neutral-700"
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
