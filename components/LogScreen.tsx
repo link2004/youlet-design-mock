@@ -410,10 +410,10 @@ const groupActivitiesByDate = (activities: DisplayActivity[]): Map<string, Displ
 // カレンダービューコンポーネント
 interface CalendarViewProps {
   activities: DisplayActivity[];
-  onEventClick: (activity: DisplayActivity) => void;
+  onDateClick: (date: string) => void;
 }
 
-const CalendarView: React.FC<CalendarViewProps> = ({ activities, onEventClick }) => {
+const CalendarView: React.FC<CalendarViewProps> = ({ activities, onDateClick }) => {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
@@ -533,11 +533,12 @@ const CalendarView: React.FC<CalendarViewProps> = ({ activities, onEventClick })
           const dayOfWeek = cellIndex % 7;
 
           return (
-            <div
+            <button
               key={cellIndex}
-              className={`border-b border-r border-neutral-100 dark:border-neutral-800 p-0.5 min-h-[60px] ${
+              onClick={() => onDateClick(dateKey)}
+              className={`border-b border-r border-neutral-100 dark:border-neutral-800 p-0.5 min-h-[60px] text-left ${
                 !isCurrentMonth ? 'bg-neutral-50 dark:bg-neutral-900/50' : ''
-              }`}
+              } hover:bg-neutral-100 dark:hover:bg-neutral-800/50 active:bg-neutral-200 dark:active:bg-neutral-700/50 transition-colors`}
             >
               {/* 日付 */}
               <div className="flex justify-center mb-0.5">
@@ -556,18 +557,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({ activities, onEventClick })
 
               {/* イベントバー */}
               <div className="flex flex-col gap-0.5">
-                {visibleActivities.map((activity, idx) => (
-                  <button
+                {visibleActivities.map((activity) => (
+                  <div
                     key={activity.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEventClick(activity);
-                    }}
-                    className={`${getEventColor(activity.id)} text-white text-[8px] px-1 py-0.5 rounded truncate text-left w-full hover:opacity-80 active:opacity-60`}
+                    className={`${getEventColor(activity.id)} text-white text-[8px] px-1 py-0.5 rounded truncate text-left w-full`}
                     title={activity.title}
                   >
                     {activity.title}
-                  </button>
+                  </div>
                 ))}
                 {remainingCount > 0 && (
                   <span className="text-[8px] text-neutral-500 dark:text-neutral-400 px-1">
@@ -575,7 +572,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ activities, onEventClick })
                   </span>
                 )}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -590,6 +587,7 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
   const [selectedActivity, setSelectedActivity] = useState<DisplayActivity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // JSONファイルを読み込む
   useEffect(() => {
@@ -633,7 +631,22 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
 
   const toggleViewMode = () => {
     setViewMode(prev => prev === 'list' ? 'calendar' : 'list');
+    setSelectedDate(null); // ビュー切り替え時に日付選択をリセット
   };
+
+  const handleDateClick = (date: string) => {
+    setSelectedDate(date);
+  };
+
+  const handleBackFromDate = () => {
+    setSelectedDate(null);
+  };
+
+  // 選択された日付のアクティビティをフィルタリング
+  const selectedDateActivities = useMemo(() => {
+    if (!selectedDate) return [];
+    return activities.filter(a => a.date === selectedDate);
+  }, [activities, selectedDate]);
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
@@ -676,12 +689,45 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
             />
           ))}
         </div>
+      ) : selectedDate ? (
+        /* カレンダーから日付選択後のリストビュー */
+        <div className="flex-1 flex flex-col overflow-hidden pb-24">
+          {/* 日付ヘッダー with 戻るボタン */}
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
+            <button
+              onClick={handleBackFromDate}
+              className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700"
+            >
+              <ChevronLeft size={24} className="text-black dark:text-white" />
+            </button>
+            <span className="text-black dark:text-white font-semibold">
+              {formatDateLong(selectedDate)}
+            </span>
+          </div>
+
+          {/* その日のアクティビティリスト */}
+          <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-3">
+            {selectedDateActivities.length > 0 ? (
+              selectedDateActivities.map(activity => (
+                <PostCard
+                  key={activity.id}
+                  activity={activity}
+                  onClick={openEditor}
+                />
+              ))
+            ) : (
+              <div className="flex items-center justify-center h-32 text-neutral-500 dark:text-neutral-400">
+                この日の記録はありません
+              </div>
+            )}
+          </div>
+        </div>
       ) : (
         /* カレンダービュー */
         <div className="flex-1 overflow-hidden pb-24">
           <CalendarView
             activities={activities}
-            onEventClick={openEditor}
+            onDateClick={handleDateClick}
           />
         </div>
       )}
