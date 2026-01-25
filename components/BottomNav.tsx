@@ -26,19 +26,20 @@ const NAV_ITEMS: { icon: IconSvgObject; label: string; page: PageType }[] = [
 const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate }) => {
   return (
     <div
-      className="absolute left-1/2 -translate-x-1/2 z-30"
-      style={{ bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem))' }}
+      className="absolute bottom-0 left-0 right-0 z-30 bg-white/80 dark:bg-neutral-900/80 border-t border-neutral-200 dark:border-neutral-700"
+      style={{
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)'
+      }}
     >
-      <div
-        className="flex items-center gap-6 px-6 py-3 bg-neutral-300/60 dark:bg-neutral-700/60 rounded-full shadow-lg"
-        style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
-      >
+      <div className="flex items-center justify-around px-4 py-3">
         {NAV_ITEMS.map((item, index) => {
           const isActive = currentPage === item.page;
           return (
             <button
               key={index}
-              className="cursor-pointer bg-transparent border-none p-0"
+              className="cursor-pointer bg-transparent border-none p-2"
               onClick={() => onNavigate(item.page)}
               aria-label={item.label}
             >
