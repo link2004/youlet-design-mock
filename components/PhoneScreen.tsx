@@ -4,7 +4,6 @@ import { MENU_ITEMS } from '../constants';
 import MenuItem from './MenuItem';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
-import ElementsBubbles from './ElementsBubbles';
 import StoryView from './StoryView';
 import ProfileCardFlip from './ProfileCardFlip';
 import { PageType } from '../App';
@@ -17,7 +16,6 @@ interface PhoneScreenProps {
 const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showElements, setShowElements] = useState(false);
   const [showStory, setShowStory] = useState(false);
 
   useEffect(() => {
@@ -62,10 +60,10 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
             </div>
 
             {/* Promo Cards - Bottom Section */}
-            <div className="px-6 pb-6 grid grid-cols-2 gap-3">
+            <div className="px-6 pb-6">
               <button
                 onClick={() => setShowStory(true)}
-                className="bg-gradient-to-r from-blue-500 to-red-500 py-5 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
+                className="w-full bg-gradient-to-r from-blue-500 to-red-500 py-5 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
               >
                 <div className="absolute -right-2 -top-2 text-white/10 transform rotate-12">
                   <Star size={48} fill="currentColor" />
@@ -75,26 +73,6 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                 </div>
                 <span className="relative z-10 text-white font-serif italic font-bold text-sm tracking-wide text-center leading-snug">
                   Read Your Story
-                </span>
-              </button>
-              <button
-                onClick={() => setShowElements(true)}
-                className="py-5 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
-                style={{
-                  background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)'
-                }}
-              >
-                {/* Stars */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute w-1 h-1 bg-white/80 rounded-full blur-[1px] top-3 left-4" />
-                  <div className="absolute w-1.5 h-1.5 bg-white/60 rounded-full blur-[2px] top-5 right-6" />
-                  <div className="absolute w-1 h-1 bg-white/70 rounded-full blur-[1px] top-8 left-8" />
-                  <div className="absolute w-0.5 h-0.5 bg-white/50 rounded-full blur-[1px] top-4 right-3" />
-                  <div className="absolute w-1 h-1 bg-white/60 rounded-full blur-[2px] bottom-3 left-5" />
-                  <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full blur-[1px] bottom-5 right-4" />
-                </div>
-                <span className="relative z-10 text-white font-serif italic font-bold text-sm tracking-wide text-center leading-snug">
-                  Your Elements
                 </span>
               </button>
             </div>
@@ -163,11 +141,6 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
       </div>
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
-
-      {/* Elements Bubbles Modal */}
-      {showElements && (
-        <ElementsBubbles onClose={() => setShowElements(false)} />
-      )}
 
       {/* Story View Modal */}
       {showStory && (

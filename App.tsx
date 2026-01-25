@@ -7,9 +7,10 @@ import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
 import DMScreen from './components/DMScreen';
 import FriendDetailScreen from './components/FriendDetailScreen';
+import LogScreen from './components/LogScreen';
 import { DiagnosticType, GroupDiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'dm' | 'friend-detail';
+export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'dm' | 'friend-detail' | 'log';
 
 type DiagnosticTabType = 'pair' | 'group';
 
@@ -140,6 +141,13 @@ const App: React.FC = () => {
       case 'dm':
         return (
           <DMScreen
+            currentPage={currentPage}
+            onNavigate={setCurrentPage}
+          />
+        );
+      case 'log':
+        return (
+          <LogScreen
             currentPage={currentPage}
             onNavigate={setCurrentPage}
           />

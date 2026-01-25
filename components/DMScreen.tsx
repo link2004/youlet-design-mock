@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera } from 'lucide-react';
-import { DM_CHATS, DM_MESSAGES_BY_CHAT, USER_DATA, DMChat, DMMessage } from '../constants';
+import { DM_CHATS, DM_MESSAGES_BY_CHAT, USER_DATA, DMChat, type DMMessage } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import { PageType } from '../App';
@@ -26,7 +26,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ chat, onClick }) => (
       <img
         src={chat.avatar}
         alt={chat.name}
-        className="w-14 h-14 rounded-full object-cover"
+        className="w-14 h-14 object-contain"
         onError={(e) => {
           e.currentTarget.src = "https://cdn.jsdelivr.net/gh/alohe/avatars/png/memo_1.png";
         }}
@@ -136,12 +136,47 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chat
 
 const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
   const [inputValue, setInputValue] = useState('');
+  const [localMessages, setLocalMessages] = useState<DMMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messages = DM_MESSAGES_BY_CHAT[chat.id] || [];
+  const initialMessages = DM_MESSAGES_BY_CHAT[chat.id] || [];
+  const messages = [...initialMessages, ...localMessages];
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
+  }, [localMessages]);
+
+  useEffect(() => {
+    scrollToBottom();
   }, []);
+
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
+
+    const now = new Date();
+    const timestamp = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+    const newMessage: DMMessage = {
+      id: `local-${Date.now()}`,
+      sender: 'user',
+      message: inputValue.trim(),
+      timestamp,
+      isAI: false,
+    };
+
+    setLocalMessages(prev => [...prev, newMessage]);
+    setInputValue('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
     <div className="absolute inset-0 bg-cream dark:bg-black z-40 flex flex-col">
@@ -195,6 +230,7 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Message..."
               className="flex-1 bg-transparent text-sm text-black dark:text-white placeholder-neutral-500 outline-none"
             />
@@ -206,7 +242,10 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
             </button>
           </div>
           {inputValue.trim() && (
-            <button className="p-2 bg-orange-400 rounded-full hover:bg-orange-500 transition-colors">
+            <button
+              onClick={handleSend}
+              className="p-2 bg-orange-400 rounded-full hover:bg-orange-500 transition-colors"
+            >
               <Send size={20} className="text-white" />
             </button>
           )}
@@ -246,9 +285,9 @@ const DMScreen: React.FC<DMScreenProps> = ({
       <div className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center gap-2">
           <img
-            src={USER_DATA.avatar}
+            src={USER_DATA.characterAvatar}
             alt="Your avatar"
-            className="w-8 h-8 rounded-full object-cover"
+            className="w-8 h-8 object-contain"
           />
           <h1 className="text-xl font-bold text-black dark:text-white">{USER_DATA.name}</h1>
         </div>

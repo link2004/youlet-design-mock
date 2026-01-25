@@ -4,7 +4,7 @@ import { USER_DATA } from '../constants';
 const ProfileCardFlip: React.FC = () => {
   return (
     <div className="flex flex-col items-center mt-4 mb-6 px-6">
-      <div className="w-64 aspect-[2/3]">
+      <div className="w-full aspect-[3/4]">
         <div className="relative w-full h-full">
           {/* Profile Card */}
           <div className="absolute inset-0 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden flex flex-col">

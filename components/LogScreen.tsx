@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { X } from 'lucide-react';
 import { ACTIVITY_LOGS, ActivityLog } from '../constants';
 import BottomNav from './BottomNav';
@@ -10,21 +10,22 @@ interface LogScreenProps {
   onNavigate: (page: PageType) => void;
 }
 
-// 日付を短い形式に変換（例: "Jan 25"）
-const formatShortDate = (dateStr: string): string => {
+// 日付をフォーマット（例: "January 25, 2026"）
+const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[date.getMonth()]} ${date.getDate()}`;
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
 // インスタ風詳細ビューアー
 interface PhotoViewerProps {
   activity: ActivityLog;
+  initialIndex?: number;
   onClose: () => void;
 }
 
-const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, initialIndex = 0, onClose }) => {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -33,6 +34,13 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
       setIsVisible(true);
     });
   }, []);
+
+  useEffect(() => {
+    if (scrollRef.current && initialIndex > 0) {
+      const itemWidth = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollLeft = itemWidth * initialIndex;
+    }
+  }, [initialIndex]);
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -48,13 +56,6 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 300);
-  };
-
-  // 日付をフォーマット
-  const formatDate = (dateStr: string): string => {
-    const date = new Date(dateStr);
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
   };
 
   return (
@@ -82,11 +83,13 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
         onScroll={handleScroll}
         onClick={(e) => e.stopPropagation()}
         className="w-full aspect-square overflow-x-auto no-scrollbar flex bg-black"
+        style={{ scrollSnapType: 'x mandatory' }}
       >
         {activity.images.map((img, idx) => (
           <div
             key={idx}
             className="w-full aspect-square flex-shrink-0"
+            style={{ scrollSnapAlign: 'start' }}
           >
             <img
               src={img}
@@ -127,7 +130,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
           {activity.title}
         </h3>
 
-        {/* 説明文（モック） */}
+        {/* 説明文 */}
         <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed">
           {activity.category === 'school' && '今日も一日お疲れ様でした。授業はなかなか大変だったけど、友達と話せて楽しかった！'}
           {activity.category === 'work' && 'バイト頑張った！今日は忙しかったけど、なんとか乗り切れた。'}
@@ -140,129 +143,134 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ activity, onClose }) => {
   );
 };
 
-// 写真スタックコンポーネント
-interface PhotoStackProps {
+// 横スクロール写真ギャラリー
+interface PhotoGalleryProps {
   images: string[];
-  isLeft: boolean;
-  title: string;
-  onImageClick: () => void;
+  onImageClick: (index: number) => void;
 }
 
-const PhotoStack: React.FC<PhotoStackProps> = ({ images, isLeft, title, onImageClick }) => {
-  const baseRotation = isLeft ? -3 : 3;
-
-  if (images.length === 1) {
-    return (
-      <div
-        onClick={onImageClick}
-        className="shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95"
-        style={{ transform: `rotate(${baseRotation}deg)` }}
-      >
-        <img
-          src={images[0]}
-          alt={title}
-          className="w-36 h-36 rounded-2xl object-cover"
-        />
-      </div>
-    );
-  }
-
-  // 複数枚の場合: 重ねて表示
+const PhotoGallery: React.FC<PhotoGalleryProps> = ({ images, onImageClick }) => {
   return (
     <div
-      className="relative cursor-pointer w-36 h-36 transition-transform duration-300 hover:scale-105 active:scale-95"
-      onClick={onImageClick}
+      className="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-1 px-1"
+      style={{ scrollSnapType: 'x mandatory' }}
     >
-      {images.slice(0, 3).map((img, idx) => (
+      {images.map((img, idx) => (
         <div
           key={idx}
-          className="absolute shadow-lg"
-          style={{
-            transform: `rotate(${baseRotation + idx * (isLeft ? 4 : -4)}deg)`,
-            top: `${idx * 4}px`,
-            left: isLeft ? `${idx * 4}px` : 'auto',
-            right: isLeft ? 'auto' : `${idx * 4}px`,
-            zIndex: images.length - idx,
-          }}
+          className="flex-shrink-0 cursor-pointer transition-transform duration-200 active:scale-95"
+          style={{ scrollSnapAlign: 'start' }}
+          onClick={() => onImageClick(idx)}
         >
           <img
             src={img}
-            alt={title}
-            className="w-36 h-36 rounded-2xl object-cover"
+            alt=""
+            className="w-20 h-20 rounded-lg object-cover"
           />
         </div>
       ))}
-      {/* 枚数インジケーター */}
-      <div className="absolute -bottom-2 -right-2 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-        {images.length}
-      </div>
     </div>
   );
 };
 
-// タイムラインアイテムコンポーネント
-interface TimelineItemProps {
+// アクティビティアイテム（1つのアクティビティ）
+interface ActivityItemProps {
   activity: ActivityLog;
-  index: number;
-  onImageClick: (activity: ActivityLog) => void;
+  onImageClick: (activity: ActivityLog, imageIndex: number) => void;
 }
 
-const TimelineItem: React.FC<TimelineItemProps> = ({ activity, index, onImageClick }) => {
-  const isLeft = index % 2 === 0;
+const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onImageClick }) => {
+  const getDiaryTextForActivity = (act: ActivityLog): string => {
+    switch (act.category) {
+      case 'school':
+        return '今日も一日お疲れ様でした。友達と話せて楽しかった！';
+      case 'work':
+        return 'バイト頑張った！なんとか乗り切れた。';
+      case 'leisure':
+        return '最高だった！また行きたいな〜';
+      case 'food':
+        return '美味しかった〜！また来よう。';
+      case 'other':
+        return '充実した時間を過ごせた。';
+      default:
+        return '';
+    }
+  };
 
   return (
-    <div className="relative flex items-start min-h-[180px]">
-      {/* 左側コンテンツ */}
-      <div className="flex-1 flex justify-end pr-4 pt-4">
-        {isLeft ? (
-          <PhotoStack
-            images={activity.images}
-            isLeft={true}
-            title={activity.title}
-            onImageClick={() => onImageClick(activity)}
-          />
-        ) : (
-          <div className="text-right pr-1 pt-8">
-            <h3 className="text-lg font-semibold text-black dark:text-white">{activity.title}</h3>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">{activity.time}</p>
-          </div>
-        )}
+    <div className="mb-4">
+      {/* アクティビティタイトルと時間 */}
+      <div className="flex items-center gap-2 mb-1">
+        <span className="font-medium text-black dark:text-white">{activity.title}</span>
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">{activity.time}</span>
       </div>
 
-      {/* 中央のタイムラインと日付バッジ */}
-      <div className="relative flex flex-col items-center z-10 shrink-0 pt-4">
-        <div className="bg-white dark:bg-neutral-800 px-2 py-1 rounded-full shadow-sm border border-neutral-200 dark:border-neutral-700">
-          <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-            {formatShortDate(activity.date)}
-          </span>
-        </div>
+      {/* 日記テキスト */}
+      <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed mb-2">
+        {getDiaryTextForActivity(activity)}
+      </p>
+
+      {/* 写真ギャラリー */}
+      {activity.images.length > 0 && (
+        <PhotoGallery
+          images={activity.images}
+          onImageClick={(index) => onImageClick(activity, index)}
+        />
+      )}
+    </div>
+  );
+};
+
+// 日記エントリー（1日分）
+interface DiaryEntryProps {
+  date: string;
+  activities: ActivityLog[];
+  onImageClick: (activity: ActivityLog, imageIndex: number) => void;
+}
+
+const DiaryEntry: React.FC<DiaryEntryProps> = ({ date, activities, onImageClick }) => {
+  return (
+    <div className="mb-6">
+      {/* 日付ヘッダー */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-2.5 h-2.5 rounded-full bg-orange-400" />
+        <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-400">
+          {formatDate(date)}
+        </span>
       </div>
 
-      {/* 右側コンテンツ */}
-      <div className="flex-1 flex justify-start pl-4 pt-4">
-        {isLeft ? (
-          <div className="text-left pl-1 pt-8">
-            <h3 className="text-lg font-semibold text-black dark:text-white">{activity.title}</h3>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">{activity.time}</p>
-          </div>
-        ) : (
-          <PhotoStack
-            images={activity.images}
-            isLeft={false}
-            title={activity.title}
-            onImageClick={() => onImageClick(activity)}
+      {/* アクティビティ一覧 */}
+      <div className="pl-4">
+        {activities.map(activity => (
+          <ActivityItem
+            key={activity.id}
+            activity={activity}
+            onImageClick={onImageClick}
           />
-        )}
+        ))}
       </div>
     </div>
   );
 };
 
 const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
-  const [selectedActivity, setSelectedActivity] = useState<ActivityLog | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<{ activity: ActivityLog; imageIndex: number } | null>(null);
 
-  const openViewer = (activity: ActivityLog) => {
-    setSelectedActivity(activity);
+  // 日付ごとにアクティビティをグループ化
+  const groupedActivities = useMemo(() => {
+    const groups: { [date: string]: ActivityLog[] } = {};
+    ACTIVITY_LOGS.forEach(activity => {
+      if (!groups[activity.date]) {
+        groups[activity.date] = [];
+      }
+      groups[activity.date].push(activity);
+    });
+    // 日付でソート（新しい順）
+    return Object.entries(groups).sort(([a], [b]) => b.localeCompare(a));
+  }, []);
+
+  const openViewer = (activity: ActivityLog, imageIndex: number) => {
+    setSelectedActivity({ activity, imageIndex });
   };
 
   const closeViewer = () => {
@@ -273,35 +281,25 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       <StatusBar />
 
-      {/* ヘッダー */}
-      <div className="px-4 py-3">
-        <h1 className="text-2xl font-bold text-black dark:text-white">Activity Log</h1>
-      </div>
-
-      {/* タイムラインコンテンツ */}
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
-        {/* 中央の縦線 */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-neutral-300 dark:bg-neutral-700 -translate-x-1/2" />
-
-        {/* タイムラインアイテム */}
-        <div className="relative py-4">
-          {ACTIVITY_LOGS.map((activity, index) => (
-            <TimelineItem
-              key={activity.id}
-              activity={activity}
-              index={index}
-              onImageClick={openViewer}
-            />
-          ))}
-        </div>
+      {/* 日記エントリー一覧 */}
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-3">
+        {groupedActivities.map(([date, activities]) => (
+          <DiaryEntry
+            key={date}
+            date={date}
+            activities={activities}
+            onImageClick={openViewer}
+          />
+        ))}
       </div>
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
 
-      {/* インスタ風詳細ビューアー */}
+      {/* 詳細ビューアー */}
       {selectedActivity && (
         <PhotoViewer
-          activity={selectedActivity}
+          activity={selectedActivity.activity}
+          initialIndex={selectedActivity.imageIndex}
           onClose={closeViewer}
         />
       )}
