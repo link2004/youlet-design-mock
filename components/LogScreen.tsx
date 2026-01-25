@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { ACTIVITY_LOGS, ActivityLog, USER_DATA } from '../constants';
+import { ACTIVITY_LOGS, ActivityLog } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import { PageType } from '../App';
@@ -178,76 +178,58 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onImageClick }) => {
 
   return (
     <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 mb-4">
-      {/* ヘッダー: アバター + 名前 + 日付 */}
-      <div className="flex items-start gap-3">
-        {/* アバター */}
-        <div className="flex-shrink-0">
-          <img
-            src={USER_DATA.characterAvatar}
-            alt={USER_DATA.name}
-            className="w-10 h-10 object-contain"
-          />
-        </div>
+      {/* 日付 */}
+      <div className="mb-1">
+        <span className="text-sm text-neutral-500 dark:text-neutral-400">
+          {formatDateShort(activity.date)}
+        </span>
+      </div>
 
-        {/* コンテンツ */}
-        <div className="flex-1 min-w-0">
-          {/* 名前と日付 */}
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-black dark:text-white">
-              {USER_DATA.name}
-            </span>
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              {formatDateShort(activity.date)}
-            </span>
-          </div>
+      {/* 投稿テキスト */}
+      <p className="text-black dark:text-white text-sm leading-relaxed whitespace-pre-line mb-3">
+        {getPostText(activity)}
+      </p>
 
-          {/* 投稿テキスト */}
-          <p className="text-black dark:text-white text-sm leading-relaxed whitespace-pre-line mb-3">
-            {getPostText(activity)}
-          </p>
-
-          {/* 写真ギャラリー（縦長、横スクロール） */}
-          {activity.images.length > 0 && (
+      {/* 写真ギャラリー（縦長、横スクロール） */}
+      {activity.images.length > 0 && (
+        <div
+          className="flex gap-2 overflow-x-auto no-scrollbar -mr-4 pr-4"
+          style={{ scrollSnapType: 'x mandatory' }}
+        >
+          {activity.images.slice(0, 4).map((img, idx) => (
             <div
-              className="flex gap-2 overflow-x-auto no-scrollbar -mr-4 pr-4"
-              style={{ scrollSnapType: 'x mandatory' }}
+              key={idx}
+              className="flex-shrink-0 cursor-pointer transition-transform duration-200 active:scale-95 rounded-xl overflow-hidden"
+              style={{ scrollSnapAlign: 'start' }}
+              onClick={() => onImageClick(activity, idx)}
             >
-              {activity.images.slice(0, 4).map((img, idx) => (
-                <div
-                  key={idx}
-                  className="flex-shrink-0 cursor-pointer transition-transform duration-200 active:scale-95 rounded-xl overflow-hidden"
-                  style={{ scrollSnapAlign: 'start' }}
-                  onClick={() => onImageClick(activity, idx)}
-                >
-                  <img
-                    src={img}
-                    alt=""
-                    className="w-32 h-40 object-cover"
-                  />
-                </div>
-              ))}
-              {activity.images.length > 4 && (
-                <div
-                  className="flex-shrink-0 cursor-pointer transition-transform duration-200 active:scale-95 rounded-xl overflow-hidden relative"
-                  style={{ scrollSnapAlign: 'start' }}
-                  onClick={() => onImageClick(activity, 4)}
-                >
-                  <img
-                    src={activity.images[4]}
-                    alt=""
-                    className="w-32 h-40 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white text-lg font-semibold">
-                      +{activity.images.length - 4}
-                    </span>
-                  </div>
-                </div>
-              )}
+              <img
+                src={img}
+                alt=""
+                className="w-32 h-40 object-cover"
+              />
+            </div>
+          ))}
+          {activity.images.length > 4 && (
+            <div
+              className="flex-shrink-0 cursor-pointer transition-transform duration-200 active:scale-95 rounded-xl overflow-hidden relative"
+              style={{ scrollSnapAlign: 'start' }}
+              onClick={() => onImageClick(activity, 4)}
+            >
+              <img
+                src={activity.images[4]}
+                alt=""
+                className="w-32 h-40 object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <span className="text-white text-lg font-semibold">
+                  +{activity.images.length - 4}
+                </span>
+              </div>
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
