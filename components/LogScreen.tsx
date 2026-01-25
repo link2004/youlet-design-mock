@@ -231,16 +231,15 @@ interface DiaryEntryProps {
 const DiaryEntry: React.FC<DiaryEntryProps> = ({ date, activities, onImageClick }) => {
   return (
     <div className="mb-6">
-      {/* 日付ヘッダー */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-2.5 h-2.5 rounded-full bg-orange-400" />
-        <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-400">
+      {/* 日付バッジ */}
+      <div className="mb-3">
+        <span className="inline-flex items-center px-3 py-1 rounded-full bg-orange-400 text-white text-sm font-semibold shadow-sm">
           {formatDate(date)}
         </span>
       </div>
 
       {/* アクティビティ一覧 */}
-      <div className="pl-4">
+      <div className="pl-2">
         {activities.map(activity => (
           <ActivityItem
             key={activity.id}
