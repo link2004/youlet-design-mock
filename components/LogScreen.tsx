@@ -185,7 +185,7 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onImageClick }) => {
           <img
             src={USER_DATA.characterAvatar}
             alt={USER_DATA.name}
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-10 h-10 object-contain"
           />
         </div>
 
