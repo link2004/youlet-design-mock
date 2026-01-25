@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hugeicons/core-free-icons": "^3.1.1",
+    "@hugeicons/react": "^1.1.4",
     "lucide-react": "^0.562.0",
     "matter-js": "^0.20.0",
     "react": "^19.2.3",

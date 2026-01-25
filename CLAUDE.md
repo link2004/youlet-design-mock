@@ -7,7 +7,9 @@ YouLet アプリのデザインモックアップ。iPhone モックアップ内
 - React 19
 - TypeScript
 - Vite
-- lucide-react (アイコン)
+- Hugeicons (ナビゲーションアイコン) - `@hugeicons/react`, `@hugeicons/core-free-icons`
+- lucide-react (UIアイコン)
+- デプロイ: Cloudflare Pages
 
 ## ディレクトリ構成
 
@@ -40,11 +42,15 @@ npm run preview  # ビルド結果プレビュー
 
 ### 絵文字・アイコン
 
+詳細は [docs/icons.md](docs/icons.md) を参照。
+
+- **Hugeicons**: ナビゲーションバーのアイコン（Stroke Rounded スタイル）
+  - 公式サイト: https://hugeicons.com/icons
 - **FluentUI Emoji (3D)**: 絵文字アイコンには [microsoft/fluentui-emoji](https://github.com/microsoft/fluentui-emoji) の **3D版** を使用する
   - 保存先: `public/images/`
   - ダウンロード元: `https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/{EmojiName}/3D/{emoji_name}_3d.png`
   - 例: トロフィー → `assets/Trophy/3D/trophy_3d.png`
-- lucide-react: UIアイコン（矢印、メニューなど）に使用
+- **lucide-react**: UIアイコン（矢印、メニューなど）に使用
 
 ## 実装済み機能
 
