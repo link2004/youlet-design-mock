@@ -675,7 +675,7 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
       const timer = setTimeout(() => {
         const targetRef = dateRefs.current.get(scrollToDate);
         if (targetRef) {
-          targetRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          targetRef.scrollIntoView({ behavior: 'instant', block: 'start' });
         }
         setScrollToDate(null);
       }, 100);
@@ -747,7 +747,7 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
               }}
             >
               {/* 日付ヘッダー */}
-              <div className="sticky top-0 bg-cream dark:bg-black py-2 -mx-4 px-4 z-10">
+              <div className="py-2">
                 <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
                   {formatDateLong(date)}
                 </span>
