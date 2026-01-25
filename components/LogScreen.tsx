@@ -313,8 +313,13 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
         </span>
       </div>
 
+      {/* タイトル */}
+      <h3 className="text-black dark:text-white font-semibold text-base mb-1">
+        {activity.title}
+      </h3>
+
       {/* 投稿テキスト（descriptionをそのまま使用） */}
-      <p className="text-black dark:text-white text-sm leading-relaxed whitespace-pre-line mb-3">
+      <p className="text-neutral-600 dark:text-neutral-300 text-sm leading-relaxed whitespace-pre-line mb-3">
         {activity.description}
       </p>
 
