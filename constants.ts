@@ -779,6 +779,14 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
   { id: '3', date: '2026-01-24', title: 'ディズニー', time: '10:00-22:00', category: 'leisure', images: [
     'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=300&h=300&fit=crop',
     'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1543807535-eceef0bc6599?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=300&h=300&fit=crop',
   ] },
   { id: '4', date: '2026-01-23', title: '学校', time: '9:00-16:00', category: 'school', images: [
     'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=300&h=300&fit=crop',
