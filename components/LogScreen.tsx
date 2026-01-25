@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { ACTIVITY_LOGS, ActivityLog } from '../constants';
+import { ActivityLog } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import { PageType } from '../App';
@@ -9,6 +9,44 @@ interface LogScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
 }
+
+// プレースホルダー画像URL
+const PLACEHOLDER_IMAGES = [
+  'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1511882150382-421056c89033?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=300&h=300&fit=crop',
+];
+
+// start_timeから日付を抽出 (例: "2026-01-15 23:13:58+00" → "2026-01-15")
+const extractDate = (startTime: string): string => {
+  return startTime.split(' ')[0];
+};
+
+// start_timeから時間を抽出 (例: "2026-01-15 23:13:58+00" → "23:13")
+const extractTime = (startTime: string): string => {
+  const timePart = startTime.split(' ')[1];
+  if (!timePart) return '';
+  const [hours, minutes] = timePart.split(':');
+  return `${hours}:${minutes}`;
+};
+
+// image_countに基づいてプレースホルダー画像を生成
+const generateImages = (imageCount: number, activityId: string): string[] => {
+  if (imageCount === 0) return [];
+  const images: string[] = [];
+  // activityIdを使って擬似的なランダム性を持たせる
+  const seed = activityId.charCodeAt(0) + activityId.charCodeAt(activityId.length - 1);
+  for (let i = 0; i < imageCount; i++) {
+    const idx = (seed + i) % PLACEHOLDER_IMAGES.length;
+    images.push(PLACEHOLDER_IMAGES[idx]);
+  }
+  return images;
+};
 
 // 日付をフォーマット（例: "January 25, 2026" - ビューアー用）
 const formatDateLong = (dateStr: string): string => {
@@ -26,16 +64,22 @@ const formatDateShort = (dateStr: string): string => {
   return `${months[date.getMonth()]} ${day}, ${year}`;
 };
 
+// 拡張されたアクティビティ型（表示用）
+interface DisplayActivity extends ActivityLog {
+  date: string;
+  time: string;
+  images: string[];
+}
+
 // 投稿編集画面
 interface PostEditorProps {
-  activity: ActivityLog;
-  initialText: string;
+  activity: DisplayActivity;
   onClose: () => void;
 }
 
-const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose }) => {
+const PostEditor: React.FC<PostEditorProps> = ({ activity, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [text, setText] = useState(initialText);
+  const [text, setText] = useState(activity.description);
   const [images, setImages] = useState(activity.images);
   const [actionSheetTarget, setActionSheetTarget] = useState<number | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -250,28 +294,10 @@ const PostEditor: React.FC<PostEditorProps> = ({ activity, initialText, onClose 
   );
 };
 
-// 投稿テキストを取得
-const getPostText = (act: ActivityLog): string => {
-  switch (act.category) {
-    case 'school':
-      return '今日も一日お疲れ様でした。\n友達と話せて楽しかった！';
-    case 'work':
-      return 'バイト頑張った！\nなんとか乗り切れた 💪';
-    case 'leisure':
-      return `${act.title}楽しかった！\n最高だった！また行きたいな〜 ✨`;
-    case 'food':
-      return '美味しかった〜！\nまた来よう 🍽️';
-    case 'other':
-      return '充実した時間を過ごせた。';
-    default:
-      return '';
-  }
-};
-
 // Threads風投稿カード
 interface PostCardProps {
-  activity: ActivityLog;
-  onClick: (activity: ActivityLog) => void;
+  activity: DisplayActivity;
+  onClick: (activity: DisplayActivity) => void;
 }
 
 const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
@@ -287,9 +313,9 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
         </span>
       </div>
 
-      {/* 投稿テキスト */}
+      {/* 投稿テキスト（descriptionをそのまま使用） */}
       <p className="text-black dark:text-white text-sm leading-relaxed whitespace-pre-line mb-3">
-        {getPostText(activity)}
+        {activity.description}
       </p>
 
       {/* 写真ギャラリー（縦長、横スクロール） */}
@@ -335,17 +361,43 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
 };
 
 const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
-  const [selectedActivity, setSelectedActivity] = useState<ActivityLog | null>(null);
+  const [activities, setActivities] = useState<DisplayActivity[]>([]);
+  const [selectedActivity, setSelectedActivity] = useState<DisplayActivity | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 日付でソート（新しい順）
-  const sortedActivities = [...ACTIVITY_LOGS].sort((a, b) => {
-    const dateCompare = b.date.localeCompare(a.date);
-    if (dateCompare !== 0) return dateCompare;
-    // 同じ日の場合は時間で比較（遅い時間が先に来る）
-    return b.time.localeCompare(a.time);
-  });
+  // JSONファイルを読み込む
+  useEffect(() => {
+    const loadActivities = async () => {
+      try {
+        const response = await fetch('/data/activity_logs.json');
+        const data: ActivityLog[] = await response.json();
 
-  const openEditor = (activity: ActivityLog) => {
+        // DisplayActivity形式に変換
+        const displayActivities: DisplayActivity[] = data.map(activity => ({
+          ...activity,
+          date: extractDate(activity.start_time),
+          time: extractTime(activity.start_time),
+          images: generateImages(activity.image_count, activity.id),
+        }));
+
+        // 日付と時間でソート（新しい順）
+        displayActivities.sort((a, b) => {
+          const dateCompare = b.start_time.localeCompare(a.start_time);
+          return dateCompare;
+        });
+
+        setActivities(displayActivities);
+      } catch (error) {
+        console.error('Failed to load activity logs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadActivities();
+  }, []);
+
+  const openEditor = (activity: DisplayActivity) => {
     setSelectedActivity(activity);
   };
 
@@ -359,13 +411,19 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
 
       {/* 投稿一覧 */}
       <div className="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-3">
-        {sortedActivities.map(activity => (
-          <PostCard
-            key={activity.id}
-            activity={activity}
-            onClick={openEditor}
-          />
-        ))}
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <span className="text-neutral-500 dark:text-neutral-400">読み込み中...</span>
+          </div>
+        ) : (
+          activities.map(activity => (
+            <PostCard
+              key={activity.id}
+              activity={activity}
+              onClick={openEditor}
+            />
+          ))
+        )}
       </div>
 
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
@@ -374,7 +432,6 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
       {selectedActivity && (
         <PostEditor
           activity={selectedActivity}
-          initialText={getPostText(selectedActivity)}
           onClose={closeEditor}
         />
       )}
