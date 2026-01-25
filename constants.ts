@@ -943,5 +943,70 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
   { id: '50', date: '2025-11-16', title: 'バイト', time: '10:00-18:00', category: 'work', images: [
     'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&h=300&fit=crop',
   ] },
+  { id: '51', date: '2025-11-15', title: '学校', time: '9:00-15:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=300&h=300&fit=crop',
+  ] },
+  { id: '52', date: '2025-11-14', title: 'ジム', time: '19:00-21:00', category: 'other', images: [
+    'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=300&h=300&fit=crop',
+  ] },
+  { id: '53', date: '2025-11-13', title: '学校', time: '9:00-16:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=300&h=300&fit=crop',
+  ] },
+  { id: '54', date: '2025-11-12', title: 'バイト', time: '17:00-21:00', category: 'work', images: [
+    'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=300&h=300&fit=crop',
+  ] },
+  { id: '55', date: '2025-11-11', title: '学校', time: '9:00-15:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&h=300&fit=crop',
+  ] },
+  { id: '56', date: '2025-11-10', title: '友達と遊ぶ', time: '12:00-18:00', category: 'leisure', images: [
+    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1543807535-eceef0bc6599?w=300&h=300&fit=crop',
+  ] },
+  { id: '57', date: '2025-11-09', title: 'バイト', time: '10:00-18:00', category: 'work', images: [
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=300&fit=crop',
+  ] },
+  { id: '58', date: '2025-11-08', title: '映画', time: '14:00-17:00', category: 'leisure', images: [
+    'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&h=300&fit=crop',
+  ] },
+  { id: '59', date: '2025-11-07', title: '学校', time: '9:00-15:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=300&h=300&fit=crop',
+  ] },
+  { id: '60', date: '2025-11-06', title: 'カフェ', time: '15:00-17:00', category: 'food', images: [
+    'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=300&fit=crop',
+  ] },
+  { id: '61', date: '2025-11-05', title: '学校', time: '9:00-16:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=300&h=300&fit=crop',
+  ] },
+  { id: '62', date: '2025-11-04', title: 'バイト', time: '17:00-21:00', category: 'work', images: [
+    'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&h=300&fit=crop',
+  ] },
+  { id: '63', date: '2025-11-03', title: '文化の日イベント', time: '10:00-17:00', category: 'leisure', images: [
+    'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop',
+  ] },
+  { id: '64', date: '2025-11-02', title: 'バイト', time: '10:00-18:00', category: 'work', images: [
+    'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=300&h=300&fit=crop',
+  ] },
+  { id: '65', date: '2025-11-01', title: '学校', time: '9:00-15:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&h=300&fit=crop',
+  ] },
+  // October 2025
+  { id: '66', date: '2025-10-31', title: 'ハロウィンパーティー', time: '18:00-23:00', category: 'leisure', images: [
+    'https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1508361001413-7a9dca21d08a?w=300&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1604073461950-f3a48e7deb2b?w=300&h=300&fit=crop',
+  ] },
+  { id: '67', date: '2025-10-30', title: '学校', time: '9:00-15:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=300&h=300&fit=crop',
+  ] },
+  { id: '68', date: '2025-10-29', title: 'バイト', time: '17:00-21:00', category: 'work', images: [
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=300&fit=crop',
+  ] },
+  { id: '69', date: '2025-10-28', title: '学校', time: '9:00-16:00', category: 'school', images: [
+    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=300&h=300&fit=crop',
+  ] },
+  { id: '70', date: '2025-10-27', title: 'ラーメン', time: '12:00-13:00', category: 'food', images: [
+    'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop',
+  ] },
 ];
 
