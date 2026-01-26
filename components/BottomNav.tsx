@@ -3,7 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home09Icon,
   Cards02Icon,
-  Calendar03Icon,
+  Notebook02Icon,
   SentIcon,
   UserIcon
 } from '@hugeicons/core-free-icons';
@@ -19,7 +19,7 @@ const NAV_ITEMS: { icon: IconSvgObject; label: string; page: PageType }[] = [
   { icon: Home09Icon, label: "Cards", page: 'cards' },
   { icon: Cards02Icon, label: "Diagnostic", page: 'diagnostic' },
   { icon: SentIcon, label: "DM", page: 'dm' },
-  { icon: Calendar03Icon, label: "Log", page: 'log' },
+  { icon: Notebook02Icon, label: "Log", page: 'log' },
   { icon: UserIcon, label: "Profile", page: 'profile' },
 ];
 
