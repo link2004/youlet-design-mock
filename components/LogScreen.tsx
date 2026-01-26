@@ -376,17 +376,17 @@ const PostCard: React.FC<PostCardProps> = ({ activity, onClick }) => {
 const SENSITIVITY_CONFIG = {
   public: {
     color: 'bg-green-500',
-    label: '公開OK',
+    label: 'Public',
     labelColor: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   },
   private: {
     color: 'bg-blue-500',
-    label: 'プライベート',
+    label: 'Private',
     labelColor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   },
   sensitive: {
     color: 'bg-red-500',
-    label: 'センシティブ',
+    label: 'Sensitive',
     labelColor: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
   },
 };
