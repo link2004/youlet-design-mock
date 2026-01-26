@@ -2,7 +2,7 @@ import React from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home09Icon,
-  CompassIcon,
+  Cards02Icon,
   Calendar03Icon,
   SentIcon,
   UserIcon
@@ -17,7 +17,7 @@ interface BottomNavProps {
 
 const NAV_ITEMS: { icon: IconSvgObject; label: string; page: PageType }[] = [
   { icon: Home09Icon, label: "Cards", page: 'cards' },
-  { icon: CompassIcon, label: "Diagnostic", page: 'diagnostic' },
+  { icon: Cards02Icon, label: "Diagnostic", page: 'diagnostic' },
   { icon: Calendar03Icon, label: "Log", page: 'log' },
   { icon: SentIcon, label: "DM", page: 'dm' },
   { icon: UserIcon, label: "Profile", page: 'profile' },
