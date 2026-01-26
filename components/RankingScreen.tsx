@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Crown, Medal, ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CrownIcon,
+  Medal01Icon,
+  ArrowLeft01Icon,
+  StarsIcon,
+  FavouriteIcon,
+  AlertDiamondIcon,
+  SadDizzyIcon,
+  ArrowUp01Icon
+} from '@hugeicons/core-free-icons';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
 import StatusBar from './StatusBar';
 
@@ -22,7 +32,7 @@ const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'big_change',
     label: 'Big Changes',
-    icon: <Sparkles size={14} />,
+    icon: <HugeiconsIcon icon={StarsIcon} size={14} />,
     description: 'People with major life changes this week',
     color: 'text-purple-500',
     bgGradient: 'from-purple-500/10 to-violet-500/10'
@@ -30,7 +40,7 @@ const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'love',
     label: 'Romance',
-    icon: <Heart size={14} />,
+    icon: <HugeiconsIcon icon={FavouriteIcon} size={14} />,
     description: 'People with romantic developments',
     color: 'text-pink-500',
     bgGradient: 'from-pink-500/10 to-rose-500/10'
@@ -38,7 +48,7 @@ const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'incident',
     label: 'Drama',
-    icon: <AlertTriangle size={14} />,
+    icon: <HugeiconsIcon icon={AlertDiamondIcon} size={14} />,
     description: 'People who experienced something dramatic',
     color: 'text-orange-500',
     bgGradient: 'from-orange-500/10 to-amber-500/10'
@@ -46,7 +56,7 @@ const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'sad',
     label: 'Sadness',
-    icon: <CloudRain size={14} />,
+    icon: <HugeiconsIcon icon={SadDizzyIcon} size={14} />,
     description: 'People going through tough times',
     color: 'text-blue-500',
     bgGradient: 'from-blue-500/10 to-cyan-500/10'
@@ -54,7 +64,7 @@ const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'growth',
     label: 'Growth',
-    icon: <TrendingUp size={14} />,
+    icon: <HugeiconsIcon icon={ArrowUp01Icon} size={14} />,
     description: 'People showing remarkable growth',
     color: 'text-green-500',
     bgGradient: 'from-green-500/10 to-emerald-500/10'
@@ -88,11 +98,11 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Crown size={20} className="text-yellow-500 fill-yellow-500" />;
+        return <HugeiconsIcon icon={CrownIcon} size={20} color="#eab308" />;
       case 2:
-        return <Medal size={20} className="text-gray-400 fill-gray-400" />;
+        return <HugeiconsIcon icon={Medal01Icon} size={20} color="#9ca3af" />;
       case 3:
-        return <Medal size={20} className="text-amber-600 fill-amber-600" />;
+        return <HugeiconsIcon icon={Medal01Icon} size={20} color="#d97706" />;
       default:
         return <span className="text-neutral-400 font-bold text-sm w-5 text-center">{rank}</span>;
     }
@@ -121,10 +131,10 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
           onClick={onBack}
           className="flex items-center text-neutral-700 dark:text-neutral-400"
         >
-          <ChevronLeft size={24} strokeWidth={2} />
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={24} />
         </button>
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-black text-xl tracking-tight text-black dark:text-white flex items-center gap-2">
-          <Sparkles size={20} className="text-orange-400" />
+          <HugeiconsIcon icon={StarsIcon} size={20} color="#fb923c" />
           Weekly Ranking
         </h1>
         <div className="flex-1" />
@@ -204,7 +214,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
                   <span className={`text-lg font-bold ${currentCategory.color}`}>{friend.score}pt</span>
                   {friend.change > 0 && (
                     <span className="text-[10px] text-green-500 flex items-center gap-0.5">
-                      <TrendingUp size={10} />
+                      <HugeiconsIcon icon={ArrowUp01Icon} size={10} />
                       +{friend.change}
                     </span>
                   )}
