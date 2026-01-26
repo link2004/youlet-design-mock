@@ -18,8 +18,8 @@ interface BottomNavProps {
 const NAV_ITEMS: { icon: IconSvgObject; label: string; page: PageType }[] = [
   { icon: Home09Icon, label: "Cards", page: 'cards' },
   { icon: Cards02Icon, label: "Diagnostic", page: 'diagnostic' },
-  { icon: Calendar03Icon, label: "Log", page: 'log' },
   { icon: SentIcon, label: "DM", page: 'dm' },
+  { icon: Calendar03Icon, label: "Log", page: 'log' },
   { icon: UserIcon, label: "Profile", page: 'profile' },
 ];
 
