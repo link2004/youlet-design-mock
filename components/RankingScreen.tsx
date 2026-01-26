@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  CrownIcon,
-  Medal01Icon,
-  ArrowLeft01Icon,
-  StarsIcon,
-  FavouriteIcon,
-  AlertDiamondIcon,
-  SadDizzyIcon,
-  ArrowUp01Icon
-} from '@hugeicons/core-free-icons';
+import { Crown, Medal, ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
-import StatusBar from './StatusBar';
+import { PageType } from '../App';
 
 interface RankingScreenProps {
-  onBack: () => void;
+  currentPage: PageType;
+  onNavigate: (page: PageType) => void;
   onSelectFriend: (friend: FriendProfile) => void;
+  onBack: () => void;
 }
 
-// Weekly ranking category definitions
+// 週間ランキングのカテゴリ定義
 interface RankingCategory {
   id: string;
   label: string;
@@ -31,49 +23,49 @@ interface RankingCategory {
 const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'big_change',
-    label: 'Big Changes',
-    icon: <HugeiconsIcon icon={StarsIcon} size={14} />,
-    description: 'People with major life changes this week',
+    label: '大きな変化',
+    icon: <Sparkles size={14} />,
+    description: '今週大きな変化があった人',
     color: 'text-purple-500',
     bgGradient: 'from-purple-500/10 to-violet-500/10'
   },
   {
     id: 'love',
-    label: 'Romance',
-    icon: <HugeiconsIcon icon={FavouriteIcon} size={14} />,
-    description: 'People with romantic developments',
+    label: '恋愛',
+    icon: <Heart size={14} />,
+    description: '恋愛で動きがあった人',
     color: 'text-pink-500',
     bgGradient: 'from-pink-500/10 to-rose-500/10'
   },
   {
     id: 'incident',
-    label: 'Drama',
-    icon: <HugeiconsIcon icon={AlertDiamondIcon} size={14} />,
-    description: 'People who experienced something dramatic',
+    label: '事件',
+    icon: <AlertTriangle size={14} />,
+    description: '事件があった人',
     color: 'text-orange-500',
     bgGradient: 'from-orange-500/10 to-amber-500/10'
   },
   {
     id: 'sad',
-    label: 'Sadness',
-    icon: <HugeiconsIcon icon={SadDizzyIcon} size={14} />,
-    description: 'People going through tough times',
+    label: '悲しみ',
+    icon: <CloudRain size={14} />,
+    description: '悲しい思いをした人',
     color: 'text-blue-500',
     bgGradient: 'from-blue-500/10 to-cyan-500/10'
   },
   {
     id: 'growth',
-    label: 'Growth',
-    icon: <HugeiconsIcon icon={ArrowUp01Icon} size={14} />,
-    description: 'People showing remarkable growth',
+    label: '成長',
+    icon: <TrendingUp size={14} />,
+    description: '成長が著しい人',
     color: 'text-green-500',
     bgGradient: 'from-green-500/10 to-emerald-500/10'
   }
 ];
 
-// Generate ranking data for each category (shuffle using seed)
+// 各カテゴリ用のランキングデータを生成（シード値でシャッフル）
 const getWeeklyRanking = (categoryId: string) => {
-  // Sort differently per category (seeded shuffle)
+  // カテゴリごとに異なる順序でソート（シード的な効果）
   const seed = categoryId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
   const shuffled = [...FRIENDS_LIST].sort((a, b) => {
@@ -82,15 +74,15 @@ const getWeeklyRanking = (categoryId: string) => {
     return bHash - aHash;
   });
 
-  // Generate scores (different range per category)
+  // スコアを生成（各カテゴリで異なるスコア範囲）
   return shuffled.map((friend, index) => ({
     ...friend,
     score: Math.max(45, 95 - index * 5 - ((index * seed) % 3)),
-    change: index < 3 ? Math.floor(Math.random() * 5) + 1 : 0 // Show change for top 3
+    change: index < 3 ? Math.floor(Math.random() * 5) + 1 : 0 // 上位3人は変動表示
   }));
 };
 
-const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend }) => {
+const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack }) => {
   const [activeCategory, setActiveCategory] = useState(RANKING_CATEGORIES[0].id);
   const currentCategory = RANKING_CATEGORIES.find(c => c.id === activeCategory) || RANKING_CATEGORIES[0];
   const rankedFriends = getWeeklyRanking(activeCategory);
@@ -98,11 +90,11 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <HugeiconsIcon icon={CrownIcon} size={20} color="#eab308" />;
+        return <Crown size={20} className="text-yellow-500 fill-yellow-500" />;
       case 2:
-        return <HugeiconsIcon icon={Medal01Icon} size={20} color="#9ca3af" />;
+        return <Medal size={20} className="text-gray-400 fill-gray-400" />;
       case 3:
-        return <HugeiconsIcon icon={Medal01Icon} size={20} color="#d97706" />;
+        return <Medal size={20} className="text-amber-600 fill-amber-600" />;
       default:
         return <span className="text-neutral-400 font-bold text-sm w-5 text-center">{rank}</span>;
     }
@@ -123,7 +115,28 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
-      <StatusBar />
+      {/* Status Bar */}
+      <div className="flex justify-between items-center px-6 pt-[18px] pb-2 text-black dark:text-white font-semibold text-sm shrink-0 z-50">
+        <span className="w-12">13:42</span>
+        <div className="flex-1" />
+        <div className="flex items-center gap-1.5 w-20 justify-end">
+          <div className="flex items-end gap-[2px] h-3">
+            <div className="w-[3px] h-[4px] bg-black dark:bg-white rounded-[1px]" />
+            <div className="w-[3px] h-[6px] bg-black dark:bg-white rounded-[1px]" />
+            <div className="w-[3px] h-[8px] bg-black dark:bg-white rounded-[1px]" />
+            <div className="w-[3px] h-[11px] bg-black dark:bg-white rounded-[1px]" />
+          </div>
+          <svg className="w-4 h-3 text-black dark:text-white" viewBox="0 0 16 12" fill="currentColor">
+            <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM3.5 7.5c2.5-2.5 6.5-2.5 9 0l-1 1c-1.9-1.9-5.1-1.9-7 0l-1-1zM1 5c3.9-3.9 10.1-3.9 14 0l-1 1c-3.3-3.3-8.7-3.3-12 0L1 5z"/>
+          </svg>
+          <div className="flex items-center gap-0.5">
+            <div className="w-6 h-[11px] border-[1.5px] border-black dark:border-white rounded-[3px] relative flex items-center p-[1.5px]">
+              <div className="h-full bg-black dark:bg-white rounded-[1px]" style={{ width: '80%' }} />
+            </div>
+            <div className="w-[3px] h-[5px] bg-black dark:bg-white rounded-r-[1px] -ml-[1px]" />
+          </div>
+        </div>
+      </div>
 
       {/* Header */}
       <div className="relative flex items-center px-4 py-2 mt-4 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
@@ -131,10 +144,10 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
           onClick={onBack}
           className="flex items-center text-neutral-700 dark:text-neutral-400"
         >
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={24} />
+          <ChevronLeft size={24} strokeWidth={2} />
         </button>
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif italic font-black text-xl tracking-tight text-black dark:text-white flex items-center gap-2">
-          <HugeiconsIcon icon={StarsIcon} size={20} color="#fb923c" />
+          <Sparkles size={20} className="text-orange-400" />
           Weekly Ranking
         </h1>
         <div className="flex-1" />
@@ -143,7 +156,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
       {/* Subtitle with week info */}
       <div className="px-6 pt-2 pb-1">
         <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">
-          Weekly ranking for Jan 20 - Jan 26
+          1/20 〜 1/26 の週間ランキング
         </p>
       </div>
 
@@ -183,7 +196,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
               <button
                 key={friend.id}
                 onClick={() => onSelectFriend(friend)}
-                className={`flex items-center gap-3 p-3 rounded-xl border ${getRankBgClass(rank)} w-full text-left transition-transform active:scale-[0.98]`}
+                className={`flex items-center gap-3 p-3 rounded-xl border transition-transform active:scale-[0.98] ${getRankBgClass(rank)}`}
               >
                 {/* Rank */}
                 <div className="w-8 flex justify-center">
@@ -199,13 +212,13 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
                   />
                 </div>
 
-                {/* Name & Episode */}
-                <div className="flex-1 text-left min-w-0">
+                {/* Name & Info */}
+                <div className="flex-1 text-left">
                   <p className="font-semibold text-neutral-900 dark:text-white text-base">
                     {friend.name}
                   </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
-                    {friend.events[0]?.emoji} {friend.events[0]?.title || 'No recent events'}
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {friend.hobbies.slice(0, 2).join(', ')}
                   </p>
                 </div>
 
@@ -214,12 +227,12 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onBack, onSelectFriend })
                   <span className={`text-lg font-bold ${currentCategory.color}`}>{friend.score}pt</span>
                   {friend.change > 0 && (
                     <span className="text-[10px] text-green-500 flex items-center gap-0.5">
-                      <HugeiconsIcon icon={ArrowUp01Icon} size={10} />
+                      <TrendingUp size={10} />
                       +{friend.change}
                     </span>
                   )}
                   {!friend.change && (
-                    <span className="text-[10px] text-neutral-400">this week</span>
+                    <span className="text-[10px] text-neutral-400">今週</span>
                   )}
                 </div>
               </button>
