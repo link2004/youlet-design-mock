@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
+import React from 'react';
+import { ChevronLeft, Sparkles } from 'lucide-react';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
-import { PageType } from '../App';
+import StatusBar from './StatusBar';
 
 const RANK_MEDALS = [
   '/images/rank/1st_3d.png',
@@ -10,142 +10,30 @@ const RANK_MEDALS = [
 ];
 
 interface RankingScreenProps {
-  currentPage: PageType;
-  onNavigate: (page: PageType) => void;
   onSelectFriend: (friend: FriendProfile) => void;
   onBack: () => void;
 }
 
-// Weekly ranking category definitions
-interface RankingCategory {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  description: string;
-  color: string;
-  bgGradient: string;
-}
-
-const RANKING_CATEGORIES: RankingCategory[] = [
-  {
-    id: 'big_change',
-    label: 'Big Changes',
-    icon: <Sparkles size={14} />,
-    description: 'People with major life changes this week',
-    color: 'text-purple-500',
-    bgGradient: 'from-purple-500/10 to-violet-500/10'
-  },
-  {
-    id: 'love',
-    label: 'Romance',
-    icon: <Heart size={14} />,
-    description: 'People with romantic developments',
-    color: 'text-pink-500',
-    bgGradient: 'from-pink-500/10 to-rose-500/10'
-  },
-  {
-    id: 'incident',
-    label: 'Drama',
-    icon: <AlertTriangle size={14} />,
-    description: 'People who experienced something dramatic',
-    color: 'text-orange-500',
-    bgGradient: 'from-orange-500/10 to-amber-500/10'
-  },
-  {
-    id: 'sad',
-    label: 'Sadness',
-    icon: <CloudRain size={14} />,
-    description: 'People going through tough times',
-    color: 'text-blue-500',
-    bgGradient: 'from-blue-500/10 to-cyan-500/10'
-  },
-  {
-    id: 'growth',
-    label: 'Growth',
-    icon: <TrendingUp size={14} />,
-    description: 'People showing remarkable growth',
-    color: 'text-green-500',
-    bgGradient: 'from-green-500/10 to-emerald-500/10'
-  }
-];
-
-// Generate ranking data for each category (shuffle using seed)
-const getWeeklyRanking = (categoryId: string) => {
-  // Sort differently per category (seeded shuffle)
-  const seed = categoryId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
+// Generate ranking data
+const getWeeklyRanking = () => {
+  const seed = 42;
   const shuffled = [...FRIENDS_LIST].sort((a, b) => {
     const aHash = (a.id * seed) % 100;
     const bHash = (b.id * seed) % 100;
     return bHash - aHash;
   });
-
-  // Generate scores (different range per category)
-  return shuffled.map((friend, index) => ({
-    ...friend,
-    score: Math.max(45, 95 - index * 5 - ((index * seed) % 3)),
-    change: index < 3 ? Math.floor(Math.random() * 5) + 1 : 0 // Show change for top 3
-  }));
+  return shuffled;
 };
 
 const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack }) => {
-  const [activeCategory, setActiveCategory] = useState(RANKING_CATEGORIES[0].id);
-  const currentCategory = RANKING_CATEGORIES.find(c => c.id === activeCategory) || RANKING_CATEGORIES[0];
-  const rankedFriends = getWeeklyRanking(activeCategory);
-
-  const getRankIcon = (rank: number) => {
-    if (rank <= 3) {
-      return (
-        <img
-          src={RANK_MEDALS[rank - 1]}
-          alt={`${rank}`}
-          className="w-8 h-8 object-contain"
-        />
-      );
-    }
-    return <span className="text-neutral-400 font-bold text-sm w-8 text-center">{rank}</span>;
-  };
-
-  const getRankBgClass = (rank: number) => {
-    switch (rank) {
-      case 1:
-        return 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border-yellow-200 dark:border-yellow-700';
-      case 2:
-        return 'bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800/50 dark:to-slate-800/50 border-gray-200 dark:border-gray-600';
-      case 3:
-        return 'bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-orange-200 dark:border-orange-700';
-      default:
-        return 'bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700';
-    }
-  };
+  const rankedFriends = getWeeklyRanking();
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
-      {/* Status Bar */}
-      <div className="flex justify-between items-center px-6 pt-[18px] pb-2 text-black dark:text-white font-semibold text-sm shrink-0 z-50">
-        <span className="w-12">13:42</span>
-        <div className="flex-1" />
-        <div className="flex items-center gap-1.5 w-20 justify-end">
-          <div className="flex items-end gap-[2px] h-3">
-            <div className="w-[3px] h-[4px] bg-black dark:bg-white rounded-[1px]" />
-            <div className="w-[3px] h-[6px] bg-black dark:bg-white rounded-[1px]" />
-            <div className="w-[3px] h-[8px] bg-black dark:bg-white rounded-[1px]" />
-            <div className="w-[3px] h-[11px] bg-black dark:bg-white rounded-[1px]" />
-          </div>
-          <svg className="w-4 h-3 text-black dark:text-white" viewBox="0 0 16 12" fill="currentColor">
-            <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM3.5 7.5c2.5-2.5 6.5-2.5 9 0l-1 1c-1.9-1.9-5.1-1.9-7 0l-1-1zM1 5c3.9-3.9 10.1-3.9 14 0l-1 1c-3.3-3.3-8.7-3.3-12 0L1 5z"/>
-          </svg>
-          <div className="flex items-center gap-0.5">
-            <div className="w-6 h-[11px] border-[1.5px] border-black dark:border-white rounded-[3px] relative flex items-center p-[1.5px]">
-              <div className="h-full bg-black dark:bg-white rounded-[1px]" style={{ width: '80%' }} />
-            </div>
-            <div className="w-[3px] h-[5px] bg-black dark:bg-white rounded-r-[1px] -ml-[1px]" />
-          </div>
-        </div>
-      </div>
+      <StatusBar />
 
       {/* Header */}
-      <div className="relative flex items-center px-4 py-2 mt-4 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
+      <div className="relative flex items-center px-4 py-3 bg-cream dark:bg-black">
         <button
           onClick={onBack}
           className="flex items-center text-neutral-700 dark:text-neutral-400"
@@ -156,40 +44,12 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
           <Sparkles size={20} className="text-orange-400" />
           Weekly Ranking
         </h1>
-        <div className="flex-1" />
       </div>
 
-      {/* Subtitle with week info */}
-      <div className="px-6 pt-2 pb-1">
+      {/* Subtitle */}
+      <div className="px-6 pb-4">
         <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">
-          Weekly ranking for Jan 20 - Jan 26
-        </p>
-      </div>
-
-      {/* Category Tabs */}
-      <div className="px-4 py-2">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          {RANKING_CATEGORIES.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                activeCategory === category.id
-                  ? `bg-gradient-to-r ${category.bgGradient} ${category.color} border border-current`
-                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-transparent'
-              }`}
-            >
-              {category.icon}
-              {category.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Category Description */}
-      <div className="px-6 py-2">
-        <p className={`text-center text-sm font-medium ${currentCategory.color}`}>
-          {currentCategory.description}
+          Jan 20 - Jan 26
         </p>
       </div>
 
@@ -202,44 +62,35 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
               <button
                 key={friend.id}
                 onClick={() => onSelectFriend(friend)}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition-transform active:scale-[0.98] ${getRankBgClass(rank)}`}
+                className="flex items-center gap-3 p-3 bg-white dark:bg-neutral-800 rounded-2xl shadow-sm transition-transform active:scale-[0.98]"
               >
                 {/* Rank */}
-                <div className="w-8 flex justify-center">
-                  {getRankIcon(rank)}
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                  {rank <= 3 ? (
+                    <img
+                      src={RANK_MEDALS[rank - 1]}
+                      alt={`${rank}`}
+                      className="w-10 h-10 object-contain"
+                    />
+                  ) : (
+                    <span className="text-neutral-400 font-bold text-lg">{rank}</span>
+                  )}
                 </div>
 
                 {/* Avatar */}
-                <div className="w-12 h-12 rounded-full bg-gradient-to-b from-neutral-100 to-neutral-200 dark:from-neutral-700 dark:to-neutral-800 overflow-hidden border-2 border-white dark:border-neutral-600 shadow-sm">
+                <div className="w-11 h-11 shrink-0">
                   <img
                     src={friend.image}
                     alt={friend.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
-                {/* Name & Info */}
+                {/* Name */}
                 <div className="flex-1 text-left">
-                  <p className="font-semibold text-neutral-900 dark:text-white text-base">
+                  <p className="font-semibold text-neutral-900 dark:text-white text-sm">
                     {friend.name}
                   </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {friend.hobbies.slice(0, 2).join(', ')}
-                  </p>
-                </div>
-
-                {/* Score & Change */}
-                <div className="flex flex-col items-end">
-                  <span className={`text-lg font-bold ${currentCategory.color}`}>{friend.score}pt</span>
-                  {friend.change > 0 && (
-                    <span className="text-[10px] text-green-500 flex items-center gap-0.5">
-                      <TrendingUp size={10} />
-                      +{friend.change}
-                    </span>
-                  )}
-                  {!friend.change && (
-                    <span className="text-[10px] text-neutral-400">this week</span>
-                  )}
                 </div>
               </button>
             );
