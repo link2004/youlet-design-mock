@@ -4,7 +4,7 @@ import {
   Home01Icon,
   CompassIcon,
   Calendar03Icon,
-  BubbleChatIcon,
+  SentIcon,
   UserIcon
 } from '@hugeicons/core-free-icons';
 import type { IconSvgObject } from '@hugeicons/react';
@@ -19,7 +19,7 @@ const NAV_ITEMS: { icon: IconSvgObject; label: string; page: PageType }[] = [
   { icon: Home01Icon, label: "Cards", page: 'cards' },
   { icon: CompassIcon, label: "Diagnostic", page: 'diagnostic' },
   { icon: Calendar03Icon, label: "Log", page: 'log' },
-  { icon: BubbleChatIcon, label: "DM", page: 'dm' },
+  { icon: SentIcon, label: "DM", page: 'dm' },
   { icon: UserIcon, label: "Profile", page: 'profile' },
 ];
 
