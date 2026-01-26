@@ -707,21 +707,15 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       <StatusBar />
 
-      {/* ヘッダー - 月表示（スワイプ対応） */}
-      <div
-        ref={headerRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 select-none"
-      >
-        <div className="w-10" /> {/* 左スペーサー */}
-        <span className="text-black dark:text-white font-semibold text-lg">
-          {formatMonthYear(currentYear, currentMonth)}
-        </span>
+      {/* Header with YouLet logo */}
+      <div className="relative flex items-center justify-between px-4 py-2 bg-cream dark:bg-black shrink-0 z-40 transition-colors duration-300">
+        <div className="w-8" />
+        <h1 className="font-serif italic font-black text-2xl tracking-tight text-black dark:text-white">
+          YouLet
+        </h1>
         <button
           onClick={toggleViewMode}
-          className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
         >
           {viewMode === 'list' ? (
             <Calendar size={20} className="text-orange-400" />
@@ -746,12 +740,6 @@ const LogScreen: React.FC<LogScreenProps> = ({ currentPage, onNavigate }) => {
                 if (el) dateRefs.current.set(date, el);
               }}
             >
-              {/* 日付ヘッダー */}
-              <div className="py-2">
-                <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                  {formatDateLong(date)}
-                </span>
-              </div>
               {/* その日のアクティビティ */}
               {dateActivities.map(activity => (
                 <PostCard
