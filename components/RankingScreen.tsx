@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { Crown, Medal, ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
+import { ChevronLeft, Sparkles, Heart, AlertTriangle, CloudRain, TrendingUp } from 'lucide-react';
 import { FRIENDS_LIST, FriendProfile } from '../constants';
 import { PageType } from '../App';
+
+const RANK_MEDALS = [
+  '/images/rank/1st_3d.png',
+  '/images/rank/2nd_3d.png',
+  '/images/rank/3rd_3d.png',
+];
 
 interface RankingScreenProps {
   currentPage: PageType;
@@ -10,7 +16,7 @@ interface RankingScreenProps {
   onBack: () => void;
 }
 
-// 週間ランキングのカテゴリ定義
+// Weekly ranking category definitions
 interface RankingCategory {
   id: string;
   label: string;
@@ -23,49 +29,49 @@ interface RankingCategory {
 const RANKING_CATEGORIES: RankingCategory[] = [
   {
     id: 'big_change',
-    label: '大きな変化',
+    label: 'Big Changes',
     icon: <Sparkles size={14} />,
-    description: '今週大きな変化があった人',
+    description: 'People with major life changes this week',
     color: 'text-purple-500',
     bgGradient: 'from-purple-500/10 to-violet-500/10'
   },
   {
     id: 'love',
-    label: '恋愛',
+    label: 'Romance',
     icon: <Heart size={14} />,
-    description: '恋愛で動きがあった人',
+    description: 'People with romantic developments',
     color: 'text-pink-500',
     bgGradient: 'from-pink-500/10 to-rose-500/10'
   },
   {
     id: 'incident',
-    label: '事件',
+    label: 'Drama',
     icon: <AlertTriangle size={14} />,
-    description: '事件があった人',
+    description: 'People who experienced something dramatic',
     color: 'text-orange-500',
     bgGradient: 'from-orange-500/10 to-amber-500/10'
   },
   {
     id: 'sad',
-    label: '悲しみ',
+    label: 'Sadness',
     icon: <CloudRain size={14} />,
-    description: '悲しい思いをした人',
+    description: 'People going through tough times',
     color: 'text-blue-500',
     bgGradient: 'from-blue-500/10 to-cyan-500/10'
   },
   {
     id: 'growth',
-    label: '成長',
+    label: 'Growth',
     icon: <TrendingUp size={14} />,
-    description: '成長が著しい人',
+    description: 'People showing remarkable growth',
     color: 'text-green-500',
     bgGradient: 'from-green-500/10 to-emerald-500/10'
   }
 ];
 
-// 各カテゴリ用のランキングデータを生成（シード値でシャッフル）
+// Generate ranking data for each category (shuffle using seed)
 const getWeeklyRanking = (categoryId: string) => {
-  // カテゴリごとに異なる順序でソート（シード的な効果）
+  // Sort differently per category (seeded shuffle)
   const seed = categoryId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
   const shuffled = [...FRIENDS_LIST].sort((a, b) => {
@@ -74,11 +80,11 @@ const getWeeklyRanking = (categoryId: string) => {
     return bHash - aHash;
   });
 
-  // スコアを生成（各カテゴリで異なるスコア範囲）
+  // Generate scores (different range per category)
   return shuffled.map((friend, index) => ({
     ...friend,
     score: Math.max(45, 95 - index * 5 - ((index * seed) % 3)),
-    change: index < 3 ? Math.floor(Math.random() * 5) + 1 : 0 // 上位3人は変動表示
+    change: index < 3 ? Math.floor(Math.random() * 5) + 1 : 0 // Show change for top 3
   }));
 };
 
@@ -88,16 +94,16 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
   const rankedFriends = getWeeklyRanking(activeCategory);
 
   const getRankIcon = (rank: number) => {
-    switch (rank) {
-      case 1:
-        return <Crown size={20} className="text-yellow-500 fill-yellow-500" />;
-      case 2:
-        return <Medal size={20} className="text-gray-400 fill-gray-400" />;
-      case 3:
-        return <Medal size={20} className="text-amber-600 fill-amber-600" />;
-      default:
-        return <span className="text-neutral-400 font-bold text-sm w-5 text-center">{rank}</span>;
+    if (rank <= 3) {
+      return (
+        <img
+          src={RANK_MEDALS[rank - 1]}
+          alt={`${rank}`}
+          className="w-8 h-8 object-contain"
+        />
+      );
     }
+    return <span className="text-neutral-400 font-bold text-sm w-8 text-center">{rank}</span>;
   };
 
   const getRankBgClass = (rank: number) => {
@@ -156,7 +162,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
       {/* Subtitle with week info */}
       <div className="px-6 pt-2 pb-1">
         <p className="text-center text-neutral-500 dark:text-neutral-400 text-xs">
-          1/20 〜 1/26 の週間ランキング
+          Weekly ranking for Jan 20 - Jan 26
         </p>
       </div>
 
@@ -232,7 +238,7 @@ const RankingScreen: React.FC<RankingScreenProps> = ({ onSelectFriend, onBack })
                     </span>
                   )}
                   {!friend.change && (
-                    <span className="text-[10px] text-neutral-400">今週</span>
+                    <span className="text-[10px] text-neutral-400">this week</span>
                   )}
                 </div>
               </button>
