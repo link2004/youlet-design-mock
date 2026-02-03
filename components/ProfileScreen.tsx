@@ -1,19 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, ChevronLeft, Star, Moon, Sun } from 'lucide-react';
-import { MENU_ITEMS } from '../constants';
-import MenuItem from './MenuItem';
+import { Settings, ChevronLeft, ChevronRight, Star, Moon, Sun, Share2, Sparkles, BookOpen } from 'lucide-react';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import StoryView from './StoryView';
 import ProfileCardFlip from './ProfileCardFlip';
 import { PageType } from '../App';
 
-interface PhoneScreenProps {
+interface ProfileScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
 }
 
-const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) => {
+// Menu item component for navigation
+const MenuLink: React.FC<{
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}> = ({ icon, label, onClick }) => (
+  <button
+    onClick={onClick}
+    className="flex items-center justify-between w-full px-4 py-3 bg-white dark:bg-neutral-900 rounded-xl active:scale-[0.98] transition-transform"
+  >
+    <div className="flex items-center gap-3">
+      {icon}
+      <span className="font-medium text-neutral-900 dark:text-neutral-100">{label}</span>
+    </div>
+    <ChevronRight size={20} className="text-neutral-400" />
+  </button>
+);
+
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showStory, setShowStory] = useState(false);
@@ -52,18 +68,12 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
             {/* Profile Card with Flip */}
             <ProfileCardFlip />
 
-            {/* Menu List */}
-            <div className="px-6 flex flex-col gap-1 pb-4">
-              {MENU_ITEMS.map((item, idx) => (
-                <MenuItem key={idx} {...item} />
-              ))}
-            </div>
-
-            {/* Promo Cards - Bottom Section */}
-            <div className="px-6 pb-6">
+            {/* Action Buttons */}
+            <div className="px-6 flex flex-col gap-3 pb-4">
+              {/* Read Your Story Button */}
               <button
                 onClick={() => setShowStory(true)}
-                className="w-full bg-gradient-to-r from-blue-500 to-red-500 py-5 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
+                className="w-full bg-gradient-to-r from-blue-500 to-red-500 py-4 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
               >
                 <div className="absolute -right-2 -top-2 text-white/10 transform rotate-12">
                   <Star size={48} fill="currentColor" />
@@ -75,6 +85,35 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
                   Read Your Story
                 </span>
               </button>
+
+              {/* Share Profile Button */}
+              <button
+                className="w-full bg-white dark:bg-neutral-800 py-4 rounded-2xl shadow-sm active:scale-[0.98] transition-transform flex items-center justify-center gap-2 border border-neutral-200 dark:border-neutral-700"
+              >
+                <Share2 size={18} className="text-orange-400" />
+                <span className="font-semibold text-neutral-900 dark:text-white text-sm">
+                  Share Profile
+                </span>
+              </button>
+            </div>
+
+            {/* Menu Links */}
+            <div className="px-6 pb-6">
+              <h2 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">
+                More
+              </h2>
+              <div className="flex flex-col gap-2">
+                <MenuLink
+                  icon={<Sparkles size={20} className="text-pink-500" />}
+                  label="Diagnostic"
+                  onClick={() => onNavigate('diagnostic')}
+                />
+                <MenuLink
+                  icon={<BookOpen size={20} className="text-blue-500" />}
+                  label="Log"
+                  onClick={() => onNavigate('log')}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -150,4 +189,4 @@ const PhoneScreen: React.FC<PhoneScreenProps> = ({ currentPage, onNavigate }) =>
   );
 };
 
-export default PhoneScreen;
+export default ProfileScreen;

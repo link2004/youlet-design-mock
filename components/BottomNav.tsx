@@ -2,8 +2,6 @@ import React from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home09Icon,
-  Cards02Icon,
-  Notebook02Icon,
   SentIcon,
   UserIcon
 } from '@hugeicons/core-free-icons';
@@ -16,10 +14,8 @@ interface BottomNavProps {
 }
 
 const NAV_ITEMS: { icon: IconSvgObject; label: string; page: PageType }[] = [
-  { icon: Home09Icon, label: "Cards", page: 'cards' },
-  { icon: Cards02Icon, label: "Diagnostic", page: 'diagnostic' },
-  { icon: SentIcon, label: "DM", page: 'dm' },
-  { icon: Notebook02Icon, label: "Log", page: 'log' },
+  { icon: SentIcon, label: "Chat", page: 'chat' },
+  { icon: Home09Icon, label: "Home", page: 'home' },
   { icon: UserIcon, label: "Profile", page: 'profile' },
 ];
 

@@ -16,11 +16,16 @@ YouLet アプリのデザインモックアップ。iPhone モックアップ内
 ```
 /
 ├── components/       # React コンポーネント
-│   ├── IPhoneMockup.tsx  # iPhone フレーム
-│   ├── PhoneScreen.tsx   # 画面コンテンツ
-│   ├── BottomNav.tsx     # 下部ナビゲーション
-│   ├── MenuItem.tsx      # メニュー項目
-│   └── StatCard.tsx      # 統計カード
+│   ├── IPhoneMockup.tsx    # iPhone フレーム
+│   ├── HomeScreen.tsx      # ホーム画面（検索、提案カード、友達グリッド、ランキングプレビュー）
+│   ├── ChatScreen.tsx      # チャット画面（AIチャット、友達チャット一覧・詳細）
+│   ├── ProfileScreen.tsx   # プロフィール画面（カード、ストーリー、シェア、メニュー）
+│   ├── BottomNav.tsx       # 下部ナビゲーション（3タブ: Chat/Home/Profile）
+│   ├── RankingScreen.tsx   # ランキング画面（ホームからの遷移先）
+│   ├── DiagnosticScreen.tsx # 診断画面（プロフィールからの遷移先）
+│   ├── LogScreen.tsx       # ログ画面（プロフィールからの遷移先）
+│   ├── FriendDetailScreen.tsx # 友達詳細画面
+│   └── ...
 ├── constants.ts      # 定数・データ定義
 ├── App.tsx          # ルートコンポーネント
 └── index.tsx        # エントリーポイント
@@ -54,11 +59,17 @@ npm run preview  # ビルド結果プレビュー
 
 ## 実装済み機能
 
+### ナビゲーション
+- 3タブ構成: Chat / Home / Profile（BottomNav）
+- デフォルト画面: Home
+
 ### 基本画面
-- Feed画面: 友達カードの一覧表示
-- Ranking画面: ランキング表示
-- DM画面: チャット一覧・個別会話
-- Diagnostic画面: 診断機能
+- Home画面: 検索バー、友達追加ボタン、新しいつながり提案カード、友達グリッド（3列）、ランキングプレビュー（上位3名）
+- Chat画面: AIチャット（Morasu）、友達チャット一覧・詳細会話、チャット詳細に「相性を見る」「AIに相談」ボタン
+- Profile画面: プロフィールカード、Read Your Story、Share Profile、Diagnostic/Logメニューリンク
+- Ranking画面: 週間ランキング表示（ホームから遷移）
+- Diagnostic画面: 診断機能（プロフィールから遷移）
+- Log画面: 行動ログ（プロフィールから遷移）
 
 ### 削除済み機能（2025-01）
 以下の機能はクリーンアップにより削除:

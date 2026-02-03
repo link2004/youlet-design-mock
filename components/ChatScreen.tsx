@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera } from 'lucide-react';
+import { Search, Edit, ArrowLeft, Send, Image, Mic, Camera, Sparkles, Heart } from 'lucide-react';
 import { DM_CHATS, DM_MESSAGES_BY_CHAT, USER_DATA, DMChat, type DMMessage } from '../constants';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import { PageType } from '../App';
 
-interface DMScreenProps {
+interface ChatScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
   initialChatId?: string;
@@ -58,12 +58,50 @@ const ChatItem: React.FC<ChatItemProps> = ({ chat, onClick }) => (
   </div>
 );
 
+// AI Chat item at the top
+const AIChatItem: React.FC<{ onClick: () => void }> = ({ onClick }) => (
+  <div
+    onClick={onClick}
+    className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 cursor-pointer transition-colors border-b border-orange-100 dark:border-orange-900/30"
+  >
+    {/* AI Avatar */}
+    <div className="relative shrink-0">
+      <img
+        src={USER_DATA.characterAvatar}
+        alt="Your AI"
+        className="w-14 h-14 object-contain"
+      />
+      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-orange-400 rounded-full flex items-center justify-center">
+        <Sparkles size={12} className="text-white" />
+      </div>
+    </div>
+
+    {/* Content */}
+    <div className="flex-1 min-w-0">
+      <div className="flex items-center gap-2">
+        <span className="font-bold text-orange-600 dark:text-orange-400">
+          AI Morasu
+        </span>
+        <span className="text-xs px-2 py-0.5 bg-orange-400 text-white rounded-full">
+          Your AI
+        </span>
+      </div>
+      <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-0.5">
+        I can suggest things and help you out!
+      </p>
+    </div>
+  </div>
+);
+
 interface ChatDetailProps {
   chat: DMChat;
   onBack: () => void;
+  onDiagnostic?: () => void;
+  onAIConsult?: () => void;
+  isAIChat?: boolean;
 }
 
-// 頭文字アバターコンポーネント
+// Initial avatar component
 const InitialAvatar: React.FC<{ name: string }> = ({ name }) => (
   <div className="w-8 h-8 rounded-full bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center shrink-0">
     <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
@@ -72,27 +110,22 @@ const InitialAvatar: React.FC<{ name: string }> = ({ name }) => (
   </div>
 );
 
-// メッセージバブルコンポーネント
+// Message bubble component
 interface MessageBubbleProps {
   message: DMMessage;
-  chatAvatar: string;  // 相手のキャラクターアバター
-  chatName: string;    // 相手の名前
+  chatAvatar: string;
+  chatName: string;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chatName }) => {
   const isUser = message.sender === 'user';
   const isAI = message.isAI;
 
-  // 自分の人間メッセージはアイコン不要
   const showAvatar = isAI || !isUser;
-
-  // メッセージの横幅（右側のスペースを有効活用）
   const maxWidth = 'max-w-[85%]';
 
-  // アバターを描画
   const renderAvatar = () => {
     if (isAI) {
-      // AIメッセージ → キャラクター画像
       const avatarSrc = isUser ? USER_DATA.characterAvatar : chatAvatar;
       return (
         <img
@@ -102,20 +135,16 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chat
         />
       );
     } else {
-      // 人間メッセージ → 頭文字アバター
       const name = isUser ? USER_DATA.name : chatName;
       return <InitialAvatar name={name} />;
     }
   };
 
-  // 自分の人間メッセージは右寄せ（アイコンなし）
-  // それ以外は左にアイコン配置
   const isUserHumanMessage = isUser && !isAI;
 
   return (
     <div className={`flex items-end gap-2 ${isUserHumanMessage ? 'justify-end' : 'justify-start'}`}>
       {showAvatar && renderAvatar()}
-      {/* メッセージバブル */}
       <div
         className={`${maxWidth} px-4 py-2 rounded-2xl ${
           isUser
@@ -134,11 +163,11 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar, chat
   );
 };
 
-const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
+const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack, onDiagnostic, onAIConsult, isAIChat }) => {
   const [inputValue, setInputValue] = useState('');
   const [localMessages, setLocalMessages] = useState<DMMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const initialMessages = DM_MESSAGES_BY_CHAT[chat.id] || [];
+  const initialMessages = isAIChat ? [] : (DM_MESSAGES_BY_CHAT[chat.id] || []);
   const messages = [...initialMessages, ...localMessages];
 
   const scrollToBottom = () => {
@@ -196,20 +225,40 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
             alt={chat.name}
             className="w-10 h-10 rounded-full object-cover"
           />
-          {chat.online && (
+          {!isAIChat && chat.online && (
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-cream dark:border-black" />
+          )}
+          {isAIChat && (
+            <div className="absolute bottom-0 right-0 w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center border-2 border-cream dark:border-black">
+              <Sparkles size={10} className="text-white" />
+            </div>
           )}
         </div>
         <div className="flex-1">
           <h3 className="font-semibold text-black dark:text-white">{chat.name}</h3>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            {chat.online ? 'Active now' : 'Offline'}
+            {isAIChat ? 'Your AI companion' : (chat.online ? 'Active now' : 'Offline')}
           </p>
         </div>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto py-4 no-scrollbar">
+        {isAIChat && messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full text-center px-8">
+            <img
+              src={USER_DATA.characterAvatar}
+              alt="AI"
+              className="w-24 h-24 object-contain mb-4"
+            />
+            <h3 className="font-bold text-black dark:text-white text-lg mb-2">
+              Hey there!
+            </h3>
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+              I'm your personal AI assistant. Ask me anything about your friends, get suggestions for conversations, or just chat!
+            </p>
+          </div>
+        )}
         <div className="flex flex-col gap-3 px-4">
           {messages.map((msg) => (
             <MessageBubble key={msg.id} message={msg} chatAvatar={chat.avatar} chatName={chat.name} />
@@ -218,6 +267,26 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
 
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Action Buttons for friend chats */}
+      {!isAIChat && (
+        <div className="px-4 py-2 flex gap-2 border-t border-neutral-200 dark:border-neutral-800">
+          <button
+            onClick={onDiagnostic}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-sm active:scale-95 transition-transform"
+          >
+            <Heart size={16} />
+            Check Compatibility
+          </button>
+          <button
+            onClick={onAIConsult}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 text-white font-semibold text-sm active:scale-95 transition-transform"
+          >
+            <Sparkles size={16} />
+            Ask AI
+          </button>
+        </div>
+      )}
 
       {/* Input */}
       <div className="px-4 py-3 border-t border-neutral-200 dark:border-neutral-800 bg-cream dark:bg-black">
@@ -255,13 +324,25 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chat, onBack }) => {
   );
 };
 
-const DMScreen: React.FC<DMScreenProps> = ({
+const ChatScreen: React.FC<ChatScreenProps> = ({
   currentPage,
   onNavigate,
   initialChatId,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChat, setSelectedChat] = useState<DMChat | null>(null);
+  const [isAIChat, setIsAIChat] = useState(false);
+
+  // AI Chat object
+  const aiChat: DMChat = {
+    id: 'ai',
+    name: 'AI Morasu',
+    avatar: USER_DATA.characterAvatar,
+    lastMessage: '',
+    timestamp: '',
+    unread: false,
+    online: true,
+  };
 
   // Open chat when initialChatId is provided
   useEffect(() => {
@@ -269,6 +350,7 @@ const DMScreen: React.FC<DMScreenProps> = ({
       const chat = DM_CHATS.find(c => c.id === initialChatId);
       if (chat) {
         setSelectedChat(chat);
+        setIsAIChat(false);
       }
     }
   }, [initialChatId]);
@@ -276,6 +358,26 @@ const DMScreen: React.FC<DMScreenProps> = ({
   const filteredChats = DM_CHATS.filter(chat =>
     chat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleOpenAIChat = () => {
+    setSelectedChat(aiChat);
+    setIsAIChat(true);
+  };
+
+  const handleOpenFriendChat = (chat: DMChat) => {
+    setSelectedChat(chat);
+    setIsAIChat(false);
+  };
+
+  const handleDiagnostic = () => {
+    onNavigate('diagnostic');
+  };
+
+  const handleAIConsult = () => {
+    // Switch to AI chat
+    setSelectedChat(aiChat);
+    setIsAIChat(true);
+  };
 
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
@@ -289,7 +391,7 @@ const DMScreen: React.FC<DMScreenProps> = ({
             alt="Your avatar"
             className="w-8 h-8 object-contain"
           />
-          <h1 className="text-xl font-bold text-black dark:text-white">{USER_DATA.name}</h1>
+          <h1 className="text-xl font-bold text-black dark:text-white">Morasu</h1>
         </div>
         <button className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors">
           <Edit size={24} className="text-black dark:text-white" />
@@ -310,19 +412,22 @@ const DMScreen: React.FC<DMScreenProps> = ({
         </div>
       </div>
 
-      {/* Messages label */}
-      <div className="px-4 py-2">
-        <h2 className="text-base font-semibold text-black dark:text-white">Messages</h2>
-      </div>
-
       {/* Chat List */}
       <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
+        {/* AI Chat at the top */}
+        <AIChatItem onClick={handleOpenAIChat} />
+
+        {/* Messages label */}
+        <div className="px-4 py-2">
+          <h2 className="text-base font-semibold text-black dark:text-white">Friends</h2>
+        </div>
+
         {filteredChats.length > 0 ? (
           filteredChats.map((chat) => (
             <ChatItem
               key={chat.id}
               chat={chat}
-              onClick={() => setSelectedChat(chat)}
+              onClick={() => handleOpenFriendChat(chat)}
             />
           ))
         ) : (
@@ -338,11 +443,17 @@ const DMScreen: React.FC<DMScreenProps> = ({
       {selectedChat && (
         <ChatDetail
           chat={selectedChat}
-          onBack={() => setSelectedChat(null)}
+          onBack={() => {
+            setSelectedChat(null);
+            setIsAIChat(false);
+          }}
+          onDiagnostic={handleDiagnostic}
+          onAIConsult={handleAIConsult}
+          isAIChat={isAIChat}
         />
       )}
     </div>
   );
 };
 
-export default DMScreen;
+export default ChatScreen;

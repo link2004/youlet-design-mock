@@ -9,10 +9,10 @@ interface FriendDetailScreenProps {
   friend: FriendProfile;
   onBack: () => void;
   onDiagnostic?: (diagnostic: DiagnosticType) => void;
-  onDM?: () => void;
+  onChat?: () => void;
 }
 
-const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onDiagnostic, onDM }) => {
+const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack, onDiagnostic, onChat }) => {
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -74,7 +74,7 @@ const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ friend, onBack,
           </button>
 
           <button
-            onClick={onDM}
+            onClick={onChat}
             className="w-full py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 active:scale-95 transition-transform"
           >
             <span className="text-base text-white font-bold">Message</span>

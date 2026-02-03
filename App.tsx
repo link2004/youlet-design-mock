@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import IPhoneMockup from './components/IPhoneMockup';
-import PhoneScreen from './components/PhoneScreen';
-import FeedScreen from './components/FeedScreen';
+import ProfileScreen from './components/ProfileScreen';
+import HomeScreen from './components/HomeScreen';
 import RankingScreen from './components/RankingScreen';
 import DiagnosticScreen from './components/DiagnosticScreen';
 import DiagnosticDetailScreen from './components/DiagnosticDetailScreen';
-import DMScreen from './components/DMScreen';
+import ChatScreen from './components/ChatScreen';
 import FriendDetailScreen from './components/FriendDetailScreen';
 import LogScreen from './components/LogScreen';
 import { DiagnosticType, GroupDiagnosticType, FriendProfile } from './constants';
 
-export type PageType = 'cards' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'dm' | 'friend-detail' | 'log';
+export type PageType = 'home' | 'chat' | 'profile' | 'diagnostic' | 'diagnostic-detail' | 'group-diagnostic-detail' | 'ranking' | 'friend-detail' | 'log';
 
 type DiagnosticTabType = 'pair' | 'group';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<PageType>('profile');
+  const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [selectedDiagnostic, setSelectedDiagnostic] = useState<DiagnosticType | null>(null);
   const [selectedGroupDiagnostic, setSelectedGroupDiagnostic] = useState<GroupDiagnosticType | null>(null);
   const [selectedFriend, setSelectedFriend] = useState<FriendProfile | null>(null);
@@ -56,7 +56,7 @@ const App: React.FC = () => {
 
   const handleBackFromFriendDetail = () => {
     setSelectedFriend(null);
-    setCurrentPage('cards');
+    setCurrentPage('home');
   };
 
   const handleDiagnosticFromFriendDetail = (diagnostic: DiagnosticType) => {
@@ -64,16 +64,16 @@ const App: React.FC = () => {
     setCurrentPage('diagnostic-detail');
   };
 
-  const handleDMFromFriendDetail = () => {
-    setCurrentPage('dm');
+  const handleChatFromFriendDetail = () => {
+    setCurrentPage('chat');
   };
 
   const renderScreen = () => {
     switch (currentPage) {
-      case 'cards':
+      case 'home':
         return (
-          <FeedScreen
-            currentPage="cards"
+          <HomeScreen
+            currentPage="home"
             onNavigate={setCurrentPage}
             onSelectFriend={handleSelectFriendFromFeed}
           />
@@ -81,8 +81,8 @@ const App: React.FC = () => {
       case 'friend-detail':
         return (
           <>
-            <FeedScreen
-              currentPage="cards"
+            <HomeScreen
+              currentPage="home"
               onNavigate={setCurrentPage}
               onSelectFriend={handleSelectFriendFromFeed}
             />
@@ -91,7 +91,7 @@ const App: React.FC = () => {
                 friend={selectedFriend}
                 onBack={handleBackFromFriendDetail}
                 onDiagnostic={handleDiagnosticFromFriendDetail}
-                onDM={handleDMFromFriendDetail}
+                onChat={handleChatFromFriendDetail}
               />
             )}
           </>
@@ -99,7 +99,7 @@ const App: React.FC = () => {
       case 'ranking':
         return (
           <RankingScreen
-            onBack={() => setCurrentPage('cards')}
+            onBack={() => setCurrentPage('home')}
             onSelectFriend={handleSelectFriendFromRanking}
           />
         );
@@ -138,9 +138,9 @@ const App: React.FC = () => {
           );
         }
         return <DiagnosticScreen currentPage="diagnostic" onNavigate={setCurrentPage} onSelectDiagnostic={handleSelectDiagnostic} onSelectGroupDiagnostic={handleSelectGroupDiagnostic} activeTab={diagnosticTab} onTabChange={setDiagnosticTab} />;
-      case 'dm':
+      case 'chat':
         return (
-          <DMScreen
+          <ChatScreen
             currentPage={currentPage}
             onNavigate={setCurrentPage}
           />
@@ -154,7 +154,7 @@ const App: React.FC = () => {
         );
       case 'profile':
       default:
-        return <PhoneScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
+        return <ProfileScreen currentPage={currentPage} onNavigate={setCurrentPage} />;
     }
   };
 
