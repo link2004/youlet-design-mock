@@ -15,19 +15,28 @@ YouLet アプリのデザインモックアップ。iPhone モックアップ内
 
 ```
 /
+├── contexts/         # React Contexts
+│   ├── MobileContext.tsx      # モバイル判定
+│   └── AppStateContext.tsx    # グローバル状態管理（一行、カード位置、メモ、GO済み）
 ├── components/       # React コンポーネント
-│   ├── IPhoneMockup.tsx    # iPhone フレーム
-│   ├── HomeScreen.tsx      # ホーム画面（検索、提案カード、友達グリッド、ランキングプレビュー）
-│   ├── ChatScreen.tsx      # チャット画面（AIチャット、友達チャット一覧・詳細）
-│   ├── ProfileScreen.tsx   # プロフィール画面（カード、ストーリー、シェア、メニュー）
-│   ├── BottomNav.tsx       # 下部ナビゲーション（3タブ: Chat/Home/Profile）
-│   ├── RankingScreen.tsx   # ランキング画面（ホームからの遷移先）
-│   ├── DiagnosticScreen.tsx # 診断画面（プロフィールからの遷移先）
-│   ├── LogScreen.tsx       # ログ画面（プロフィールからの遷移先）
-│   ├── FriendDetailScreen.tsx # 友達詳細画面
+│   ├── IPhoneMockup.tsx       # iPhone フレーム
+│   ├── HomeScreen.tsx         # ホーム画面（放射状グラフ、ランキング、一行リスト）
+│   ├── RadialGraph.tsx        # 放射状グラフ（友達カード配置、SVG接続線）
+│   ├── RadialFriendCard.tsx   # ドラッグ可能な友達カード
+│   ├── RadialCenterCard.tsx   # 中央の自分カード
+│   ├── ChatScreen.tsx         # チャット画面（AIチャット、4者ルーム一覧）
+│   ├── FourPersonChatDetail.tsx # 4者チャット詳細（user/friend/userAI/friendAI）
+│   ├── ProfileScreen.tsx      # プロフィール画面（一行生成、BFトグル、QR、最近の出来事）
+│   ├── FriendCardBack.tsx     # 友達カード裏面（フル情報、メモ、GO）
+│   ├── OneLineGenerateScreen.tsx # 今日の一行生成フロー
+│   ├── QRCodeOverlay.tsx      # QRコードシェア表示
+│   ├── BottomNav.tsx          # 下部ナビゲーション（3タブ: Chat/Home/Profile）
+│   ├── RankingScreen.tsx      # ランキング画面（ホームからの遷移先）
+│   ├── DiagnosticScreen.tsx   # 診断画面（プロフィールからの遷移先）
+│   ├── LogScreen.tsx          # ログ画面（プロフィールからの遷移先）
 │   └── ...
-├── constants.ts      # 定数・データ定義
-├── App.tsx          # ルートコンポーネント
+├── constants.ts      # 定数・データ定義（一行、4者チャット、メモ等）
+├── App.tsx          # ルートコンポーネント（AppStateProvider）
 └── index.tsx        # エントリーポイント
 ```
 
@@ -59,23 +68,64 @@ npm run preview  # ビルド結果プレビュー
 
 ## 実装済み機能
 
+### 状態管理
+- AppStateContext: useReducerベースのグローバル状態管理
+  - OneLineState: 'ungenerated' → 'candidates' → 'confirmed'
+  - cardPositions: ドラッグによるカード位置
+  - friendMemos: AI自動メモ + ユーザー手動メモ
+  - goedFriends: GO済み友達（画像解放済み）
+- useBlurRules(): oneLineStateからぼかしルールを導出するフック
+
 ### ナビゲーション
 - 3タブ構成: Chat / Home / Profile（BottomNav）
 - デフォルト画面: Home
+- PageType: home, chat, profile, diagnostic, diagnostic-detail, group-diagnostic-detail, ranking, friend-card-back, log, oneline-generate
 
-### 基本画面
-- Home画面: 検索バー、友達追加ボタン、新しいつながり提案カード、友達グリッド（3列）、ランキングプレビュー（上位3名）
-- Chat画面: AIチャット（Morasu）、友達チャット一覧・詳細会話、チャット詳細に「相性を見る」「AIに相談」ボタン
-- Profile画面: プロフィールカード、Read Your Story、Share Profile、Diagnostic/Logメニューリンク
-- Ranking画面: 週間ランキング表示（ホームから遷移）
-- Diagnostic画面: 診断機能（プロフィールから遷移）
-- Log画面: 行動ログ（プロフィールから遷移）
+### ホーム画面（放射状グラフ）
+- 放射状グラフ: 中央に自分カード、周囲に友達カード（ドラッグ可能）
+- SVG接続線（オレンジ半透明）
+- 今日のランキング（Top3 + GOボタン）
+- 友達の今日の一行リスト（全友達分、GOボタン付き）
+- ぼかしルール: 未生成→全ぼかし、確定済み→タイトルのみ表示、GO済み→チャットで全解放
+- 新しいつながり提案ノード（一行確定後のみ表示）
 
-### 削除済み機能（2025-01）
-以下の機能はクリーンアップにより削除:
-- カード裏面（フリップUI）
-- AI会話履歴画面
-- AI会話の承認フロー（blur/承認ウィジェット）
+### 今日の一行生成フロー
+- Profile画面から「Generate Your One Line」ボタンで開始
+- AI分析ローディング（2秒フェイク）→ 候補2〜3件表示 → ユーザー選択 → 確定
+- 確定後: ぼかし解除、ホーム画面にタイトル表示
+
+### 友達カード裏面（FriendCardBack）
+- キャラ画像、名前、BF状態、共通友人数
+- 今日の一行セクション（ぼかし + GOボタン）
+- 最近の出来事（ぼかしなし）
+- 相性を見るボタン（DiagnosticTypeSheet）
+- 過去のメモ（AI自動 + ユーザー手動追加可）
+
+### チャット画面（4者ルーム）
+- AIスレッド: 人間関係アドバイス、メモ保存トースト
+- 友達スレッド: 4者ルーム（user/friend/userAI/friendAI）
+- 4Pバッジ表示（チャットリスト）
+- 相談ボトムシート（仕事、仲直り、誘い方）
+- GO経由: 画像メッセージ表示 + AI リアクション
+
+### プロフィール画面
+- プロフィールカード（キャラ画像、名前、BFトグル）
+- 今日の一行セクション（未生成→生成ボタン / 生成済み→表示）
+- 最近の出来事（最大3件）
+- Read Your Story / Share Profile (QR)
+- Diagnostic / Logメニューリンク
+
+### その他
+- Ranking画面: 週間ランキング表示
+- Diagnostic画面: ペア/グループ診断
+- Log画面: 行動ログ（リスト/カレンダービュー）
+- QRCodeOverlay: プロフィールシェア用モックQRコード
+
+### 削除済み / 未使用コンポーネント
+- FriendDetailScreen.tsx: FriendCardBackに置き換え済み（ファイル残存）
+- FriendCard.tsx: グリッド廃止により未使用（ファイル残存）
+- HeartScreen.tsx: レガシー（ファイル残存）
+- ProfileCardFlip.tsx: ProfileScreen内にインライン化（ファイル残存）
 
 ## Claude Code 設定
 

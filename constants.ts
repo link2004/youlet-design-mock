@@ -757,6 +757,193 @@ export const DM_MESSAGES_BY_CHAT: Record<string, DMMessage[]> = {
   ],
 };
 
+// --- 今日の一行 (Today's One Line) ---
+
+export interface TodayOneLine {
+  friendId: number;
+  title: string;
+  characterImage: string;
+}
+
+export const FRIEND_ONE_LINES: TodayOneLine[] = [
+  { friendId: 1, title: "Hidden cafe in Shimokita changed my life", characterImage: "/images/characters/char16.png" },
+  { friendId: 2, title: "Finally beat the boss after 50 tries!", characterImage: "/images/characters/char17.png" },
+  { friendId: 3, title: "Sunrise yoga by the river was magical", characterImage: "/images/characters/char18.png" },
+  { friendId: 4, title: "Made the perfect carbonara from scratch", characterImage: "/images/characters/char19.png" },
+  { friendId: 5, title: "Mt. Takao trail had the best view ever", characterImage: "/images/characters/char20.png" },
+  { friendId: 6, title: "10 hours into the new RPG already", characterImage: "/images/characters/char21.png" },
+  { friendId: 7, title: "Digital art at Roppongi blew my mind", characterImage: "/images/characters/char22.png" },
+  { friendId: 8, title: "Found a secret waterfall on a hidden trail", characterImage: "/images/characters/char23.png" },
+  { friendId: 9, title: "Ghibli marathon on a rainy day = perfect", characterImage: "/images/characters/char24.png" },
+  { friendId: 10, title: "12-hour tonkotsu broth was worth it", characterImage: "/images/characters/char25.png" },
+];
+
+export interface MyOneLineCandidate {
+  id: number;
+  title: string;
+  characterImage: string;
+}
+
+export const MY_ONE_LINE_CANDIDATES: MyOneLineCandidate[] = [
+  { id: 1, title: "Tokyo streets at golden hour hit different", characterImage: "/images/characters/char_me.png" },
+  { id: 2, title: "Ethiopian pour-over before sunrise ritual", characterImage: "/images/characters/char_me.png" },
+  { id: 3, title: "Lost in a Murakami novel all afternoon", characterImage: "/images/characters/char_me.png" },
+];
+
+// --- 4者チャットメッセージ (Four Person Chat) ---
+
+export type FourPersonSender = 'user' | 'friend' | 'userAI' | 'friendAI';
+
+export interface FourPersonMessage {
+  id: string;
+  sender: FourPersonSender;
+  message: string;
+  timestamp: string;
+  isImage?: boolean;
+  imageUrl?: string;
+}
+
+export const FOUR_PERSON_CHATS: Record<number, FourPersonMessage[]> = {
+  1: [
+    { id: 'fp-1-1', sender: 'userAI', message: "Hey! You both found amazing coffee spots recently ☕ Maybe you should check out each other's discoveries!", timestamp: '14:00' },
+    { id: 'fp-1-2', sender: 'friendAI', message: "Momo just found this hidden gem in Shimokita with single-origin Ethiopian beans!", timestamp: '14:01' },
+    { id: 'fp-1-3', sender: 'friend', message: "haha the AIs are at it again 😂 but yeah the cafe is really good!", timestamp: '14:03' },
+    { id: 'fp-1-4', sender: 'user', message: "Right?? But honestly Ethiopian beans are my favorite, I need to check it out!", timestamp: '14:05' },
+    { id: 'fp-1-5', sender: 'friendAI', message: "Fun fact: you both prefer dark roasts! Perfect cafe buddy match 🎯", timestamp: '14:06' },
+  ],
+  2: [
+    { id: 'fp-2-1', sender: 'userAI', message: "Both of you are gamers! Kento just beat a crazy boss fight 🎮", timestamp: '15:00' },
+    { id: 'fp-2-2', sender: 'friendAI', message: "Kento used the ice element combo strategy - Riku might want to try that too!", timestamp: '15:01' },
+    { id: 'fp-2-3', sender: 'friend', message: "Yo! Have you played the new update yet?", timestamp: '15:03' },
+    { id: 'fp-2-4', sender: 'user', message: "Not yet but I heard the final boss is insane!", timestamp: '15:05' },
+  ],
+  3: [
+    { id: 'fp-3-1', sender: 'userAI', message: "Nina had a beautiful morning yoga session by the river today 🧘", timestamp: '09:00' },
+    { id: 'fp-3-2', sender: 'friendAI', message: "You both appreciate calm mornings - maybe a joint session sometime?", timestamp: '09:01' },
+    { id: 'fp-3-3', sender: 'friend', message: "The sunrise was incredible today! You should join next time", timestamp: '09:05' },
+    { id: 'fp-3-4', sender: 'user', message: "I'd love that! I do yoga every morning too", timestamp: '09:08' },
+  ],
+  4: [
+    { id: 'fp-4-1', sender: 'userAI', message: "Ryo made amazing homemade carbonara! 🍝 You both love cooking!", timestamp: '16:30' },
+    { id: 'fp-4-2', sender: 'friendAI', message: "The secret is tempering the eggs slowly - Ryo nailed it today!", timestamp: '16:31' },
+    { id: 'fp-4-3', sender: 'friend', message: "Thanks! It took me a few tries haha", timestamp: '16:35' },
+    { id: 'fp-4-4', sender: 'user', message: "I always struggle with carbonara! What's your technique?", timestamp: '16:38' },
+    { id: 'fp-4-5', sender: 'friend', message: "Low heat and constant stirring! I can show you sometime", timestamp: '16:40' },
+  ],
+  5: [
+    { id: 'fp-5-1', sender: 'userAI', message: "Sora captured incredible sunset photos! 📷 You're both photography lovers!", timestamp: '10:00' },
+    { id: 'fp-5-2', sender: 'friendAI', message: "Shot at f/8, ISO 100 with a graduated ND filter - golden hour magic!", timestamp: '10:01' },
+    { id: 'fp-5-3', sender: 'friend', message: "Yeah the light was perfect! Want to do a photo walk?", timestamp: '10:05' },
+    { id: 'fp-5-4', sender: 'user', message: "Definitely! I've been wanting to try ND filters", timestamp: '10:08' },
+  ],
+  6: [
+    { id: 'fp-6-1', sender: 'userAI', message: "Leon just picked up a new collector's edition game! 🕹️", timestamp: '18:00' },
+    { id: 'fp-6-2', sender: 'friendAI', message: "You both enjoy RPGs - might be fun to play together!", timestamp: '18:01' },
+    { id: 'fp-6-3', sender: 'friend', message: "Already 10 hours in! The story is amazing", timestamp: '18:05' },
+    { id: 'fp-6-4', sender: 'user', message: "No spoilers! I want to play it too", timestamp: '18:08' },
+  ],
+  7: [
+    { id: 'fp-7-1', sender: 'userAI', message: "Akane visited an incredible art exhibition at Roppongi! 🖼️", timestamp: '13:00' },
+    { id: 'fp-7-2', sender: 'friendAI', message: "You both love art - maybe visit the next exhibition together?", timestamp: '13:01' },
+    { id: 'fp-7-3', sender: 'friend', message: "The digital art pieces were so inspiring!", timestamp: '13:05' },
+    { id: 'fp-7-4', sender: 'user', message: "I love digital art! Which gallery was it?", timestamp: '13:08' },
+  ],
+  8: [
+    { id: 'fp-8-1', sender: 'userAI', message: "Kai found a secret hiking trail with an amazing waterfall! 🥾", timestamp: '11:00' },
+    { id: 'fp-8-2', sender: 'friendAI', message: "You both love outdoor adventures - perfect hiking partners!", timestamp: '11:01' },
+    { id: 'fp-8-3', sender: 'friend', message: "The trail was unmarked but totally worth it", timestamp: '11:05' },
+    { id: 'fp-8-4', sender: 'user', message: "That sounds amazing! Where is it?", timestamp: '11:08' },
+  ],
+  9: [
+    { id: 'fp-9-1', sender: 'userAI', message: "Miku had a cozy Ghibli movie marathon! 🍿", timestamp: '20:00' },
+    { id: 'fp-9-2', sender: 'friendAI', message: "Perfect rainy day activity - you both enjoy relaxing!", timestamp: '20:01' },
+    { id: 'fp-9-3', sender: 'friend', message: "Three films in a row! My Neighbor Totoro is still the best", timestamp: '20:05' },
+    { id: 'fp-9-4', sender: 'user', message: "I love Totoro! Spirited Away is my #1 though", timestamp: '20:08' },
+  ],
+  10: [
+    { id: 'fp-10-1', sender: 'userAI', message: "Yuto made tonkotsu ramen from scratch - 12 hour broth! 🍜", timestamp: '19:00' },
+    { id: 'fp-10-2', sender: 'friendAI', message: "You're both foodies who love challenging recipes!", timestamp: '19:01' },
+    { id: 'fp-10-3', sender: 'friend', message: "The broth was so rich! Worth the 12 hours", timestamp: '19:05' },
+    { id: 'fp-10-4', sender: 'user', message: "12 hours?! That's dedication. How'd it taste?", timestamp: '19:08' },
+  ],
+};
+
+// --- 友達メモ (Friend Memos) ---
+
+export interface FriendMemoData {
+  id: string;
+  type: 'ai' | 'user';
+  content: string;
+  timestamp: string;
+}
+
+export const INITIAL_FRIEND_MEMOS: Record<number, FriendMemoData[]> = {
+  1: [
+    { id: 'memo-1-1', type: 'ai', content: "Momo loves discovering hidden spots in the city. She's an introvert who expresses herself through art and photography.", timestamp: '2 days ago' },
+    { id: 'memo-1-2', type: 'user', content: "Met at the coffee meetup in Shibuya. Really into latte art!", timestamp: '1 week ago' },
+  ],
+  2: [
+    { id: 'memo-2-1', type: 'ai', content: "Kento is energetic and loves competitive gaming. Great for co-op sessions!", timestamp: '3 days ago' },
+  ],
+  3: [
+    { id: 'memo-3-1', type: 'ai', content: "Nina values mindfulness and quiet moments. She's a thoughtful listener.", timestamp: '1 day ago' },
+  ],
+  4: [
+    { id: 'memo-4-1', type: 'ai', content: "Ryo is kind and romantic. He puts a lot of care into cooking for others.", timestamp: '4 days ago' },
+    { id: 'memo-4-2', type: 'user', content: "Wants to open a small restaurant someday", timestamp: '2 weeks ago' },
+  ],
+  5: [
+    { id: 'memo-5-1', type: 'ai', content: "Sora is an adventurous optimist who loves combining hiking with photography.", timestamp: '2 days ago' },
+  ],
+};
+
+// --- 友達カード裏面データ (Friend Card Back) ---
+
+export interface FriendCardBackData {
+  friendId: number;
+  hasBF: boolean;
+  commonFriendsCount: number;
+}
+
+export const FRIEND_CARD_BACK_DATA: FriendCardBackData[] = [
+  { friendId: 1, hasBF: false, commonFriendsCount: 3 },
+  { friendId: 2, hasBF: false, commonFriendsCount: 2 },
+  { friendId: 3, hasBF: true, commonFriendsCount: 4 },
+  { friendId: 4, hasBF: true, commonFriendsCount: 1 },
+  { friendId: 5, hasBF: false, commonFriendsCount: 5 },
+  { friendId: 6, hasBF: false, commonFriendsCount: 2 },
+  { friendId: 7, hasBF: true, commonFriendsCount: 3 },
+  { friendId: 8, hasBF: false, commonFriendsCount: 4 },
+  { friendId: 9, hasBF: true, commonFriendsCount: 2 },
+  { friendId: 10, hasBF: false, commonFriendsCount: 3 },
+];
+
+// --- 新しいつながり提案 (New Connection Suggestion) ---
+
+export const NEW_CONNECTION_SUGGESTION = {
+  friendId: 101,
+  name: "Yuki",
+  image: "/images/characters/char16.png",
+  compatibility: 92,
+  reason: "You both love Art & Coffee",
+};
+
+// --- AI相談トピック (Consultation Topics) ---
+
+export const CONSULTATION_TOPICS = [
+  { id: 'work', label: 'Work/Project tips', emoji: '💼' },
+  { id: 'makeup', label: 'How to make up', emoji: '🤝' },
+  { id: 'approach', label: 'How to approach', emoji: '💬' },
+];
+
+// --- ユーザーの最近の出来事 (Recent Events) ---
+
+export const MY_RECENT_EVENTS = [
+  { id: 'my-1', title: 'Golden hour shoot in Shibuya', emoji: '📸', image: '/images/characters/char_me.png' },
+  { id: 'my-2', title: 'New Ethiopian beans arrived', emoji: '☕', image: '/images/characters/char_me.png' },
+  { id: 'my-3', title: 'Finished reading Norwegian Wood', emoji: '📚', image: '/images/characters/char_me.png' },
+];
+
 // 行動ログ型（JSONデータ形式に対応）
 export type Sensitivity = 'public' | 'private' | 'sensitive';
 

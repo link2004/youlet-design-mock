@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, ChevronLeft, ChevronRight, Star, Moon, Sun, Share2, Sparkles, BookOpen } from 'lucide-react';
+import { Settings, ChevronLeft, ChevronRight, Moon, Sun, Share2, Sparkles, BookOpen } from 'lucide-react';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
 import StoryView from './StoryView';
-import ProfileCardFlip from './ProfileCardFlip';
+import QRCodeOverlay from './QRCodeOverlay';
+import { USER_DATA, MY_RECENT_EVENTS } from '../constants';
+import { useAppState } from '../contexts/AppStateContext';
 import { PageType } from '../App';
 
 interface ProfileScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
+  onGenerateOneLine?: () => void;
 }
 
-// Menu item component for navigation
 const MenuLink: React.FC<{
   icon: React.ReactNode;
   label: string;
@@ -29,10 +31,13 @@ const MenuLink: React.FC<{
   </button>
 );
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate }) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate, onGenerateOneLine }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showStory, setShowStory] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+  const [hasBF, setHasBF] = useState(false);
+  const { state } = useAppState();
 
   useEffect(() => {
     if (darkMode) {
@@ -65,34 +70,99 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate }
               </button>
             </div>
 
-            {/* Profile Card with Flip */}
-            <ProfileCardFlip />
+            {/* Profile Card */}
+            <div className="flex flex-col items-center mt-4 mb-4 px-6">
+              <div className="w-32 h-44 rounded-2xl bg-white dark:bg-neutral-800 shadow-lg border-2 border-neutral-200 dark:border-neutral-600 overflow-hidden mb-3">
+                <div className="w-full h-full flex items-center justify-center p-3 bg-gradient-to-b from-neutral-50 to-neutral-100 dark:from-neutral-700 dark:to-neutral-800">
+                  <img
+                    src={USER_DATA.characterAvatar}
+                    alt="Profile"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+              <h2 className="text-xl font-serif italic font-bold text-neutral-900 dark:text-white">{USER_DATA.name}</h2>
+
+              {/* BF Toggle */}
+              <div className="flex items-center gap-3 mt-2">
+                <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                  {hasBF ? '💑 In a relationship' : '💛 Single'}
+                </span>
+                <button
+                  onClick={() => setHasBF(!hasBF)}
+                  className={`relative w-10 h-6 rounded-full transition-colors duration-300 ${
+                    hasBF ? 'bg-orange-400' : 'bg-neutral-300 dark:bg-neutral-600'
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 ${
+                      hasBF ? 'left-[18px]' : 'left-0.5'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Today's One Line */}
+            <div className="px-6 mb-4">
+              <h3 className="font-bold text-sm text-black dark:text-white mb-2">Today's One Line</h3>
+              {state.oneLineState === 'ungenerated' ? (
+                <button
+                  onClick={onGenerateOneLine}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-orange-400 to-amber-400 text-white font-bold text-sm active:scale-[0.98] transition-transform shadow-md flex items-center justify-center gap-2"
+                >
+                  <Sparkles size={16} />
+                  Generate Your One Line
+                </button>
+              ) : state.selectedOneLine ? (
+                <div className="flex items-center gap-3 p-3 bg-white dark:bg-neutral-800 rounded-xl">
+                  <img
+                    src={state.selectedOneLine.characterImage}
+                    alt="You"
+                    className="w-10 h-10 object-contain shrink-0"
+                  />
+                  <span className="text-sm font-medium text-neutral-900 dark:text-white flex-1">
+                    {state.selectedOneLine.title}
+                  </span>
+                </div>
+              ) : (
+                <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center">Generating...</p>
+                </div>
+              )}
+            </div>
+
+            {/* Recent Events */}
+            <div className="px-6 mb-4">
+              <h3 className="font-bold text-sm text-black dark:text-white mb-2">Recent Events</h3>
+              <div className="flex flex-col gap-2">
+                {MY_RECENT_EVENTS.slice(0, 3).map(event => (
+                  <div key={event.id} className="flex items-center gap-3 p-3 bg-white dark:bg-neutral-800 rounded-xl">
+                    <span className="text-lg shrink-0">{event.emoji}</span>
+                    <span className="text-sm font-medium text-neutral-900 dark:text-white flex-1">{event.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Action Buttons */}
             <div className="px-6 flex flex-col gap-3 pb-4">
-              {/* Read Your Story Button */}
               <button
                 onClick={() => setShowStory(true)}
                 className="w-full bg-gradient-to-r from-blue-500 to-red-500 py-4 rounded-2xl relative overflow-hidden shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center px-4"
               >
-                <div className="absolute -right-2 -top-2 text-white/10 transform rotate-12">
-                  <Star size={48} fill="currentColor" />
-                </div>
-                <div className="absolute left-2 bottom-0 text-white/10 transform -rotate-12">
-                  <Star size={24} fill="currentColor" />
-                </div>
                 <span className="relative z-10 text-white font-serif italic font-bold text-sm tracking-wide text-center leading-snug">
                   Read Your Story
                 </span>
               </button>
 
-              {/* Share Profile Button */}
               <button
+                onClick={() => setShowQR(true)}
                 className="w-full bg-white dark:bg-neutral-800 py-4 rounded-2xl shadow-sm active:scale-[0.98] transition-transform flex items-center justify-center gap-2 border border-neutral-200 dark:border-neutral-700"
               >
                 <Share2 size={18} className="text-orange-400" />
                 <span className="font-semibold text-neutral-900 dark:text-white text-sm">
-                  Share Profile
+                  Share Profile (QR)
                 </span>
               </button>
             </div>
@@ -118,14 +188,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate }
           </div>
         </div>
 
-        {/* Settings Screen - Overlays on top */}
+        {/* Settings Screen */}
         <div
           className={`absolute inset-0 bg-cream dark:bg-black transition-transform duration-300 ease-out z-50 ${
             showSettings ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           <div className="h-full overflow-y-auto no-scrollbar pb-20">
-            {/* Settings Header */}
             <div className="relative flex items-center px-4 py-2 bg-cream dark:bg-black sticky top-0 z-40 transition-colors duration-300">
               <button
                 onClick={() => setShowSettings(false)}
@@ -140,9 +209,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate }
               <div className="flex-1" />
             </div>
 
-            {/* Settings Content */}
             <div className="px-6 mt-6">
-              {/* Appearance Section */}
               <div className="mb-6">
                 <h2 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">
                   Appearance
@@ -182,9 +249,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ currentPage, onNavigate }
       <BottomNav currentPage={currentPage} onNavigate={onNavigate} />
 
       {/* Story View Modal */}
-      {showStory && (
-        <StoryView onClose={() => setShowStory(false)} />
-      )}
+      {showStory && <StoryView onClose={() => setShowStory(false)} />}
+
+      {/* QR Code Overlay */}
+      <QRCodeOverlay isOpen={showQR} onClose={() => setShowQR(false)} />
     </div>
   );
 };

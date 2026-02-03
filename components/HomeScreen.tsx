@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, X, ChevronRight, UserPlus } from 'lucide-react';
-import { FRIENDS_LIST, FriendProfile } from '../constants';
+import { FRIENDS_LIST, FRIEND_ONE_LINES, FriendProfile, TodayOneLine } from '../constants';
+import { useBlurRules } from '../contexts/AppStateContext';
 import BottomNav from './BottomNav';
 import StatusBar from './StatusBar';
-import FriendCard from './FriendCard';
+import RadialGraph from './RadialGraph';
 import FriendsOfFriendsList from './FriendsOfFriendsList';
 import FriendCardPreview from './FriendCardPreview';
 import { PageType } from '../App';
@@ -12,9 +13,11 @@ interface HomeScreenProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
   onSelectFriend: (friend: FriendProfile) => void;
+  onTapCenter?: () => void;
+  onGoFriend?: (friendId: number) => void;
 }
 
-// Generate ranking data (same as RankingScreen)
+// Generate ranking data
 const getWeeklyRanking = () => {
   const seed = 42;
   const shuffled = [...FRIENDS_LIST].sort((a, b) => {
@@ -25,125 +28,183 @@ const getWeeklyRanking = () => {
   return shuffled;
 };
 
-// Suggestion card for new connections
-const SuggestionCard: React.FC<{
-  friend: FriendProfile;
-  compatibility: number;
-  onGo: () => void;
-}> = ({ friend, compatibility, onGo }) => (
-  <div className="bg-gradient-to-r from-orange-400 to-amber-400 rounded-2xl p-4 shadow-lg">
-    <div className="flex items-start gap-3">
-      <img
-        src={friend.image}
-        alt={friend.name}
-        className="w-14 h-14 object-contain bg-white rounded-xl p-1"
-      />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-white text-lg">{friend.name}</span>
-          <span className="text-white/90 text-sm">- You're {compatibility}% compatible</span>
-        </div>
-        <p className="text-white/80 text-sm mt-1 truncate">
-          What's been happening lately...
-        </p>
-      </div>
-      <button
-        onClick={onGo}
-        className="shrink-0 px-4 py-2 bg-white rounded-full font-bold text-orange-500 text-sm active:scale-95 transition-transform"
-      >
-        GO
-      </button>
-    </div>
-  </div>
-);
-
-// Ranking preview section
+// Today's Ranking Preview with blur and GO
 const RankingPreview: React.FC<{
   friends: FriendProfile[];
+  oneLines: TodayOneLine[];
+  blurTitle: boolean;
+  blurImage: boolean;
+  isFriendGoed: (id: number) => boolean;
   onViewAll: () => void;
   onSelectFriend: (friend: FriendProfile) => void;
-}> = ({ friends, onViewAll, onSelectFriend }) => {
+  onGo: (friendId: number) => void;
+}> = ({ friends, oneLines, blurTitle, blurImage, isFriendGoed, onViewAll, onSelectFriend, onGo }) => {
   const RANK_MEDALS = [
     '/images/rank/1st_3d.png',
     '/images/rank/2nd_3d.png',
     '/images/rank/3rd_3d.png',
   ];
 
+  const getOneLine = (friendId: number) => oneLines.find(ol => ol.friendId === friendId);
+
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <button
         onClick={onViewAll}
         className="flex items-center justify-between w-full mb-3 active:opacity-70 transition-opacity"
       >
         <div className="flex items-center gap-2">
           <img src="/images/emoji/trophy_3d.png" alt="trophy" className="w-5 h-5" />
-          <span className="font-bold text-black dark:text-white">Weekly Ranking</span>
+          <span className="font-bold text-black dark:text-white">Today's Ranking</span>
         </div>
         <ChevronRight size={20} className="text-neutral-400" />
       </button>
 
       <div className="flex flex-col gap-2">
-        {friends.slice(0, 3).map((friend, index) => (
-          <button
-            key={friend.id}
-            onClick={() => onSelectFriend(friend)}
-            className="flex items-center gap-3 p-3 bg-white dark:bg-neutral-800 rounded-xl active:scale-[0.98] transition-transform"
-          >
-            <img
-              src={RANK_MEDALS[index]}
-              alt={`${index + 1}`}
-              className="w-8 h-8 object-contain"
-            />
-            <img
-              src={friend.image}
-              alt={friend.name}
-              className="w-10 h-10 object-contain"
-            />
-            <span className="flex-1 text-left font-semibold text-neutral-900 dark:text-white text-sm">
-              {friend.userId}
-            </span>
-            <span className="text-neutral-500 dark:text-neutral-400 text-xs truncate max-w-[120px]">
-              {friend.events[0]?.title || 'No recent activity'}
-            </span>
-            <ChevronRight size={16} className="text-neutral-400 shrink-0" />
-          </button>
-        ))}
+        {friends.slice(0, 3).map((friend, index) => {
+          const oneLine = getOneLine(friend.id);
+          const goed = isFriendGoed(friend.id);
+          return (
+            <div
+              key={friend.id}
+              className="flex items-center gap-2 p-2.5 bg-white dark:bg-neutral-800 rounded-xl"
+            >
+              <img src={RANK_MEDALS[index]} alt={`${index + 1}`} className="w-7 h-7 object-contain shrink-0" />
+              <button
+                onClick={() => onSelectFriend(friend)}
+                className="flex items-center gap-2 flex-1 min-w-0 active:opacity-70"
+              >
+                <div className={`w-8 h-8 rounded-lg overflow-hidden shrink-0 ${blurImage && !goed ? 'blur-sm' : ''}`}>
+                  <img src={friend.image} alt={friend.name} className="w-full h-full object-contain" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-xs font-semibold text-neutral-900 dark:text-white block">
+                    {friend.userId}
+                  </span>
+                  <span className={`text-[10px] text-neutral-500 dark:text-neutral-400 block truncate ${blurTitle ? 'blur-[3px]' : ''}`}>
+                    {oneLine?.title || 'No update today'}
+                  </span>
+                </div>
+              </button>
+              <button
+                onClick={() => onGo(friend.id)}
+                className="shrink-0 px-3 py-1 bg-orange-400 rounded-full text-white text-xs font-bold active:scale-95 transition-transform"
+              >
+                GO
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ currentPage, onNavigate, onSelectFriend }) => {
+// Today's one-line list for all friends
+const OneLineList: React.FC<{
+  friends: FriendProfile[];
+  oneLines: TodayOneLine[];
+  blurTitle: boolean;
+  blurImage: boolean;
+  isFriendGoed: (id: number) => boolean;
+  rankedTopIds: number[];
+  onSelectFriend: (friend: FriendProfile) => void;
+  onGo: (friendId: number) => void;
+}> = ({ friends, oneLines, blurTitle, blurImage, isFriendGoed, rankedTopIds, onSelectFriend, onGo }) => {
+  // Exclude top 3 already shown in ranking
+  const remaining = friends.filter(f => !rankedTopIds.includes(f.id));
+  if (remaining.length === 0) return null;
+
+  const getOneLine = (friendId: number) => oneLines.find(ol => ol.friendId === friendId);
+
+  return (
+    <div className="mt-4">
+      <h3 className="font-bold text-black dark:text-white text-sm mb-2">Today's One Lines</h3>
+      <div className="flex flex-col gap-1.5">
+        {remaining.map(friend => {
+          const oneLine = getOneLine(friend.id);
+          const goed = isFriendGoed(friend.id);
+          return (
+            <div
+              key={friend.id}
+              className="flex items-center gap-2 p-2.5 bg-white dark:bg-neutral-800 rounded-xl"
+            >
+              <button
+                onClick={() => onSelectFriend(friend)}
+                className="flex items-center gap-2 flex-1 min-w-0 active:opacity-70"
+              >
+                <div className={`w-8 h-8 rounded-lg overflow-hidden shrink-0 ${blurImage && !goed ? 'blur-sm' : ''}`}>
+                  <img src={friend.image} alt={friend.name} className="w-full h-full object-contain" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-xs font-semibold text-neutral-900 dark:text-white">
+                    {friend.name}
+                  </span>
+                  <span className={`text-[10px] text-neutral-500 dark:text-neutral-400 block truncate ${blurTitle ? 'blur-[3px]' : ''}`}>
+                    {oneLine?.title || 'No update today'}
+                  </span>
+                </div>
+              </button>
+              <button
+                onClick={() => onGo(friend.id)}
+                className="shrink-0 px-3 py-1 bg-orange-400 rounded-full text-white text-xs font-bold active:scale-95 transition-transform"
+              >
+                GO
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const HomeScreen: React.FC<HomeScreenProps> = ({
+  currentPage,
+  onNavigate,
+  onSelectFriend,
+  onTapCenter,
+  onGoFriend,
+}) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [previewFriend, setPreviewFriend] = useState<FriendProfile | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewFriendRef = useRef<FriendProfile | null>(null);
 
+  const { blurTitle, blurImage, isFriendGoed } = useBlurRules();
   const rankedFriends = getWeeklyRanking();
-  // Get a suggestion friend (not in top 3 ranking)
-  const suggestionFriend = FRIENDS_LIST.find(f => !rankedFriends.slice(0, 3).some(r => r.id === f.id)) || FRIENDS_LIST[0];
+  const rankedTopIds = rankedFriends.slice(0, 3).map(f => f.id);
 
-  // Keep ref in sync with state for use in setTimeout callback
   useEffect(() => {
     previewFriendRef.current = previewFriend;
   }, [previewFriend]);
 
   const handleBlur = () => {
-    // Delay to allow click on search results
     setTimeout(() => {
-      // Don't close search if preview modal is open (use ref to get latest value)
       if (previewFriendRef.current) return;
       setIsSearchFocused(false);
       setSearchQuery('');
     }, 150);
   };
 
+  const handleGo = (friendId: number) => {
+    onGoFriend?.(friendId);
+  };
+
+  const handleTapCenter = () => {
+    if (onTapCenter) {
+      onTapCenter();
+    } else {
+      onNavigate('profile');
+    }
+  };
+
   return (
     <div className="relative w-full h-full bg-cream dark:bg-black font-sans transition-colors duration-300 overflow-hidden flex flex-col">
       <StatusBar />
 
-      {/* Search Bar with add friend icon */}
+      {/* Search Bar */}
       <div className="px-4 py-3 shrink-0">
         <div className="relative flex items-center gap-2">
           <div className="flex-1 relative">
@@ -195,33 +256,38 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ currentPage, onNavigate, onSele
           />
         ) : (
           <>
-            {/* Suggestion Card */}
-            <SuggestionCard
-              friend={suggestionFriend}
-              compatibility={96}
-              onGo={() => onSelectFriend(suggestionFriend)}
-            />
-
-            {/* Friends Grid */}
-            <div className="mt-6">
-              <h2 className="font-bold text-black dark:text-white mb-3">Friends</h2>
-              <div className="grid grid-cols-3 gap-3">
-                {FRIENDS_LIST.map((friend) => (
-                  <FriendCard
-                    key={friend.id}
-                    name={friend.name}
-                    image={friend.image}
-                    onClick={() => onSelectFriend(friend)}
-                  />
-                ))}
-              </div>
+            {/* Radial Graph */}
+            <div className="flex justify-center">
+              <RadialGraph
+                onSelectFriend={onSelectFriend}
+                onTapCenter={handleTapCenter}
+                containerWidth={345}
+                containerHeight={380}
+              />
             </div>
 
             {/* Ranking Preview */}
             <RankingPreview
               friends={rankedFriends}
+              oneLines={FRIEND_ONE_LINES}
+              blurTitle={blurTitle}
+              blurImage={blurImage}
+              isFriendGoed={isFriendGoed}
               onViewAll={() => onNavigate('ranking')}
               onSelectFriend={onSelectFriend}
+              onGo={handleGo}
+            />
+
+            {/* One Line List */}
+            <OneLineList
+              friends={FRIENDS_LIST}
+              oneLines={FRIEND_ONE_LINES}
+              blurTitle={blurTitle}
+              blurImage={blurImage}
+              isFriendGoed={isFriendGoed}
+              rankedTopIds={rankedTopIds}
+              onSelectFriend={onSelectFriend}
+              onGo={handleGo}
             />
           </>
         )}
@@ -233,12 +299,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ currentPage, onNavigate, onSele
       <FriendCardPreview
         friend={previewFriend}
         isOpen={previewFriend !== null}
-        onClose={() => {
-          setPreviewFriend(null);
-          // Keep search focused to show friends of friends list
-        }}
+        onClose={() => setPreviewFriend(null)}
         onExchange={() => {
-          // Future: implement exchange logic
           setPreviewFriend(null);
           setIsSearchFocused(false);
           setSearchQuery('');
